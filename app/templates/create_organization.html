@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Create Organization</h3>
+        </div><br>
+        <div class="panel col-md-6">
+        <form action="/create_organization/" method="POST">
+          {% csrf_token %}
+          {{ form }}
+          <input type="submit" value="Submit" />
+        </form>
+        </div>
+    </div>
+{% endblock %}

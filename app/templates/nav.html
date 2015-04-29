@@ -1,0 +1,61 @@
+{% load staticfiles%}
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="brand"><a href="{% url 'index' %}">{{app_name}}</a></li>
+        {% if session %}<li><a href="{% url 'profile' %}">My Profile</a></li>{% endif %}
+        {% if session %}<li><a href="{% url 'organization' %}">My Group</a></li>{% endif %}
+        <li><a href="{% url 'active_forecasts' %}">Active Forecasts</a></li>
+        <li><a href="#">User Rankings</a></li>
+        <li><a href="#">About {{app_name}}</a></li>
+      </ul>
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group" id="search-block">
+          <input type="text" class="form-control" placeholder="Search for Users or Groups">
+          <img src="{% static 'images/search.png' %}" width="32px">
+        </div>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown" id="signin">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              {% if session %}
+                {{session.username}}
+              {% else %}
+                Sign In
+              {% endif %}
+              <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+              {% if session == None %}
+              <form action="{% url 'authorize' %}" method="post">
+                  {% csrf_token %}
+                  <b>Sign in with your {{app_name}} account</b>
+                  <p>
+                      <li>Username</li>
+                      <li><input type="text" name="username"/></li>
+                  </p>
+                  <p>
+                      <li>Password</li>
+                      <li><input type="password" name="password"/></li>
+                  </p>
+                  <span class="pull-left">
+                      <button type="submit" class="btn btn-large btn-primary">Submit</button>
+                  </span>
+                  <span class="pull-right">
+                      <!-- <a href="#" style="color: #4E8DE6;">Forgot Your Password?</a> -->
+                      <a href="{% url 'signup' %}" style="color: #4E8DE6;">Sign Up</a>
+                  </span>
+
+        
+                  <span class="clearfix"></span>
+              </form>
+              {% else %}
+              <a href="{% url 'logout' %}" style="color: #4E8DE6;">Logout</a>
+              {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

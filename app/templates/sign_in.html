@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="pull-left panel sign_in_panel col-md-6 vcenter">
+            <h1>Sign in</h1>
+            <form action="{% url 'authorize' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <p><a href="#">Forgot Your Password?</a></p>
+                <button type="submit" class="btn btn-large btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="pull-left panel sign_in_panel text-center col-md-6 vcenter">
+            <h2>New to {{app_name}}?</h2>
+            <br>
+            <p>Get started now. It's fast and easy!</p>
+            <br>
+            <button type="button" value="Submit" class="btn btn-large btn-primary">Sign Up</button>
+        </div>
+    </div>
+{% endblock %}

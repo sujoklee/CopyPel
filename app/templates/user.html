@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load staticfiles%}
+{% block content %}
+    <div class="row">
+        <div class="panel col-md-8">
+            <div class="row">
+                <div class="panel row-panel col-md-6">
+                    <h4>{{user.username | upper}}</h4>
+                    <p>- Follow</p>
+                    <p>- Message</p>
+                </div>
+                <div class="panel row-panel col-md-6">
+                    <h4>Performance</h4>
+                    <p>P Score: XX.X</p>
+                    <p>General Accuracy: XX.X%</p>
+                    <p>Number of Forecasts:</p>
+                    <p>See Archived Forecasts</p>
+                </div>
+            </div>
+            <div class="row">
+                <p>Active Forecasts (See Full Set)</p>
+                <div class="panel">
+                    <img src="{% static 'images/chart.png' %}" width="100%" height="500px">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="panel">
+                    <h4>User Info</h4>
+                    <p>Profession: {{user.profession}}</p>
+                    <p>Organization: {{user.organization}}</p>
+                    <p>Position: XXX</p>
+                    <p>Location: {{user.country}}</p>
+                    <p>Areas of Interest: {{user.forecast_areas}}</p>
+                    <img src="{% static 'images/pie_chart.png' %}" width="100%">
+                </div>
+            </div>
+            <div class="row p-10">
+                <h4>User Connections</h4>
+                <p>Followers: #</p>
+                <p>Visits/Reads: #</p>
+                <p>P Group Memberships: XXX, XXX, XXX</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
