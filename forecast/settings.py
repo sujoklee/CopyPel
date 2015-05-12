@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(BASE_DIR)
 
@@ -55,7 +56,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'forecast.urls'
 
-#WSGI_APPLICATION = 'forecast.wsgi.application'
+# WSGI_APPLICATION = 'forecast.wsgi.application'
 
 
 # Database
@@ -99,6 +100,7 @@ ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
 import os
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
