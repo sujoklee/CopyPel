@@ -35,15 +35,17 @@ def get_org_predictions(organization):
 
 def get_average_org_prediction(organization,forecast_id):
 	result = db.predictions.aggregate([{"$match":{'organization':organization,'forecast_id':forecast_id}},{"$group":{'_id':None,'average':{"$avg":"$current_prediction"}}}])
-	if len(result['result']):
-		return result['result'][0]['average']
+	results = list(result)
+	if len(results):
+		return results[0]['average']
 	else:
 		return None
 
 def get_average_prediction(forecast_id):
 	result = db.predictions.aggregate([{"$match":{'forecast_id':forecast_id}},{"$group":{'_id':None,'average':{"$avg":"$current_prediction"}}}])
-	if len(result['result']):
-		return result['result'][0]['average']
+	results = list(result)
+	if len(results):
+		return results[0]['average']
 	else:
 		return None
 

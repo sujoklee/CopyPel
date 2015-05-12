@@ -297,11 +297,8 @@ class SignUpForm(CustomForm):
     choices = []
     for org in Organization.objects.all():
         choices.append((org.id,org.organization_name))
-    print choices
-    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=choices, label='Organization',
-        required=True)
-
-    # forms.CharField(
+    # print choices
+    # organization = forms.CharField(
     #     widget=forms.TextInput(
     #         attrs={
     #             'placeholder': 'Organization/Employer',
@@ -319,7 +316,8 @@ class SignUpForm(CustomForm):
     #     label='Organization',
     #     required=False
     # )
-
+    
+    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=choices, label='Organization',required=False)
     def clean(self):
         cleaned_data = super(SignUpForm, self).clean()
         try:

@@ -95,7 +95,7 @@ class ActiveForecastsView(View):
         request.session.set_test_cookie()
 
         overall_predictions = mongo_utils.get_overall_predictions()
-
+        
         for op in overall_predictions:
             forecast_id = int(op['forecast_id'])
             forecast = models.Forecast.objects.get(
@@ -356,9 +356,16 @@ class ProfileView(View):
 
     # @authenticated
     def get(self, request):
+        if 'user_id' in request.REQUEST:
+            is_self = False
+            usr_id = request.REQUEST['user_id']
+        else:
+            is_self = True
+            usr_id = str(request.session['user']['usr_id'])
+            
         user = models.User.objects.get(
-            usr_id=str(request.session['user']['usr_id'])
-        )
+                usr_id=usr_id
+            )
 
         usr_id = user.usr_id
         all_predictions = mongo_utils.get_predictions_for_user(usr_id=usr_id)
@@ -383,7 +390,7 @@ class ProfileView(View):
             _all_predictions.append(_this_prediction)
         context = mixcontext(
             request.session,
-            {'user': user,'predictions':_all_predictions,'len_predictions':len(_all_predictions)},
+            {'user': user,'predictions':_all_predictions,'len_predictions':len(_all_predictions),'is_self':is_self},
         )
         return render(request, self.template_name, context)
 

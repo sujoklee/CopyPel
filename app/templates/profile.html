@@ -10,10 +10,10 @@
         <div class="panel col-md-8">
             <div class="row">
                 <div class="col-md-6">
-                    <h4>Hello, {{user.name}}</h4>
+                    <h4>{%if is_self %}Hello, {%endif%}{{user.name}}</h4>
                 </div>
                 <div class="panel row-panel col-md-6">
-                    <h4>My Performance</h4>
+                    <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Performance</h4>
                     <p>{{app_name}} Score: XX.X</p>
                     <p>General Accuracy: XX.X%</p>
                     <p>Number of Forecasts: {{len_predictions}}</p>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="row">
-                <p>My Active Forecasts (See Full Set)</p>
+                <p>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Active Forecasts (See Full Set)</p>
                 <div class="panel">
                     {%for prediction in predictions %}
                     <h3><a href="{% url 'forecast' %}?forecast_id={{prediction.forecast.forecast_id}}">{{prediction.forecast.forecast_question}}</a></h3>
@@ -58,7 +58,7 @@
                                           data: [{% for point in prediction.org_time_series %}[{{point.timestamp}},{{point.answer}}], {%endfor%}]
                                       },
                                       {
-                                          name: 'Your Forecast',
+                                          name: '{%if is_self %}Your {%else%}{{user.name}}\'s {%endif%} Forecast',
                                           data: [{% for point in prediction.user_time_series %}[{{point.timestamp}},{{point.answer}}], {%endfor%}]
                                       }]
                                   });
@@ -76,6 +76,7 @@
             </div>
         </div>
         <div class="col-md-4">
+          {%if is_self %}
             <div class="row">
                 <div class="panel">
                     <h4>Connection Center</h4>
@@ -108,9 +109,10 @@
                     </div>
                 </div>
             </div>
+          {% endif %}
             <div class="row">
                 <div class="panel">
-                    <h4>My Info</h4>
+                    <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Info</h4>
                     <p>Profession: {{user.profession}}</p>
                     <p>Organization: {{user.organization}}</p>
                     <p>Position: XXX</p>
