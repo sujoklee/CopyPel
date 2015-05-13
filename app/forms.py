@@ -44,18 +44,19 @@ class SignInForm(CustomForm):
         label=''
     )
 
+
 class OrganizationForm(CustomForm):
-    NAME_MAX=1000
-    NAME_MIN=1
+    NAME_MAX = 1000
+    NAME_MIN = 1
 
     organization_name = forms.CharField(
         max_length=NAME_MAX,
         min_length=NAME_MIN,
         widget=forms.TextInput(
-        attrs={
-            'ng-model': 'form.data.organization_name',
-            'autocomplete': 'off'
-        }
+            attrs={
+                'ng-model': 'form.data.organization_name',
+                'autocomplete': 'off'
+            }
         ),
         label='Organization Name',
         required=True)
@@ -66,18 +67,19 @@ class OrganizationForm(CustomForm):
         cleaned_data = super(OrganizationForm, self).clean()
         return cleaned_data
 
+
 class ForecastForm(CustomForm):
-    QUESTION_MAX=1000
-    QUESTION_MIN=1
+    QUESTION_MAX = 1000
+    QUESTION_MIN = 1
 
     forecast_question = forms.CharField(
         max_length=QUESTION_MAX,
         min_length=QUESTION_MIN,
         widget=forms.TextInput(
-        attrs={
-            'ng-model': 'form.data.question',
-            'autocomplete': 'off'
-        }
+            attrs={
+                'ng-model': 'form.data.question',
+                'autocomplete': 'off'
+            }
         ),
         label='Question',
         required=True)
@@ -85,7 +87,7 @@ class ForecastForm(CustomForm):
     forecast_type = forms.ChoiceField(widget=forms.RadioSelect, choices=forecast_type)
 
     def clean(self):
-        cleaned_data = super(SignUpForm, self).clean()
+        cleaned_data = super(ForecastForm, self).clean()
         return cleaned_data
 
 
@@ -296,10 +298,10 @@ class SignUpForm(CustomForm):
     )
     choices = []
     for org in Organization.objects.all():
-        choices.append((org.id,org.organization_name))
+        choices.append((org.id, org.organization_name))
     # print choices
     # organization = forms.CharField(
-    #     widget=forms.TextInput(
+    # widget=forms.TextInput(
     #         attrs={
     #             'placeholder': 'Organization/Employer',
     #             'ng-model': 'form.data.organization',
@@ -316,8 +318,9 @@ class SignUpForm(CustomForm):
     #     label='Organization',
     #     required=False
     # )
-    
-    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=choices, label='Organization',required=False)
+
+    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=choices, label='Organization', required=False)
+
     def clean(self):
         cleaned_data = super(SignUpForm, self).clean()
         try:

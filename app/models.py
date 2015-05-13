@@ -18,40 +18,44 @@ regions = (('1', "Europe"),
            ('6', "North America"),
            ('7', "South America"))
 
-forecast_type = (('1','Binary'),
-                  ('2','Probability'),
-                  ('3','Magnitude'),
-                  ('4','Temporal'))
+forecast_type = (('1', 'Binary'),
+                 ('2', 'Probability'),
+                 ('3', 'Magnitude'),
+                 ('4', 'Temporal'))
+
 
 class Forecast(models.Model):
     forecast_id = models.IntegerField(unique=True)
     forecast_type = models.IntegerField(blank=True)
     forecast_question = models.TextField(blank=True)
 
-    def __str__(self): # __str__ for Python 3, __unicode__ for Python 2
+    def __str__(self):  # __str__ for Python 3, __unicode__ for Python 2
         return self.name
 
     class Meta:
         db_table = 'forecasts'
 
-organization_type = (('1','School'),
-                  ('2','Think Tank'),
-                  ('3','Company'),
-                  ('4','Government Agency'))
+
+organization_type = (('1', 'School'),
+                     ('2', 'Think Tank'),
+                     ('3', 'Company'),
+                     ('4', 'Government Agency'))
+
 
 class Organization(models.Model):
     organization_id = models.IntegerField(unique=True)
     organization_type = models.IntegerField(blank=True)
     organization_name = models.TextField(blank=True)
 
-    def __str__(self): # __str__ for Python 3, __unicode__ for Python 2
+    def __str__(self):  # __str__ for Python 3, __unicode__ for Python 2
         return self.name
 
     class Meta:
         db_table = 'organizations'
 
+
 # class ForecastForm(ModelForm):
-#     class Meta:
+# class Meta:
 #         model = Forecast
 #         fields = ['forecast_id', 'forecast_type', 'forecast_question']
 
