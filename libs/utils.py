@@ -13,4 +13,4 @@ def createHash():
     """This function generate 10 character long hash"""
     _hash = hashlib.sha1()
     _hash.update(str(time.time()))
-    return  _hash.hexdigest()
+    return _hash.hexdigest()
