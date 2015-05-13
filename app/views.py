@@ -1,6 +1,8 @@
 import models
 import json
 import re
+import libs.mongo_utils as mongo_utils
+
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.sessions.models import Session
@@ -13,7 +15,6 @@ from libs.utils import encrypt, createHash
 from response_errors import signup_errors
 import traceback
 from datetime import datetime
-import libs.mongo_utils as mongo_utils
 
 common_context = {"app_name": settings.APP_NAME}
 
@@ -45,22 +46,25 @@ def mixcontext(session_context=None, *args):
     sess_context = {}
     try:
         sess_context['session'] = session_context['user']
-    except:
+    except KeyError:
         sess_context = {}
-    print(common_context, sess_context)
+
     ret = dict(sess_context.items() + common_context.items())
     for item in args:
         if isinstance(item, dict) and item:
             ret = dict(ret.items() + item.items())
     return ret
 
+
 def unix_time(dt):
     epoch = datetime.utcfromtimestamp(0)
     delta = dt - epoch
     return delta.total_seconds()
 
+
 def unix_time_millis(dt):
     return unix_time(dt) * 1000.0
+
 
 class IndexView(View):
     template_name = "index.html"
@@ -80,13 +84,14 @@ class IndexView(View):
 
         dict_to_mix = {}
         if len(overall_predictions):
-            dict_to_mix.update({'forecasts':overall_predictions})
+            dict_to_mix.update({'forecasts': overall_predictions})
 
         context = mixcontext(
             request.session,
             dict_to_mix,
         )
         return render(request, self.template_name, context)
+
 
 class ActiveForecastsView(View):
     template_name = "active_forecasts.html"
@@ -95,7 +100,7 @@ class ActiveForecastsView(View):
         request.session.set_test_cookie()
 
         overall_predictions = mongo_utils.get_overall_predictions()
-        
+
         for op in overall_predictions:
             forecast_id = int(op['forecast_id'])
             forecast = models.Forecast.objects.get(
@@ -105,7 +110,7 @@ class ActiveForecastsView(View):
             op['forecast_question'] = forecast.forecast_question
         dict_to_mix = {}
         if len(overall_predictions):
-            dict_to_mix.update({'forecasts':overall_predictions})
+            dict_to_mix.update({'forecasts': overall_predictions})
 
         context = mixcontext(
             request.session,
@@ -138,9 +143,9 @@ class OrganizationView(View):
 
             op['forecast_question'] = forecast.forecast_question
 
-        dict_to_mix = {'organization':organization}
+        dict_to_mix = {'organization': organization}
         if len(overall_predictions):
-            dict_to_mix.update({'forecasts':overall_predictions,'len_forecasts':len(overall_predictions)})
+            dict_to_mix.update({'forecasts': overall_predictions, 'len_forecasts': len(overall_predictions)})
 
         context = mixcontext(
             request.session,
@@ -148,6 +153,7 @@ class OrganizationView(View):
         )
 
         return render(request, self.template_name, context)
+
 
 class RegisteredView(View):
     template_name = "thanx.html"
@@ -210,8 +216,6 @@ class RegisteredView(View):
                     response['errors'].append(
                         signup_errors['profile_update_failed']
                     )
-        print(response)
-
         return HttpResponse(content=json.dumps(response))
 
 
@@ -247,8 +251,7 @@ class SignInView(View):
             except models.User.DoesNotExist:
                 pass
             return HttpResponseRedirect(reverse('authorize'))
-        else:
-            return HttpResponse("Please enable cookies and try again.")
+        return HttpResponse("Please enable cookies and try again.")
 
 
 class SignUpView(View):
@@ -329,7 +332,7 @@ class SignUpView(View):
                     )
 
         response['errors'] += signup_form.error_list \
-            + signup_form.non_field_errors()
+                              + signup_form.non_field_errors()
         return HttpResponse(
             content=json.dumps(response)
         )
@@ -362,10 +365,10 @@ class ProfileView(View):
         else:
             is_self = True
             usr_id = str(request.session['user']['usr_id'])
-            
+
         user = models.User.objects.get(
-                usr_id=usr_id
-            )
+            usr_id=usr_id
+        )
 
         usr_id = user.usr_id
         all_predictions = mongo_utils.get_predictions_for_user(usr_id=usr_id)
@@ -374,25 +377,30 @@ class ProfileView(View):
         for prediction in all_predictions:
             forecast_id = prediction['forecast_id']
             forecast = models.Forecast.objects.get(
-                            forecast_id=forecast_id
-                        )
-            _this_prediction = {'forecast':forecast,'current_user_prediction':prediction['current_prediction'],'user_time_series':prediction['time_series']}
+                forecast_id=forecast_id
+            )
+            _this_prediction = {'forecast': forecast, 'current_user_prediction': prediction['current_prediction'],
+                                'user_time_series': prediction['time_series']}
 
             existing_peleus_prediction = mongo_utils.get_overall_prediction(forecast_id=forecast_id)
             if existing_peleus_prediction:
-                _this_prediction.update({'current_peleus_prediction':existing_peleus_prediction['current_prediction']})
-                _this_prediction.update({'peleus_time_series':existing_peleus_prediction['time_series']})
+                _this_prediction.update({'current_peleus_prediction': existing_peleus_prediction['current_prediction']})
+                _this_prediction.update({'peleus_time_series': existing_peleus_prediction['time_series']})
 
-            existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,forecast_id=forecast_id)
+            existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,
+                                                                              forecast_id=forecast_id)
             if existing_organization_prediction:
-                _this_prediction.update({'current_org_prediction':existing_organization_prediction['current_prediction']})
-                _this_prediction.update({'org_time_series':existing_organization_prediction['time_series']})
+                _this_prediction.update(
+                    {'current_org_prediction': existing_organization_prediction['current_prediction']})
+                _this_prediction.update({'org_time_series': existing_organization_prediction['time_series']})
             _all_predictions.append(_this_prediction)
         context = mixcontext(
             request.session,
-            {'user': user,'predictions':_all_predictions,'len_predictions':len(_all_predictions),'is_self':is_self},
+            {'user': user, 'predictions': _all_predictions, 'len_predictions': len(_all_predictions),
+             'is_self': is_self},
         )
         return render(request, self.template_name, context)
+
 
 class ForecastView(View):
     template_name = "forecast.html"
@@ -403,26 +411,27 @@ class ForecastView(View):
         forecast = models.Forecast.objects.get(
             forecast_id=forecast_id
         )
-        usr_id=str(request.session['user']['usr_id'])
+        usr_id = str(request.session['user']['usr_id'])
 
         user = models.User.objects.get(
             usr_id=str(request.session['user']['usr_id'])
         )
 
         dict_to_mix = {
-            'user':user,
-            'forecast':forecast,
+            'user': user,
+            'forecast': forecast,
         }
 
-        existing_prediction = mongo_utils.get_prediction(usr_id=usr_id,forecast_id=forecast_id)
+        existing_prediction = mongo_utils.get_prediction(usr_id=usr_id, forecast_id=forecast_id)
         if existing_prediction:
-            dict_to_mix.update({'current_prediction':existing_prediction['current_prediction']})
-            dict_to_mix.update({'user_time_series':existing_prediction['time_series']})
+            dict_to_mix.update({'current_prediction': existing_prediction['current_prediction']})
+            dict_to_mix.update({'user_time_series': existing_prediction['time_series']})
 
-        existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,forecast_id=forecast_id)
+        existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,
+                                                                          forecast_id=forecast_id)
         if existing_organization_prediction:
-            dict_to_mix.update({'current_org_prediction':existing_organization_prediction['current_prediction']})
-            dict_to_mix.update({'org_time_series':existing_organization_prediction['time_series']})
+            dict_to_mix.update({'current_org_prediction': existing_organization_prediction['current_prediction']})
+            dict_to_mix.update({'org_time_series': existing_organization_prediction['time_series']})
 
         context = mixcontext(
             request.session,
@@ -437,53 +446,58 @@ class ForecastView(View):
             usr_id=str(request.session['user']['usr_id'])
         )
         organization = user.organization
-        existing_prediction = mongo_utils.get_prediction(usr_id=usr_id,forecast_id=forecast_id)
+        existing_prediction = mongo_utils.get_prediction(usr_id=usr_id, forecast_id=forecast_id)
         answer = float(request.POST.get('answer'))
         timestamp = unix_time_millis(datetime.now())
         if existing_prediction:
-            existing_prediction['time_series'].append({'timestamp':timestamp,'answer':answer})
+            existing_prediction['time_series'].append({'timestamp': timestamp, 'answer': answer})
             existing_prediction['current_prediction'] = answer
             mongo_utils.save_prediction(existing_prediction)
         else:
-            prediction = {'usr_id':usr_id,'organization':user.organization,'forecast_id':forecast_id,'current_prediction':answer,'time_series':[{'timestamp':timestamp,'answer':answer}]}
+            prediction = {'usr_id': usr_id, 'organization': user.organization, 'forecast_id': forecast_id,
+                          'current_prediction': answer, 'time_series': [{'timestamp': timestamp, 'answer': answer}]}
             mongo_utils.save_prediction(prediction)
 
-        existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,forecast_id=forecast_id)
+        existing_organization_prediction = mongo_utils.get_org_prediction(organization=user.organization,
+                                                                          forecast_id=forecast_id)
         if existing_organization_prediction:
-            new_avg = mongo_utils.get_average_org_prediction(organization,forecast_id)
+            new_avg = mongo_utils.get_average_org_prediction(organization, forecast_id)
             if new_avg:
-                existing_organization_prediction['time_series'].append({'timestamp':timestamp,'answer':new_avg})
+                existing_organization_prediction['time_series'].append({'timestamp': timestamp, 'answer': new_avg})
                 existing_organization_prediction['current_prediction'] = new_avg
                 mongo_utils.save_org_prediction(existing_organization_prediction)
             else:
                 print "There was an error in getting org average"
         else:
-            prediction = {'organization':user.organization,'forecast_id':forecast_id,'current_prediction':answer,'time_series':[{'answer':answer,'timestamp':timestamp}]}
+            prediction = {'organization': user.organization, 'forecast_id': forecast_id, 'current_prediction': answer,
+                          'time_series': [{'answer': answer, 'timestamp': timestamp}]}
             mongo_utils.save_org_prediction(prediction)
-        
+
         existing_overall_prediction = mongo_utils.get_overall_prediction(forecast_id=forecast_id)
         if existing_overall_prediction:
             new_avg = mongo_utils.get_average_prediction(forecast_id)
             if new_avg:
-                existing_overall_prediction['time_series'].append({'timestamp':timestamp,'answer':new_avg})
+                existing_overall_prediction['time_series'].append({'timestamp': timestamp, 'answer': new_avg})
                 existing_overall_prediction['current_prediction'] = new_avg
                 mongo_utils.save_overall_prediction(existing_overall_prediction)
             else:
                 print "There was an error in getting overall average"
         else:
-            prediction = {'forecast_id':forecast_id,'current_prediction':answer,'time_series':[{'answer':answer,'timestamp':timestamp}]}
+            prediction = {'forecast_id': forecast_id, 'current_prediction': answer,
+                          'time_series': [{'answer': answer, 'timestamp': timestamp}]}
             mongo_utils.save_overall_prediction(prediction)
 
         # return render(request, self.template_name, request.session)
         response = HttpResponseRedirect(reverse('forecast'))
-        response['Location'] += '?forecast_id='+str(forecast_id)
+        response['Location'] += '?forecast_id=' + str(forecast_id)
         return response
+
 
 class CreateOrganizationView(View):
     template_name = "create_organization.html"
 
     @authenticated
-    def get(self,request):
+    def get(self, request):
         form = OrganizationForm()
         context = mixcontext(
             request.session,
@@ -492,7 +506,7 @@ class CreateOrganizationView(View):
         return render(request, self.template_name, context)
 
     # @authenticated
-    def post(self,request):
+    def post(self, request):
         organization_form = OrganizationForm(request.POST)
 
         # prepare default response
@@ -512,7 +526,7 @@ class CreateOrganizationView(View):
 
         organization = models.Organization(**data)
         organization.save()
-        
+
         response.update({
             'form': 'valid',
         })
@@ -526,7 +540,7 @@ class CreateForecastView(View):
     template_name = "create_forecast.html"
 
     @authenticated
-    def get(self,request):
+    def get(self, request):
         form = ForecastForm()
         context = mixcontext(
             request.session,
@@ -535,7 +549,7 @@ class CreateForecastView(View):
         return render(request, self.template_name, context)
 
     @authenticated
-    def post(self,request):
+    def post(self, request):
         forecast_form = ForecastForm(request.POST)
 
         # prepare default response
@@ -557,7 +571,7 @@ class CreateForecastView(View):
 
         forecast = models.Forecast(**data)
         forecast.save()
-        
+
         response.update({
             'form': 'valid',
         })
@@ -566,12 +580,14 @@ class CreateForecastView(View):
             content=json.dumps(response)
         )
 
+
 class LogoutView(View):
     def get(self, request):
         for sesskey in request.session.keys():
             del request.session[sesskey]
         request.session.flush()
         from django.contrib.auth.views import logout
+
         response = logout(request, 'index')
         response.delete_cookie('sessionid')
         return response
