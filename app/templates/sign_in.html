@@ -1,21 +1,41 @@
-{% extends "base.html" %}
-{% block content %}
-    <div class="row">
-        <div class="pull-left panel sign_in_panel col-md-6 vcenter">
-            <h1>Sign in</h1>
-            <form action="{% url 'authorize' %}" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <p><a href="#">Forgot Your Password?</a></p>
-                <button type="submit" class="btn btn-large btn-primary">Submit</button>
-            </form>
-        </div>
-        <div class="pull-left panel sign_in_panel text-center col-md-6 vcenter">
-            <h2>New to {{app_name}}?</h2>
-            <br>
-            <p>Get started now. It's fast and easy!</p>
-            <br>
-            <button type="button" value="Submit" class="btn btn-large btn-primary">Sign Up</button>
-        </div>
-    </div>
-{% endblock %}
+<ul class="nav navbar-nav navbar-right">
+    <li class="dropdown" id="signin">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {% if session %}
+                {{ session.username }}
+            {% else %}
+                Sign In
+            {% endif %}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            {% if session == None %}
+                <form action="{% url 'authorize' %}" method="post">
+                    {% csrf_token %}
+                    <b>Sign in with your {{ app_name }} account</b>
+
+                    <p>
+                    <li>Username</li>
+                    <li><input type="text" name="username" class="form-control"/></li>
+                    </p>
+                    <p>
+                    <li>Password</li>
+                    <li><input type="password" name="password" class="form-control"/></li>
+                    </p>
+                  <span class="pull-left">
+                      <button type="submit" class="btn btn-large btn-primary">Submit</button>
+                  </span>
+                  <span class="pull-right">
+                      <!-- <a href="#" style="color: #4E8DE6;">Forgot Your Password?</a> -->
+                      <a href="{% url 'signup' %}" style="color: #4E8DE6;">Sign Up</a>
+                  </span>
+
+
+                    <span class="clearfix"></span>
+                </form>
+            {% else %}
+                <a href="{% url 'logout' %}" style="color: #4E8DE6;">Logout</a>
+            {% endif %}
+        </ul>
+    </li>
+</ul>
