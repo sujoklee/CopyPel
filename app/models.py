@@ -25,7 +25,7 @@ forecast_type = (('1', 'Binary'),
 
 
 class Forecast(models.Model):
-    forecast_id = models.IntegerField(unique=True)
+    forecast_id = models.ForeignKey()
     forecast_type = models.IntegerField(blank=True)
     forecast_question = models.TextField(blank=True)
 
