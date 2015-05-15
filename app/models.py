@@ -1,6 +1,9 @@
 from django.db import models
-from libs.utils import encrypt
+from datetime import datetime, timedelta
+from django.contrib.auth.models import User
 from django.forms import ModelForm
+from django_countries.fields import CountryField
+from forecast.settings import TOKEN_EXPIRATION_PERIOD, ORGANIZATION_TYPE, FORECAST_TYPE
 
 areas = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
@@ -18,61 +21,60 @@ regions = (('1', "Europe"),
            ('6', "North America"),
            ('7', "South America"))
 
-forecast_type = (('1', 'Binary'),
-                 ('2', 'Probability'),
-                 ('3', 'Magnitude'),
-                 ('4', 'Temporal'))
-
 
 class Forecast(models.Model):
-    forecast_id = models.ForeignKey()
-    forecast_type = models.IntegerField(blank=True)
-    forecast_question = models.TextField(blank=True)
+    forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
+    forecast_question = models.TextField(max_length=1000)
+    start_date = models.DateField(auto_now=True)
+    end_date = models.DateField()
 
-    def __str__(self):  # __str__ for Python 3, __unicode__ for Python 2
-        return self.name
+    def is_active(self):
+        this_time = datetime.now()
+        if self.end_date <= this_time:
+            return True
+        return False
+
+    def __unicode__(self):
+        return '%s - %s' % (self.id, self.forecast_question)
 
     class Meta:
         db_table = 'forecasts'
-
-
-organization_type = (('1', 'School'),
-                     ('2', 'Think Tank'),
-                     ('3', 'Company'),
-                     ('4', 'Government Agency'))
+        get_latest_by = 'start_date'
+        ordering = ['-end_date']
 
 
 class Organization(models.Model):
-    organization_id = models.IntegerField(unique=True)
-    organization_type = models.IntegerField(blank=True)
+
+    organization_type = models.CharField(choices=ORGANIZATION_TYPE, max_length=2)
     organization_name = models.TextField(blank=True)
 
-    def __str__(self):  # __str__ for Python 3, __unicode__ for Python 2
-        return self.name
-
-    class Meta:
-        db_table = 'organizations'
+    def __unicode__(self):
+        return '%s - %s' % (self.organization_type, self.organization_name)
 
 
-# class ForecastForm(ModelForm):
-# class Meta:
-#         model = Forecast
-#         fields = ['forecast_id', 'forecast_type', 'forecast_question']
+class ForecastVotes(models.Model):
+    user_id = models.ForeignKey('UserProfile')
+    forecast_id = models.ForeignKey('Forecast')
+    vote = models.IntegerField()
 
-class User(models.Model):
-    usr_id = models.IntegerField(unique=True)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
     display_only_username = models.BooleanField(default=False)
-    name = models.TextField(max_length=50)
-    username = models.CharField(max_length=30, unique=True)
-    password = models.TextField()
-    email = models.EmailField(unique=True)
-    country = models.CharField(max_length=50)
+    country = CountryField()
     city = models.CharField(max_length=50, blank=True)
-    profession = models.CharField(max_length=50, blank=True)
-    organization = models.TextField(blank=True)
+    profession = models.CharField(max_length=100, blank=True)
+    position = models.CharField(max_length=100, blank=True)
+    organization = models.ForeignKey('Organization')
     forecast_areas = models.CommaSeparatedIntegerField(max_length=3, blank=True)
     forecast_regions = models.CommaSeparatedIntegerField(max_length=3, blank=True)
-    activation_token = models.TextField(blank=True)
 
+    activation_token = models.TextField(blank=True)
+    expires_at = models.DateTimeField(default=lambda: datetime.now() + timedelta(hours=TOKEN_EXPIRATION_PERIOD))
+    email_verified = models.BooleanField(default=False)
+
+
+class UserForm(ModelForm):
     class Meta:
-        db_table = 'users'
+        model = UserProfile
+        exclude = ['activated', 'expires_at', 'activation_token']

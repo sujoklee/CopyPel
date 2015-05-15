@@ -82,6 +82,17 @@ USE_L10N = True
 
 USE_TZ = True
 
+TOKEN_EXPIRATION_PERIOD = 3     # set in hours
+
+ORGANIZATION_TYPE = (('1', 'School'),
+                         ('2', 'Think Tank'),
+                         ('3', 'Company'),
+                         ('4', 'Government Agency'))
+
+FORECAST_TYPE = (('1', 'Binary'),
+                     ('2', 'Probability'),
+                     ('3', 'Magnitude'),
+                     ('4', 'Temporal'))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -108,3 +119,6 @@ STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+EMAIL_TEMPLATE_FILE = 'email.html'
+EMAIL_TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates', 'email', EMAIL_TEMPLATE_FILE)

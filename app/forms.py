@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from models import areas, regions, forecast_type, organization_type, Organization
+from models import areas, regions, ORGANIZATION_TYPE, FORECAST_TYPE, Organization
 from django.core.validators import RegexValidator
 import libs.widgets as widgets
 import re
@@ -61,7 +61,7 @@ class OrganizationForm(CustomForm):
         label='Organization Name',
         required=True)
 
-    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=organization_type)
+    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE)
 
     def clean(self):
         cleaned_data = super(OrganizationForm, self).clean()
@@ -84,7 +84,7 @@ class ForecastForm(CustomForm):
         label='Question',
         required=True)
 
-    forecast_type = forms.ChoiceField(widget=forms.RadioSelect, choices=forecast_type)
+    forecast_type = forms.ChoiceField(widget=forms.RadioSelect, choices=FORECAST_TYPE)
 
     def clean(self):
         cleaned_data = super(ForecastForm, self).clean()
