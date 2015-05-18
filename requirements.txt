@@ -1,10 +1,12 @@
-Django
+Django==1.7
+argparse==1.2.1
 dj-database-url==0.3.0
-django-countries==3.3
 dj-static==0.0.6
-gunicorn
+django-countries==3.3
+django-recaptcha==1.0.4
+gunicorn==19.1.1
 psycopg2==2.5.1
+pymongo==3.0.1
 static==0.4
+static3==0.5.1
 wsgiref==0.1.2
-pymongo
-django-recaptcha

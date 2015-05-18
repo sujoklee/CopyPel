@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django_countries.fields import CountryField
 from forecast.settings import TOKEN_EXPIRATION_PERIOD, ORGANIZATION_TYPE, FORECAST_TYPE
+from captcha.fields import ReCaptchaField
+from django import forms
+from django.core import validators
+from forecast.settings import APP_NAME
+from django_countries.widgets import CountrySelectWidget
 
 areas = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
@@ -51,21 +56,24 @@ class Organization(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.organization_type, self.organization_name)
 
+    class Meta:
+        db_table = 'organization'
+
 
 class ForecastVotes(models.Model):
-    user_id = models.ForeignKey('UserProfile')
+    user_id = models.ForeignKey(User)
     forecast_id = models.ForeignKey('Forecast')
     vote = models.IntegerField()
 
 
-class UserProfile(models.Model):
+class CustomUserProfile(models.Model):
     user = models.OneToOneField(User)
     display_only_username = models.BooleanField(default=False)
-    country = CountryField()
+    country = CountryField(blank=False)
     city = models.CharField(max_length=50, blank=True)
     profession = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
-    organization = models.ForeignKey('Organization')
+    organization = models.ForeignKey('Organization', blank=True)
     forecast_areas = models.CommaSeparatedIntegerField(max_length=3, blank=True)
     forecast_regions = models.CommaSeparatedIntegerField(max_length=3, blank=True)
 
@@ -74,7 +82,50 @@ class UserProfile(models.Model):
     email_verified = models.BooleanField(default=False)
 
 
-class UserForm(ModelForm):
+class UserRegistrationForm(ModelForm):
+    name = forms.CharField(widget=forms.TextInput(), label='Name')
+    surname = forms.CharField(widget=forms.TextInput(), label='Surname')
+    display_only_username = forms.BooleanField(
+        widget=forms.CheckboxInput(),
+        label="Please only display my Username on {}".format(APP_NAME),
+        required=False)
+    agree_with_terms = forms.BooleanField(
+        widget=forms.CheckboxInput(),
+        label="I agree to {}'s Terms of Use".format(APP_NAME),
+        required=True)
+    username = forms.CharField(
+        widget=forms.TextInput(),
+        label='Username'
+    )
+
+    email = forms.EmailField(required=True, validators=[validators.EmailValidator])
+    password = forms.CharField(widget=forms.PasswordInput())
+    password_conf = forms.CharField(widget=forms.PasswordInput())
+    captcha = ReCaptchaField(attrs={'theme': 'clean'})
+    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
+
+
     class Meta:
-        model = UserProfile
-        exclude = ['activated', 'expires_at', 'activation_token']
+        model = CustomUserProfile
+        exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
+        widgets = {'country': CountrySelectWidget()}
+
+
+class OrganizationForm(ModelForm):
+    NAME_MAX = 1000
+    NAME_MIN = 1
+    organization_name = forms.CharField(
+        max_length=NAME_MAX,
+        min_length=NAME_MIN,
+        widget=forms.TextInput(
+            attrs={
+            }
+        ),
+        label='Organization Name',
+        required=True)
+
+    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE)
+
+    class Meta:
+        model = Organization
+        fields = '__all__'

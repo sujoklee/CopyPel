@@ -15,17 +15,13 @@
             <br>
 
             <div class="row">
-                <form class="form-horizontal" method="post" action="{% url "signup" %}" >
-                    <div class="form-group">
+                <form method="post" action="{% url "signup" %}" >
                     {% csrf_token %}
                     {% for field in form_main %}
                         {{ field.label }} {{ field }}<br>
                     {% endfor %}
-                    </div>
-                    
 
                     <button type="submit" class="btn btn-large btn-primary">Submit</button>
-
 
                 </form>
             </div>

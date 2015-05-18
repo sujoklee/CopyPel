@@ -405,3 +405,4 @@ class SignupCompleteForm(CustomForm):
         ),
         required=False
     )
+

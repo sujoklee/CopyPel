@@ -8,25 +8,32 @@ class CustomEmailSender(object):
         self.sender = sender
         self.template_path = template_file
         self.html = None
+        if template_file:
+            self._load_template()
 
-    def load_template(self):
+    def _load_template(self):
         with open(self.template_path) as f:
             data = f.read()
         self.html = data
 
     def send_message(self, receivers, title, sender=None, **parameters):
         sender = self.sender or sender
-        msg = MIMEMultipart('alternative')
+        msg = MIMEMultipart()
         msg['Subject'] = title
         msg['From'] = sender
-        msg['To'] = receivers
-
-        part1 = MIMEText(self.html % parameters, 'html')
+        msg['To'] = ','.join(receivers)
+        result = self.html % parameters if parameters else self.html
+        part1 = MIMEText(result, 'html')
         msg.attach(part1)
         s = smtplib.SMTP('localhost')
-        s.sendmail(sender, receivers, msg.as_string())
-        s.quit()
+        s.set_debuglevel(True)
+        try:
+            s.sendmail(msg['From'], msg['To'], msg.as_string())
+        finally:
+            s.quit()
 
 
 if __name__ == '__main__':
-    c = CustomEmailSender()
+    from forecast.settings import EMAIL_TEMPLATE_PATH
+    c = CustomEmailSender('no-reply@peleus.com', EMAIL_TEMPLATE_PATH)
+    c.send_message(['albert@collabimo.com'], 'new message')
