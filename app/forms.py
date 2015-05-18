@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from captcha.fields import ReCaptchaField
 from models import areas, regions, ORGANIZATION_TYPE, FORECAST_TYPE, Organization
 from django.core.validators import RegexValidator
 import libs.widgets as widgets
@@ -104,6 +105,13 @@ class SignUpForm(CustomForm):
     EMAIL_MIN = 6
     EMAIL_MAX = 35
     EMAIL_REGEX = '^[a-z][a-z0-9\_\.\-]+@[a-z0-9\-\_]+\.[a-z]{2,4}$'
+
+    captcha = ReCaptchaField(
+        public_key='76wtgdfsjhsydt7r5FFGFhgsdfytd656sad75fgh',
+        private_key='98dfg6df7g56df6gdfgdfg65JHJH656565GFGFGs',
+        use_ssl=True,
+        attrs={'theme': 'clean'}
+    )
 
     agree_with_terms = forms.BooleanField(
         widget=forms.CheckboxInput(
@@ -302,7 +310,7 @@ class SignUpForm(CustomForm):
     # print choices
     # organization = forms.CharField(
     # widget=forms.TextInput(
-    #         attrs={
+    # attrs={
     #             'placeholder': 'Organization/Employer',
     #             'ng-model': 'form.data.organization',
     #             'ng-pattern': "/{}/".format(NAME_REGEX)

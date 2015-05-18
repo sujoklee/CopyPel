@@ -1,9 +1,10 @@
-Django==1.7
+Django
 dj-database-url==0.3.0
 django-countries==3.3
 dj-static==0.0.6
-gunicorn==19.1.1
+gunicorn
 psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2
 pymongo
+django-recaptcha

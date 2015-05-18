@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'captcha',
     'forecast',
     'app',
 )
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'forecast.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'forecast.db'
+        'NAME': 'forecast1.db'
     }
 }
 
@@ -122,3 +123,9 @@ STATICFILES_DIRS = (
 
 EMAIL_TEMPLATE_FILE = 'email.html'
 EMAIL_TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates', 'email', EMAIL_TEMPLATE_FILE)
+
+RECAPTCHA_PUBLIC_KEY = '6Ldr5gYTAAAAAOWBFg4rtP6UKZs54wqC1Xa7t4UR'
+RECAPTCHA_PRIVATE_KEY = '6Ldr5gYTAAAAAMfzv_K8zfPcdzSi1YSU2_PbvZH5'
+NOCAPTCHA = True
+RECAPTCHA_USE_SSL = True
+
