@@ -4,9 +4,9 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="brand"><a href="{% url 'index' %}">{{ app_name }}</a></li>
-                {% if session %}
+                {% if user.is_authenticated %}
                     <li><a href="{% url 'profile' %}">My Profile</a></li>{% endif %}
-                {% if session %}
+                {% if user.is_authenticated %}
                     <li><a href="{% url 'organization' %}">My Group</a></li>{% endif %}
 
                 <li class="dropdown">
@@ -22,7 +22,7 @@
 
                 <li><a href="#">User Rankings</a></li>
                 <li><a href="#">About {{ app_name }}</a></li>
-            {% if session %}
+                {% if user.is_authenticated %}
                     <li><a href="#">Propose new forecast</a></li>{% endif %}
             </ul>
             <form class="navbar-form navbar-right" role="search">
