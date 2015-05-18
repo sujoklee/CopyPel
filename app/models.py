@@ -69,7 +69,7 @@ class ForecastVotes(models.Model):
 class CustomUserProfile(models.Model):
     user = models.OneToOneField(User)
     display_only_username = models.BooleanField(default=False)
-    country = CountryField()
+    country = CountryField(blank=False)
     city = models.CharField(max_length=50, blank=True)
     profession = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
@@ -102,13 +102,12 @@ class UserRegistrationForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     password_conf = forms.CharField(widget=forms.PasswordInput())
     captcha = ReCaptchaField(attrs={'theme': 'clean'})
+    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
 
     class Meta:
         model = CustomUserProfile
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget()}
-
-
 
 
 class OrganizationForm(ModelForm):
