@@ -15,6 +15,8 @@ from libs.utils import encrypt, createHash
 from response_errors import signup_errors
 import traceback
 from datetime import datetime
+from app.models import UserRegistrationForm
+from models import CustomUserProfile
 
 common_context = {"app_name": settings.APP_NAME}
 
@@ -30,6 +32,7 @@ def authenticated(method):
             except:
                 pass
         return HttpResponseRedirect(reverse('authorize'))
+
     return wrapper
 
 
@@ -261,10 +264,11 @@ class SignUpView(View):
         """
         Shows signup form for new user
         """
-        form = SignUpForm()
+        form = UserRegistrationForm()
         context = mixcontext(
             request.session,
-            {'form': form}
+            {'form_main': form,
+             }
         )
         return render(request, self.template_name, context)
 
@@ -337,6 +341,12 @@ class SignUpView(View):
             content=json.dumps(response)
         )
 
+
+class EmailConfirmationView(View):
+    template_name = ''
+
+    def get(self, token):
+        pass
 
 class UserView(View):
     template_name = "user.html"

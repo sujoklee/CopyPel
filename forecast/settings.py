@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'captcha',
+    'django_countries',
     'forecast',
     'app',
 )
@@ -66,7 +67,7 @@ ROOT_URLCONF = 'forecast.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'forecast1.db'
+        'NAME': 'forecast.db'
     }
 }
 
@@ -100,6 +101,8 @@ FORECAST_TYPE = (('1', 'Binary'),
 
 STATIC_URL = '/static/'
 
+# AUTH_USER_MODEL = 'app.CustomUserProfile'
+
 # Parse database configuration from $DATABASE_URL
 # import dj_database_url
 #DATABASES['default'] =  dj_database_url.config()
@@ -122,7 +125,7 @@ STATICFILES_DIRS = (
 )
 
 EMAIL_TEMPLATE_FILE = 'email.html'
-EMAIL_TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates', 'email', EMAIL_TEMPLATE_FILE)
+EMAIL_TEMPLATE_PATH = os.path.join(BASE_DIR, '..', 'app', 'templates', 'email', EMAIL_TEMPLATE_FILE)
 
 RECAPTCHA_PUBLIC_KEY = '6Ldr5gYTAAAAAOWBFg4rtP6UKZs54wqC1Xa7t4UR'
 RECAPTCHA_PRIVATE_KEY = '6Ldr5gYTAAAAAMfzv_K8zfPcdzSi1YSU2_PbvZH5'
