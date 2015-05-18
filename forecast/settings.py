@@ -83,17 +83,17 @@ USE_L10N = True
 
 USE_TZ = True
 
-TOKEN_EXPIRATION_PERIOD = 3     # set in hours
+TOKEN_EXPIRATION_PERIOD = 3  # set in hours
 
 ORGANIZATION_TYPE = (('1', 'School'),
-                         ('2', 'Think Tank'),
-                         ('3', 'Company'),
-                         ('4', 'Government Agency'))
+                     ('2', 'Think Tank'),
+                     ('3', 'Company'),
+                     ('4', 'Government Agency'))
 
 FORECAST_TYPE = (('1', 'Binary'),
-                     ('2', 'Probability'),
-                     ('3', 'Magnitude'),
-                     ('4', 'Temporal'))
+                 ('2', 'Probability'),
+                 ('3', 'Magnitude'),
+                 ('4', 'Temporal'))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -101,7 +101,7 @@ FORECAST_TYPE = (('1', 'Binary'),
 STATIC_URL = '/static/'
 
 # Parse database configuration from $DATABASE_URL
-#import dj_database_url
+# import dj_database_url
 #DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
@@ -122,7 +122,7 @@ STATICFILES_DIRS = (
 )
 
 EMAIL_TEMPLATE_FILE = 'email.html'
-EMAIL_TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates', 'email', EMAIL_TEMPLATE_FILE)
+EMAIL_TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates', 'email', EMAIL_TEMPLATE_FILE)
 
 RECAPTCHA_PUBLIC_KEY = '6Ldr5gYTAAAAAOWBFg4rtP6UKZs54wqC1Xa7t4UR'
 RECAPTCHA_PRIVATE_KEY = '6Ldr5gYTAAAAAMfzv_K8zfPcdzSi1YSU2_PbvZH5'
