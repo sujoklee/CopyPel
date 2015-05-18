@@ -70,7 +70,7 @@ class UserProfile(models.Model):
     forecast_regions = models.CommaSeparatedIntegerField(max_length=3, blank=True)
 
     activation_token = models.TextField(blank=True)
-    expires_at = models.DateTimeField(default=lambda: datetime.now() + timedelta(hours=TOKEN_EXPIRATION_PERIOD))
+    expires_at = models.DateTimeField(blank=True)
     email_verified = models.BooleanField(default=False)
 
 
