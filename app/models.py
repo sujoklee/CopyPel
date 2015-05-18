@@ -9,6 +9,7 @@ from django import forms
 from django.core import validators
 from forecast.settings import APP_NAME
 from django_countries.widgets import CountrySelectWidget
+from collections import OrderedDict
 
 areas = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
@@ -104,6 +105,7 @@ class UserRegistrationForm(ModelForm):
     captcha = ReCaptchaField(attrs={'theme': 'clean'})
     organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
 
+           
 
     class Meta:
         model = CustomUserProfile

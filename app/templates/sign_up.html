@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+<!--{% load bootstrap %}-->
+
 {% block content %}
     <div class="row" id="signup">
         <div class="panel">
@@ -13,22 +15,30 @@
             </div>
             <div class="clearfix"></div>
             <br>
-
-            <div class="row">
-                <form class="form-horizontal" method="post" action="{% url "signup" %}" >
+               <div class="container">
+                    <div class="row">
+                  
+            <form class="form-horizontal" method="post" action="{% url "signup" %}" >
                     <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
                     {% csrf_token %}
                     {% for field in form_main %}
-                        {{ field.label }} {{ field }}<br>
+                       
+                       <label> {{ field.label }} </label> 
+                       <p>{{ field }}</p>
+
                     {% endfor %}
-                    </div>
+                     </div>
+                 </div>
+                     
                     
 
                     <button type="submit" class="btn btn-large btn-primary">Submit</button>
 
 
-                </form>
-            </div>
+            </form>
+                    </div>
+                </div>
         </div>
     </div>
 {% endblock %}
