@@ -8,6 +8,7 @@ urlpatterns = patterns('',
                        url(r'^$', appviews.IndexView.as_view(), name="index"),
                        url(r'^sign_in/$', appviews.SignInView.as_view(), name="authorize"),
                        url(r'^sign_up/$', appviews.SignUpView.as_view(), name="signup"),
+                       
                        url(r'^email_confirm/(?P<token>[A-Za-z0-9]{64})', appviews.EmailConfirmationView.as_view(),
                            name='email_confirmation'),
                        url(r'^thanx/(?P<token>[a-f0-9]+)/$', appviews.RegisteredView.as_view(), name="registered"),
