@@ -4,6 +4,12 @@
 <!--{% load bootstrap %}-->
 
 {% block content %}
+ <style>
+   
+   p {
+    line-height: 1;
+   }
+   </style>
     <script>
     console.log('log1');
         $(".form-horizontal").validate();
@@ -32,13 +38,13 @@
                        <p>{{ field }}</p>
 
                     {% endfor %}
-                     </div>
+                        </div>
                  </div>
                      
                     
-
+                        <div class="col-md-6 col-md-offset-3">
                     <button type="submit" class="btn btn-large btn-primary">Submit</button>
-
+                        </div>
 
             </form>
                     </div>

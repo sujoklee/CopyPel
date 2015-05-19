@@ -82,7 +82,7 @@ class CustomUserProfile(models.Model):
     expires_at = models.DateTimeField(blank=True)
     email_verified = models.BooleanField(default=False)
 
-
+    
 class UserRegistrationForm(ModelForm):
     name = forms.CharField(widget=forms.TextInput(), label='Name')
     surname = forms.CharField(widget=forms.TextInput(), label='Surname')
@@ -105,10 +105,12 @@ class UserRegistrationForm(ModelForm):
     captcha = ReCaptchaField(attrs={'theme': 'clean'})
     organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
 
-           
+    
 
     class Meta:
         model = CustomUserProfile
+        fields = ("name", "surname", "username", "password", 
+                 "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget()}
 
