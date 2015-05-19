@@ -16,6 +16,7 @@ from response_errors import signup_errors
 import traceback
 from datetime import datetime
 from app.models import UserRegistrationForm
+from django.contrib.auth import authenticate, login, logout
 from models import CustomUserProfile
 
 common_context = {"app_name": settings.APP_NAME}
@@ -235,26 +236,18 @@ class SignInView(View):
         return render(request, self.template_name, context)
 
     def post(self, request):
-        if request.session.test_cookie_worked():
-            request.session.delete_test_cookie()
-            for sesskey in request.session.keys():
-                del request.session[sesskey]
-            try:
-                user = models.User.objects.get(
-                    username=request.POST['username'],
-                    password=encrypt(encrypt(request.POST['password']))
-                )
-                if user:
-                    request.session['user'] = {
-                        'usr_id': user.usr_id,
-                        'email': user.email,
-                        'username': user.username
-                    }
-                    return HttpResponseRedirect('/')
-            except models.User.DoesNotExist:
-                pass
-            return HttpResponseRedirect(reverse('authorize'))
-        return HttpResponse("Please enable cookies and try again.")
+        request.session.set_test_cookie()
+        if not request.session.test_cookie_worked():
+            return HttpResponse("Please enable cookies and try again.")
+        request.session.delete_test_cookie()
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:    # and user.is_active:
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return HttpResponse('Invalid login or password', status=400)
 
 
 class SignUpView(View):
@@ -347,6 +340,7 @@ class EmailConfirmationView(View):
 
     def get(self, token):
         pass
+
 
 class UserView(View):
     template_name = "user.html"
@@ -593,11 +587,6 @@ class CreateForecastView(View):
 
 class LogoutView(View):
     def get(self, request):
-        for sesskey in request.session.keys():
-            del request.session[sesskey]
+        response = logout(request)
         request.session.flush()
-        from django.contrib.auth.views import logout
-
-        response = logout(request, 'index')
-        response.delete_cookie('sessionid')
-        return response
+        return HttpResponseRedirect(reverse('index'))

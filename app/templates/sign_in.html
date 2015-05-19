@@ -1,15 +1,15 @@
 <ul class="nav navbar-nav navbar-right">
     <li class="dropdown" id="signin">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            {% if session %}
-                {{ session.username }}
+            {% if user.is_authenticated %}
+                {{ user.username }}
             {% else %}
                 Sign In
             {% endif %}
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu">
-            {% if session == None %}
+            {% if not user.is_authenticated  %}
                 <form action="{% url 'authorize' %}" method="post">
                     {% csrf_token %}
                     <b>Sign in with your {{ app_name }} account</b>
@@ -26,7 +26,6 @@
                       <button type="submit" class="btn btn-large btn-primary">Submit</button>
                   </span>
                   <span class="pull-right">
-                      <!-- <a href="#" style="color: #4E8DE6;">Forgot Your Password?</a> -->
                       <a href="{% url 'signup' %}" style="color: #4E8DE6;">Sign Up</a>
                   </span>
 
