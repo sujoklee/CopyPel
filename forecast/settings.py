@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'django_countries',
     'forecast',
     'app',
-    'bootstrapform',
+    
 )
 
 MIDDLEWARE_CLASSES = (

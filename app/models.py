@@ -112,7 +112,7 @@ class UserRegistrationForm(ModelForm):
         fields = ("name", "surname", "username", "password", 
                  "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
-        widgets = {'country': CountrySelectWidget()}
+        widgets = {'country': CountrySelectWidget(attrs={'class': "form-control"})}
 
 
 class OrganizationForm(ModelForm):
