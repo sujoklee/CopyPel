@@ -139,13 +139,13 @@ class SignUpForm(CustomForm):
         ),
         required=False
     )
-    name = forms.CharField(
+    first_name = forms.CharField(
         max_length=NAME_MAX,
         min_length=NAME_MIN,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Name',
-                'ng-model': 'form.data.name',
+                'placeholder': 'First Name',
+                'ng-model': 'form.data.first_name',
                 'ng-minlength': 2,
                 'ng-pattern': "/{}/".format(NAME_REGEX),
                 'required': 'required',
@@ -156,10 +156,33 @@ class SignUpForm(CustomForm):
             RegexValidator(
                 regex=NAME_REGEX,
                 message=' is invalid',
-                code='invalid_name'
+                code='invalid_first_name'
             )
         ],
-        label='Name'
+        label='First Name'
+    )
+
+    last_name = forms.CharField(
+        max_length=NAME_MAX,
+        min_length=NAME_MIN,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Last Name',
+                'ng-model': 'form.data.last_name',
+                'ng-minlength': 2,
+                'ng-pattern': "/{}/".format(NAME_REGEX),
+                'required': 'required',
+                'autocomplete': 'off'
+            }
+        ),
+        validators=[
+            RegexValidator(
+                regex=NAME_REGEX,
+                message=' is invalid',
+                code='invalid_last_name'
+            )
+        ],
+        label='Last Name'
     )
 
     username = forms.CharField(
@@ -304,6 +327,27 @@ class SignUpForm(CustomForm):
         label='Profession',
         required=False
     )
+
+    position = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Position/Title',
+                'ng-model': 'form.data.position',
+                'ng-pattern': "/{}/".format(NAME_REGEX)
+            }
+        ),
+        validators=[
+            RegexValidator(
+                regex=NAME_REGEX,
+                message=' is invalid',
+                code='invalid_position'
+            ),
+        ],
+        label='Position',
+        required=False
+    )
+
     choices = []
     for org in Organization.objects.all():
         choices.append((org.id, org.organization_name))
@@ -361,3 +405,4 @@ class SignupCompleteForm(CustomForm):
         ),
         required=False
     )
+
