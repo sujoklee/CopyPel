@@ -99,13 +99,12 @@ class UserRegistrationForm(ModelForm):
         label='Username'
     )
 
-    email = forms.EmailField(required=True, validators=[validators.EmailValidator])
-    password = forms.CharField(widget=forms.PasswordInput())
-    password_conf = forms.CharField(widget=forms.PasswordInput())
+    email = forms.EmailField(required=True, validators=[validators.EmailValidator], label='Email address')
+    password = forms.CharField(widget=forms.PasswordInput(), label="Password")
+    password_conf = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
     captcha = ReCaptchaField(attrs={'theme': 'clean'})
-    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
-
-    
+    organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE,
+                                     label='Organization', required=False)
 
     class Meta:
         model = CustomUserProfile
