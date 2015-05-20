@@ -334,6 +334,8 @@ class SignUpView(View):
             content=json.dumps(response)
         )
 
+class SignUpAfterView(View):
+    template_name = "sign_up_after.html"
 
 class EmailConfirmationView(View):
     template_name = ''

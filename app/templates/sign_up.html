@@ -13,7 +13,7 @@
             <div class="well well-lg">Welcome to Peleus Forecasting! We are excited for you to join our community of political forecasters, analysts and observers.
                 Please fill in the information below to register a profile.</div>
 
-            <div class="col-md-10">
+            <div class="col-md-10 col-md-offset-1">
                 <h4>We respect many users’ desire to remain anonymous; should a user desire, they have the option to
                     only display his or her Username on {{ app_name }}.</h4>
             </div>
@@ -22,7 +22,7 @@
                <div class="container">
                     <div class="row">
                   
-            <form id="signupForm" class="form-horizontal" method="post" action="{% url "signup" %}" >
+            <form id="signupForm" class="form-horizontal" method="post"  action="{% url 'registered' %}">
                     <div class="form-group">
                         <div id="signup_p" class="col-md-4 col-md-offset-4 ">
                     {% csrf_token %}
