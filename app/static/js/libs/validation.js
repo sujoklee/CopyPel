@@ -20,7 +20,7 @@ $("#signupForm").validate({
                 password_conf: {
                     required: true,
                     minlength: 5,
-                    equalTo: "#password"
+                    equalTo: "#id_password",
                 },
                 email: {
                     required: true,
