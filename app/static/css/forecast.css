@@ -2,9 +2,16 @@ body {
   background: #353535;
   color: lightgray;
 }
-input,
+/*input,
 select {
   width: 300px;
+}*/
+#id_country{
+  width: 180px;
+  height: 19px;
+}
+#id_country option{
+  width: 180px;
 }
 select {
   background-color: #555555;
@@ -152,7 +159,7 @@ h4 {
 #content h1 {
   color: #AFB9C5;
 }
-#content input,
+/*#content input,
 #content input:focus,
 #content input:active {
   background-color: #555555;
@@ -177,7 +184,7 @@ h4 {
 }
 .p-10 {
   padding: 10px;
-}
+}*/
 /* Form */
 /* ===================================================================== */
 form .required:after {
