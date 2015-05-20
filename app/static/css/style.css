@@ -2,6 +2,18 @@
   line-height: 1;
 }
 
-#signindrop {
-	width: 200px;
+.navbar-form .form-control {
+    display: inline-block;
+    width: 70%; /*This is the issue*/
+    vertical-align: middle;
 }
+.navbar-form {
+    overflow: auto;
+}
+.navbar-form .form-group {
+    display: inline;
+}
+
+.navbar-right {
+    float: right !important;
+    margin-right: -100px;
