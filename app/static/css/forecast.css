@@ -228,3 +228,7 @@ form input[type=checkbox] {
   border-color: transparent transparent #ff5050;
   border-width: 5px;
 }
+
+#signup_p p {
+  line-height: 1;
+}
