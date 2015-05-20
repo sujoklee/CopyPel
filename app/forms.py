@@ -384,25 +384,3 @@ class SignUpForm(CustomForm):
         except KeyError:
             pass
         return cleaned_data
-
-
-class SignupCompleteForm(CustomForm):
-    forecast_areas = forms.MultipleChoiceField(
-        choices=areas,
-        widget=widgets.CheckboxSelectMultiple(
-            attrs={
-                'checklist-model': 'form.data.forecast_areas'
-            }
-        ),
-        required=False
-    )
-    forecast_regions = forms.MultipleChoiceField(
-        choices=regions,
-        widget=widgets.CheckboxSelectMultiple(
-            attrs={
-                'checklist-model': 'form.data.forecast_regions'
-            }
-        ),
-        required=False
-    )
-

@@ -9,15 +9,21 @@ from django.contrib.sessions.models import Session
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from django.db.models import Q
-from .forms import SignInForm, SignUpForm, SignupCompleteForm, ForecastForm, OrganizationForm
+from .forms import SignInForm, SignUpForm, ForecastForm, OrganizationForm
 from libs.utils import encrypt, createHash
 from response_errors import signup_errors
 import traceback
 from datetime import datetime
 from app.models import UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
-from models import CustomUserProfile
+from models import CustomUserProfile, UserRegistrationForm
+from libs.utils import generate_activation_key
+from libs.email_sender import CustomEmailSender
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from forecast.settings import TOKEN_LENGTH, DEFAULT_EMAIL, EMAIL_TEMPLATE_PATH
 
 common_context = {"app_name": settings.APP_NAME}
 
@@ -159,6 +165,13 @@ class OrganizationView(View):
         return render(request, self.template_name, context)
 
 
+class Registered2View(View):
+    template_name = ''
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
 class RegisteredView(View):
     template_name = "thanx.html"
 
@@ -170,57 +183,19 @@ class RegisteredView(View):
         )
         return render(request, self.template_name, context)
 
-    def post(self, request, token):
-        post_data = dict(request.POST)
-        # Need to remove both keys 'cause angular sets them in controller
-        post_data.pop('agree_with_terms')
-        post_data.pop('display_only_username')
-
-        areas = request.POST.getlist('forecast_areas[]')
-        regions = request.POST.getlist('forecast_regions[]')
-
-        form = SignupCompleteForm(post_data)
-        response = {
-            'form': 'invalid',
-            'form_data': form.serialize(
-                forecast_areas=areas,
-                forecast_regions=regions
-            ),
-            'errors': []
-        }
-
+    @method_decorator(login_required)
+    def post(self, request):
+        form = SignupCompleteForm(request.POST)
         if form.is_valid():
-            try:
-                user = models.User.objects.get(activation_token=token)
-            except models.User.DoesNotExist:
-                user = []
-                response['errors'].append(
-                    signup_errors['profile_update_prohibited']
-                )
-            if user:
-                try:
-                    user.forecast_areas = areas
-                    user.forecast_regions = regions
-                    user.activation_token = ''
-                    user.save()
-                    response.update(
-                        form='valid',
-                        location=reverse('index')
-                    )
-                    response.pop('form_data')
-
-                    # log new user in
-                    request.session['user'] = {
-                        'usr_id': user.usr_id,
-                        'email': user.email,
-                        'username': user.username
-                    }
-                    return HttpResponse(content=json.dumps(response))
-                except:
-                    response['errors'].append(
-                        signup_errors['profile_update_failed']
-                    )
-        return HttpResponse(content=json.dumps(response))
+            form.save()
+            current_user = request.user.customuserprofile
+            token = generate_activation_key(TOKEN_LENGTH)
+            current_user.activation_token = token
+            current_user.conditions_accepted = True
+            email_sender = CustomEmailSender(DEFAULT_EMAIL, EMAIL_TEMPLATE_PATH)
+            email_sender.send_message([request.user.email], 'Please finish registration', token=token)
+            current_user.save()
+        return HttpResponseRedirect(reverse('registered2'))
 
 
 class SignInView(View):
@@ -244,6 +219,8 @@ class SignInView(View):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:    # and user.is_active:
+            if not user.conditions_accepted:
+                return HttpResponseRedirect(reverse('registered'))
             login(request, user)
             return HttpResponseRedirect(reverse('index'))
         else:
@@ -269,83 +246,34 @@ class SignUpView(View):
         """
         This method processes form data and register new user
         """
-        signup_form = SignUpForm(request.POST)
-
-        # prepare default response
-        response = {
-            'form': 'invalid',
-            'form_data': signup_form.serialize(
-                display_only_username=request.POST.get('display_only_username')
-            ),
-            'errors': []
-        }
-
-        agree = request.POST.get('agree_with_terms')
-        display_only_username = request.POST.get('display_only_username')
-
+        signup_form = UserRegistrationForm(request.POST)
         if signup_form.is_valid():
-            # log previous user out before register
-            try:
-                del request.session['user']
-            except KeyError:
-                pass
-            data = signup_form.cleaned_data
-            try:
-                existing_user = models.User.objects.filter(
-                    Q(username=data['username']) | Q(email=data['email'])
-                )
-            except models.User.DoesNotExist:
-                existing_user = []
-            if existing_user:
-                response['errors'].append(
-                    signup_errors['profile_exists']
-                )
-            else:
-                if agree == u'1':
-                    data.pop('agree_with_terms')
-                    try:
-                        data['display_only_username'] = True \
-                            if display_only_username == u'1' else False
-                        data['usr_id'] = models.User.objects.count() + 1
-                        data['activation_token'] = createHash()
-                        data['password'] = encrypt(encrypt(data['password']))
-                        user = models.User(**data)
-                        user.save()
-                        response.update({
-                            'form': 'valid',
-                            'location': reverse(
-                                'registered',
-                                kwargs={'token': data['activation_token']}
-                            )
-                        })
-                        response.pop('form_data')
-                    except:
-                        response['errors'].append(
-                            signup_errors['profile_create_failed']
-                        )
-                else:
-                    response['errors'].append(
-                        signup_errors['profile_confirm_terms']
-                    )
-
-        response['errors'] += signup_form.error_list \
-                              + signup_form.non_field_errors()
-        return HttpResponse(
-            content=json.dumps(response)
-        )
+            signup_form.save()
+            return HttpResponseRedirect(reverse('registered'))
 
 
 class EmailConfirmationView(View):
-    template_name = ''
+    template_name = ''  # TODO add template name
 
-    def get(self, token):
-        pass
+    def get(self, request, token):
+        res_dict = dict()
+        try:
+            user = CustomUserProfile.objects.get(activation_token=token)
+        except User.DoesNotExist as ex:
+            res_dict['error'] = ex
+            return render(request, self.template_name, res_dict)
+        if token == user.activation_token:
+            user.email_verified = True
+            res_dict['success'] = 'Email was verified!'
+            user.save()
+        else:
+            res_dict['error'] = 'Provided token is incorrect'
+        return render(request, self.template_name, res_dict)
 
 
 class UserView(View):
     template_name = "user.html"
 
-    @authenticated
     def get(self, request, user_id):
         user = models.User.objects.get(usr_id=str(user_id))
         common_context.update(
@@ -361,7 +289,6 @@ class UserView(View):
 class ProfileView(View):
     template_name = "profile.html"
 
-    # @authenticated
     def get(self, request):
         if 'user_id' in request.REQUEST:
             is_self = False
@@ -409,7 +336,6 @@ class ProfileView(View):
 class ForecastView(View):
     template_name = "forecast.html"
 
-    # @authenticated
     def get(self, request):
         forecast_id = int(request.GET.get('forecast_id'))
         forecast = models.Forecast.objects.get(

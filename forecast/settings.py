@@ -86,6 +86,8 @@ USE_L10N = True
 USE_TZ = True
 
 TOKEN_EXPIRATION_PERIOD = 3  # set in hours
+TOKEN_LENGTH = 64
+DEFAULT_EMAIL = 'no-reply@peleus.com'
 
 ORGANIZATION_TYPE = (('1', 'School'),
                      ('2', 'Think Tank'),

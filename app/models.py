@@ -78,9 +78,10 @@ class CustomUserProfile(models.Model):
     forecast_areas = models.CommaSeparatedIntegerField(max_length=3, blank=True)
     forecast_regions = models.CommaSeparatedIntegerField(max_length=3, blank=True)
 
-    activation_token = models.TextField(blank=True)
+    activation_token = models.TextField(blank=True, max_length=256)
     expires_at = models.DateTimeField(blank=True)
     email_verified = models.BooleanField(default=False)
+    conditions_accepted = models.BooleanField(default=False)
 
     
 class UserRegistrationForm(ModelForm):
@@ -109,9 +110,17 @@ class UserRegistrationForm(ModelForm):
     class Meta:
         model = CustomUserProfile
         fields = ("name", "surname", "username", "password", 
-                 "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
+                  "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget(attrs={'class': "form-control"})}
+
+    def save(self, commit=True):
+        data = self.cleaned_data
+        user = User(username=data['username'], first_name=data['name'], last_name=data['surname'], email=data['email'],
+                    password=data['password'])
+        user.save()
+        user_profile = CustomUserProfile(user=user, country=data['country'], )
+        user_profile.save()
 
 
 class OrganizationForm(ModelForm):
@@ -120,15 +129,17 @@ class OrganizationForm(ModelForm):
     organization_name = forms.CharField(
         max_length=NAME_MAX,
         min_length=NAME_MIN,
-        widget=forms.TextInput(
-            attrs={
-            }
-        ),
+        widget=forms.TextInput(attrs={'size': NAME_MAX}),
         label='Organization Name',
         required=True)
 
-    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE)
+    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, required=False)
 
     class Meta:
         model = Organization
         fields = '__all__'
+
+
+class SignupCompleteForm(ModelForm):
+    forecast_areas = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=areas)
+    forecast_regions = forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple, choices=regions)
