@@ -11,6 +11,8 @@ from forecast.settings import APP_NAME
 from django_countries.widgets import CountrySelectWidget
 from collections import OrderedDict
 
+from django.forms import ModelForm, Textarea, TextInput 
+
 areas = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
          ('3', "Social Events/Protests"),
@@ -84,8 +86,8 @@ class CustomUserProfile(models.Model):
 
     
 class UserRegistrationForm(ModelForm):
-    name = forms.CharField(widget=forms.TextInput(), label='Name')
-    surname = forms.CharField(widget=forms.TextInput(), label='Surname')
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}), label='Name')
+    surname = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}), label='Surname')
     display_only_username = forms.BooleanField(
         widget=forms.CheckboxInput(),
         label="Please only display my Username on {}".format(APP_NAME),
@@ -95,13 +97,13 @@ class UserRegistrationForm(ModelForm):
         label="I agree to {}'s Terms of Use".format(APP_NAME),
         required=True)
     username = forms.CharField(
-        widget=forms.TextInput(),
+        widget=forms.TextInput(attrs={'class': "form-control input-sm"}),
         label='Username'
     )
 
-    email = forms.EmailField(required=True, validators=[validators.EmailValidator])
-    password = forms.CharField(widget=forms.PasswordInput())
-    password_conf = forms.CharField(widget=forms.PasswordInput())
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}),required=True, validators=[validators.EmailValidator])
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}))
+    password_conf = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}))
     captcha = ReCaptchaField(attrs={'theme': 'clean'})
     organization = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, label='Organization', required=False)
 
@@ -112,8 +114,14 @@ class UserRegistrationForm(ModelForm):
         fields = ("name", "surname", "username", "password", 
                  "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
-        widgets = {'country': CountrySelectWidget(attrs={'class': "form-control"})}
-
+        widgets = {'country': CountrySelectWidget(attrs={'class': "form-control input-sm"}),
+                   'name': TextInput(attrs={'class': "form-control input-sm"}),
+                   'password': TextInput(attrs={'class': "form-control input-sm"}),
+                   'city': TextInput(attrs={'class': "form-control input-sm"}),
+                   'profession': TextInput(attrs={'class': "form-control input-sm"}),
+                   'position': TextInput(attrs={'class': "form-control input-sm"}),
+        }
+  
 
 class OrganizationForm(ModelForm):
     NAME_MAX = 1000
