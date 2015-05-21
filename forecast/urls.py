@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
 url(r'^email_conf/$', TemplateView.as_view(template_name="email_conf.html")),
 url(r'^email/$', TemplateView.as_view(template_name="email/email.html")),
+url(r'^email_rew/$', TemplateView.as_view(template_name="email/email_rew.html")),
 
 
 
