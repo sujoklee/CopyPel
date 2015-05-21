@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Forecasting web app">
+    <meta name="author" content="Forecasts politics">
+
+    {% load staticfiles%}
+    <link rel="icon" href="{% static '1p/favicon.ico' %}">
+
+    <title>{% block title %} {% endblock %}</title>
+
+    {%  load staticfiles %}
+    <link href="{% static '3p/bootstrap1.min.css' %}" rel="stylesheet">
+
+    {%  load staticfiles %}
+    <script src="{% static '3p/jquery-2.1.4.min.js' %}"></script>
+    {%  load staticfiles %}
+    <script src="{% static '3p/d3.v3.min.js' %}"></script>
+{% block headerscripts %}{% endblock %}
+</head>
+
+<body role="document">
+
+<!-- Fixed navbar -->
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+
+</body>
+{% block postbodyscripts %}{% endblock %}
+</html>
