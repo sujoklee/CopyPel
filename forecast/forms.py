@@ -51,7 +51,7 @@ class UserRegistrationForm(ModelForm):
         data = self.cleaned_data
         user = User(username=data['username'], first_name=data['name'], last_name=data['surname'], email=data['email'],
                     password=data['password'])
-        user.save()
+        user.save(commit=False)
         user_profile = CustomUserProfile(user=user, country=data['country'], city=data['city'],
                                          profession=data['profession'], position=data['position'],
                                          organization_name=data['organization_name'],
