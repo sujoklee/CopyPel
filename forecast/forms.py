@@ -5,24 +5,7 @@ from django.forms import ModelForm
 from captcha.fields import ReCaptchaField
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME
 from django_countries.widgets import CountrySelectWidget
-from forecast.models import Organization, CustomUserProfile
-
-
-class OrganizationForm(ModelForm):
-    NAME_MAX = 1000
-    NAME_MIN = 1
-    organization_name = forms.CharField(
-        max_length=NAME_MAX,
-        min_length=NAME_MIN,
-        widget=forms.TextInput(attrs={'size': NAME_MAX}),
-        label='Organization Name',
-        required=True)
-
-    organization_type = forms.ChoiceField(widget=forms.RadioSelect, choices=ORGANIZATION_TYPE, required=False)
-
-    class Meta:
-        model = Organization
-        fields = '__all__'
+from forecast.models import CustomUserProfile
 
 
 class SignupCompleteForm(forms.Form):
@@ -43,15 +26,18 @@ class UserRegistrationForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}), label="Password")
     password_conf = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}),
                                     label='Confirm Password')
-    captcha = ReCaptchaField(attrs={'theme': 'clean'})
+    captcha = ReCaptchaField()
     organization = forms.ChoiceField(widget=forms.RadioSelect(attrs={'class': "form-control input-sm"}),
                                      choices=ORGANIZATION_TYPE,
                                      label='Organization', required=False)
+    organization_name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}),
+                                        label='Name of organisation')
 
     class Meta:
         model = CustomUserProfile
         fields = ("name", "surname", 'display_only_username', "username", "password",
-                  "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
+                  "password_conf", "email", "country", "city", "profession", "position", 'organization_name',
+                  "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget(attrs={'class': "form-control input-sm"}),
                    'name': forms.TextInput(attrs={'class': "form-control input-sm"}),
@@ -66,5 +52,9 @@ class UserRegistrationForm(ModelForm):
         user = User(username=data['username'], first_name=data['name'], last_name=data['surname'], email=data['email'],
                     password=data['password'])
         user.save()
-        user_profile = CustomUserProfile(user=user, country=data['country'], )
+        user_profile = CustomUserProfile(user=user, country=data['country'], city=data['city'],
+                                         profession=data['profession'], position=data['position'],
+                                         organization_name=data['organization_name'],
+                                         organization=data['organization'],
+                                         display_only_username=data['display_only_username'])
         user_profile.save()

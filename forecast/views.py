@@ -47,9 +47,9 @@ class LoginView(View):
         user = authenticate(username=username, password=password)
         if user is not None:  # and user.is_active:
             if not user.conditions_accepted:
-                return HttpResponseRedirect(reverse('registered'))
+                return HttpResponseRedirect(reverse('signup2'))
             login(request, user)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponse('Invalid login or password', status=400)
 
@@ -66,7 +66,6 @@ class SignUpView(View):
         signup_form = UserRegistrationForm(request.POST)
         if signup_form.is_valid():
             signup_form.save()
-
             return HttpResponseRedirect(reverse('signup2'))
 
 
