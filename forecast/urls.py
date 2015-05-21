@@ -13,6 +13,8 @@ urlpatterns = patterns('',
                        # url(r'^sign_up_after/$', appviews.SignUpAfterView.as_view(), name="signupafter"),
 
 url(r'^email_conf/$', TemplateView.as_view(template_name="email_conf.html")),
+url(r'^email/$', TemplateView.as_view(template_name="email/email.html")),
+
 
 
                        url(r'^email_confirm/(?P<token>[A-Za-z0-9]{64})', appviews.EmailConfirmationView.as_view(),
