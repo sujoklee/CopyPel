@@ -251,6 +251,8 @@ class SignUpView(View):
             signup_form.save()
             return HttpResponseRedirect(reverse('registered'))
 
+class SignUpAfterView(View):
+    template_name = "sign_up_after.html"
 
 class EmailConfirmationView(View):
     template_name = ''  # TODO add template name

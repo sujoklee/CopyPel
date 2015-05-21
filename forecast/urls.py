@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
+from django.views.generic import TemplateView
+
 import app.views as appviews
 
 urlpatterns = patterns('',
@@ -8,7 +10,11 @@ urlpatterns = patterns('',
                        url(r'^$', appviews.IndexView.as_view(), name="index"),
                        url(r'^sign_in/$', appviews.SignInView.as_view(), name="authorize"),
                        url(r'^sign_up/$', appviews.SignUpView.as_view(), name="signup"),
-                       
+                       # url(r'^sign_up_after/$', appviews.SignUpAfterView.as_view(), name="signupafter"),
+
+                       url(r'^email_conf/$', TemplateView.as_view(template_name="email_conf.html")),
+
+
                        url(r'^email_confirm/(?P<token>[A-Za-z0-9]{64})', appviews.EmailConfirmationView.as_view(),
                            name='email_confirmation'),
                        url(r'^thanx/$', appviews.RegisteredView.as_view(), name="registered"),
