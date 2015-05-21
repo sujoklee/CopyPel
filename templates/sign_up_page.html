@@ -1,0 +1,32 @@
+{% extends "index_page.html" %}
+{% block content %}
+
+    <div class="jumbotron">
+        <h1>Welcome to Peleus Forecasting!</h1>
+
+        <p>We are excited for you to join our community of
+            political forecasters, analysts and observers.
+            Please fill in the information below to register a profile.
+        </p>
+    </div>
+
+
+
+
+
+    <form id="signupForm" class="form-horizontal" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        <div class="center-block form-center-block">
+            {%  for field in form %}
+            <div class="form-group">
+                <label for="{{ field.label }}" class="col-sm-2 control-label">{{ field.label }}</label>
+
+                <div class="col-sm-10">
+                    {{ field }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+
+{% endblock %}

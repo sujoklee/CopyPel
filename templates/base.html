@@ -8,19 +8,33 @@
     <meta name="description" content="Forecasting web app">
     <meta name="author" content="Forecasts politics">
 
-    {% load staticfiles%}
+    {% load staticfiles %}
     <link rel="icon" href="{% static '1p/favicon.ico' %}">
+
 
     <title>{% block title %} {% endblock %}</title>
 
-    {%  load staticfiles %}
+    {% load staticfiles %}
     <link href="{% static '3p/bootstrap1.min.css' %}" rel="stylesheet">
 
-    {%  load staticfiles %}
+    {% load staticfiles %}
+    <link href="{% static '3p/bootstrap-theme.min.css' %}" rel="stylesheet">
+    {% load staticfiles %}
+    <link href="{% static '3p/theme.css' %}" rel="stylesheet">
+
+    {% load staticfiles %}
+    <link href="{% static '1p/main.css' %}" rel="stylesheet">
+
+    {% load staticfiles %}
+    <link rel="{% static '3p/sticky-footer-navbar.css' %}">
+
+    {% load staticfiles %}
     <script src="{% static '3p/jquery-2.1.4.min.js' %}"></script>
-    {%  load staticfiles %}
+    {% load staticfiles %}
+    <script src="{% static '3p/bootstrap.min.js' %}"></script>
+    {% load staticfiles %}
     <script src="{% static '3p/d3.v3.min.js' %}"></script>
-{% block headerscripts %}{% endblock %}
+    {% block headerscripts %}{% endblock %}
 </head>
 
 <body role="document">
@@ -29,8 +43,12 @@
 {% block navbar %}
 {% endblock %}
 
-{% block content %}
-{% endblock %}
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
 
 {% block footer %}
 {% endblock %}

@@ -1,4 +1,3 @@
-__author__ = 'vwvolodya'
 import django.forms as forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
@@ -51,7 +50,7 @@ class UserRegistrationForm(ModelForm):
 
     class Meta:
         model = CustomUserProfile
-        fields = ("name", "surname", "username", "password",
+        fields = ("name", "surname", 'display_only_username', "username", "password",
                   "password_conf", "email", "country", "city", "profession", "position", "organization", "captcha")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget(attrs={'class': "form-control input-sm"}),

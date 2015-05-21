@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
-{% block headerscripts %}
-    {%  load staticfiles %}
-    <link rel="{%  static '3p/sticky-footer-navbar.css' %}">
+{% block title %}
+    {{ app_name }}
 {% endblock %}
+{% block headerscripts %}
+
+{% endblock %}
+
 
 {% block navbar %}
     {% include 'navbar.html' %}

@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'captcha',
     'django_countries',
+    # 'bootstrapform',
     'forecast',
 )
 
@@ -89,6 +90,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -122,8 +124,8 @@ DEFAULT_EMAIL = 'no-reply@peleus.com'
 EMAIL_SERVER = 'smtp.gmail.com:587'
 EMAIL_USER = 'Peleus.key@gmail.com'
 EMAIL_PASSWORD = 'Castle12!21'
-EMAIL_TEMPLATE_FILE = 'email.html'
-EMAIL_TEMPLATE_PATH = os.path.join(BASE_DIR, '..', 'app', 'templates', 'email', EMAIL_TEMPLATE_FILE)
+_EMAIL_TEMPLATE_FILE = 'email.html'
+EMAIL_TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates', 'email', _EMAIL_TEMPLATE_FILE)
 
 ORGANIZATION_TYPE = (('1', 'School'),
                      ('2', 'Think Tank'),

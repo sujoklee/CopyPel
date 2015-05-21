@@ -1,0 +1,24 @@
+{% extends 'index_page.html' %}
+{% block content %}
+    <div class="well well-lg">Thank you for joining Peleus Forecasting, we are excited for you to join our community of
+        politically-minded forecasters, analysts and observers. Your profile is being approved and you should receive an
+        email confirmation shortly. In the meantime please consider filling in some optional information about your
+        areas of interest, which will appear on your profile page. This information can also be input at anytime in the
+        future. Welcome to the Peleus Forecasting community!
+    </div>
+    <div class="center-block form-center-block">
+        <form method="post" action="{% url 'signup2' %}">
+            {% csrf_token %}
+
+            Areas of interest
+            <p>
+                {{ form.forecast_areas }}
+            </p>
+            Regions of interest
+            <p>
+                {{ form.forecast_regions }}
+            </p>
+            <input type="submit" class="btn btn-large btn-primary" value="Complete profile"/>
+        </form>
+    </div>
+{% endblock %}
