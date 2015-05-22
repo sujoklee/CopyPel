@@ -1,13 +1,16 @@
 import django.forms as forms
 from captcha.fields import ReCaptchaField
+from datetime import datetime, timedelta
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
 from django.forms import ModelForm
 from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME
+from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
+    DEFAULT_EMAIL
 from forecast.models import CustomUserProfile
+from utils.different import generate_activation_key
 
 
 class SignupCompleteForm(forms.Form):
@@ -37,7 +40,7 @@ class UserRegistrationForm(ModelForm):
                                      choices=ORGANIZATION_TYPE,
                                      label='Organization', required=False)
     organization_name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}),
-                                        label='Name of organisation')
+                                        label='Name of organisation', required=False)
 
     class Meta:
         model = CustomUserProfile
@@ -69,10 +72,23 @@ class UserRegistrationForm(ModelForm):
                                         email=data['email'],
                                         password=data['password'])
         user.save()
+
+        token = generate_activation_key(TOKEN_LENGTH)
+        expire_date = datetime.now() + timedelta(hours=TOKEN_EXPIRATION_PERIOD)
+
         user_profile = CustomUserProfile(user=user, country=data['country'], city=data['city'],
                                          profession=data['profession'], position=data['position'],
                                          organization_name=data['organization_name'],
                                          organization=data['organization'],
-                                         display_only_username=data['display_only_username'])
+                                         display_only_username=data['display_only_username'],
+                                         activation_token=token,
+                                         expires_at=expire_date)
         user_profile.save()
+
+        try:
+            send_mail('confirm your email', 'http://localhost:8000/confirm_email?token=%s' % token, DEFAULT_EMAIL,
+                      [user.email])
+        except Exception as ex:
+            print ex
+
         return user

@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404
-from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -94,8 +93,9 @@ class SignUpSecondView(View):
     def post(self, request):
         form = self.form()
         if form.is_valid():
-            pass
-        user = get_object_or_404(User, pk=request.user.id)
-        user.customuserprofile.conditions_accepted = True
-        user.save()
-        return HttpResponseRedirect(reverse('home'))
+            user = request.user
+            user.customuserprofile.conditions_accepted = True
+            user.save()
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            return HttpResponseRedirect(reverse('errors'))
