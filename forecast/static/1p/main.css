@@ -1,7 +1,17 @@
+/*Template styles*/
 .form-center-block{
     width: 50%;
 }
 .myclassmarker ul {
 	list-style-type: none;
+}
+/*Jquery validate style*/
+
+.my-error-class {
+	
+    color:#D9534F;
+}
+.my-valid-class {
+    color:green;
 }
 

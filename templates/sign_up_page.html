@@ -1,5 +1,9 @@
 {% extends "index_page.html" %}
+{% load staticfiles %}
+
 {% block content %}
+
+<script type="text/javascript" src="{% static '1p/validation.js' %}"></script>
 
     <div class="jumbotron">
         <h1>Welcome to Peleus Forecasting!</h1>
@@ -10,7 +14,7 @@
         </p>
     </div>
 
-<form class="form-horizontal" method="post" action="{% url 'signup' %}">
+<form id="signupForm"class="form-horizontal" method="post" action="{% url 'signup' %}">
         {% csrf_token %}
     <div class="center-block form-center-block">
             <div class="form-group">
