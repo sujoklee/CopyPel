@@ -18,6 +18,6 @@ class CustomUserProfile(models.Model):
     forecast_regions = models.CommaSeparatedIntegerField(max_length=3, blank=True)
 
     activation_token = models.TextField(blank=True, max_length=256)
-    expires_at = models.DateTimeField(blank=True)
+    expires_at = models.DateTimeField(blank=True, null=True)
     email_verified = models.BooleanField(default=False)
     conditions_accepted = models.BooleanField(default=False)
