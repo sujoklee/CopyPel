@@ -42,8 +42,6 @@ class LoginView(View):
         if not request.session.test_cookie_worked():
             return HttpResponse("Please enable cookies and try again.")
         request.session.delete_test_cookie()
-        username = request.POST.get('username')
-        password = request.POST.get('password')
         user = authenticate(**request.POST)
         if user is not None:  # and user.is_active:
             if not user.customuserprofile.conditions_accepted:

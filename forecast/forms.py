@@ -1,5 +1,6 @@
 import django.forms as forms
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.forms import ModelForm
 
 from captcha.fields import ReCaptchaField
@@ -50,7 +51,7 @@ class UserRegistrationForm(ModelForm):
     def save(self, commit=True):
         data = self.cleaned_data
         user = User(username=data['username'], first_name=data['name'], last_name=data['surname'], email=data['email'],
-                    password=data['password'])
+                    password=make_password(data['password']))
         user.save()
         user_profile = CustomUserProfile(user=user, country=data['country'], city=data['city'],
                                          profession=data['profession'], position=data['position'],
