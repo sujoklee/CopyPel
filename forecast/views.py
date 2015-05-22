@@ -91,7 +91,7 @@ class SignUpSecondView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = self.form()
+        form = self.form(request.POST)
         if form.is_valid():
             user = request.user
             user.customuserprofile.conditions_accepted = True
