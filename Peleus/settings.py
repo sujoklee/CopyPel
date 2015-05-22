@@ -47,6 +47,10 @@ INSTALLED_APPS = (
     'forecast',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,7 +70,7 @@ WSGI_APPLICATION = 'Peleus.wsgi.application'
 
 DATABASES = {
     # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
+    # 'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'peleus',
     #     'USER': 'peleus',
     #     'PASSWORD': 'WeakPassw0rd!',
@@ -138,7 +142,6 @@ FORECAST_TYPE = (('1', 'Binary'),
                  ('2', 'Probability'),
                  ('3', 'Magnitude'),
                  ('4', 'Temporal'))
-
 
 AREAS = (('1', "Elections"),
          ('2', "Conflicts/Wars"),

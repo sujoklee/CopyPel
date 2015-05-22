@@ -45,9 +45,9 @@ class LoginView(View):
         request.session.delete_test_cookie()
         user = authenticate(**request.POST)
         if user is not None:  # and user.is_active:
+            login(request, user)
             if not user.customuserprofile.conditions_accepted:
                 return HttpResponseRedirect(reverse('signup2'))
-            login(request, user)
             return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponse('Invalid login or password', status=400)
@@ -76,7 +76,6 @@ class SignUpView(View):
             return HttpResponseRedirect(reverse('signup2'))
         else:
             return render(request, self.error_template, {'errors': signup_form.errors})
-
 
 
 class SignUpSecondView(View):
