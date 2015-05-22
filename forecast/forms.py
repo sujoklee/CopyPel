@@ -22,12 +22,12 @@ class UserRegistrationForm(ModelForm):
     agree_with_terms = forms.BooleanField(widget=forms.CheckboxInput(),
                                           label="I agree to {}'s Terms of Use".format(APP_NAME), required=True)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}), label='Username')
-    email = forms.EmailField(required=True, label='Email address')
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}), label="Password")
     password_conf = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control input-sm"}),
                                     label='Confirm Password')
     captcha = ReCaptchaField()
-    organization = forms.ChoiceField(widget=forms.RadioSelect(attrs={'class': "form-control input-sm"}),
+    organization = forms.ChoiceField(widget=forms.RadioSelect(),
                                      choices=ORGANIZATION_TYPE,
                                      label='Organization', required=False)
     organization_name = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control input-sm"}),
@@ -37,7 +37,7 @@ class UserRegistrationForm(ModelForm):
         model = CustomUserProfile
         fields = ("name", "surname", 'display_only_username', "username", "password",
                   "password_conf", "email", "country", "city", "profession", "position", 'organization_name',
-                  "organization", "captcha")
+                  "organization", "captcha", "agree_with_terms")
         exclude = ['user', 'activation_token', 'expires_at', 'email_verified']
         widgets = {'country': CountrySelectWidget(attrs={'class': "form-control input-sm"}),
                    'name': forms.TextInput(attrs={'class': "form-control input-sm"}),

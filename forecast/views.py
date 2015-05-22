@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
+from Peleus.settings import APP_NAME
 
 
 class LoginRequiredMixin(object):
@@ -66,13 +67,15 @@ class SignUpView(View):
 
     def get(self, request):
         form = self.form()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'app_name': APP_NAME })
 
     def post(self, request):
         signup_form = UserRegistrationForm(request.POST)
         if signup_form.is_valid():
             signup_form.save()
             return HttpResponseRedirect(reverse('signup2'))
+
+    
 
 
 
