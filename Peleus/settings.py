@@ -35,6 +35,7 @@ APP_NAME = "Peleus"
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -159,3 +160,5 @@ REGIONS = (('1', "Europe"),
            ('5', "South Pacific"),
            ('6', "North America"),
            ('7', "South America"))
+
+DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
