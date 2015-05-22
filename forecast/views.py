@@ -54,6 +54,12 @@ class LoginView(View):
             return HttpResponse('Invalid login or password', status=400)
 
 
+class LogoutView(View):
+    def get(self, request):
+        response = logout(request)
+        request.session.flush()
+        return HttpResponseRedirect(reverse('home'))
+
 class SignUpView(View):
     template_name = 'sign_up_page.html'
     form = UserRegistrationForm
