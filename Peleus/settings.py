@@ -64,6 +64,7 @@ ROOT_URLCONF = 'Peleus.urls'
 
 WSGI_APPLICATION = 'Peleus.wsgi.application'
 
+LOGIN_REDIRECT_URL = '/'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

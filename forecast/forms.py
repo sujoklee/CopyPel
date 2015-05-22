@@ -51,7 +51,7 @@ class UserRegistrationForm(ModelForm):
                    'city': forms.TextInput(attrs={'class': "form-control input-sm"}),
                    'profession': forms.TextInput(attrs={'class': "form-control input-sm"}),
                    'position': forms.TextInput(attrs={'class': "form-control input-sm"}),
-                   }
+        }
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password")
@@ -65,16 +65,14 @@ class UserRegistrationForm(ModelForm):
 
     def save(self, commit=True):
         data = self.cleaned_data
-        user = User(username=data['username'], first_name=data['name'], last_name=data['surname'], email=data['email'],
-                    password=make_password(data['password']))
-        user.set_password(data['password'])
-        if commit:
-            user.save()
+        user = User.objects.create_user(username=data['username'], first_name=data['name'], last_name=data['surname'],
+                                        email=data['email'],
+                                        password=data['password'])
+        user.save()
         user_profile = CustomUserProfile(user=user, country=data['country'], city=data['city'],
                                          profession=data['profession'], position=data['position'],
                                          organization_name=data['organization_name'],
                                          organization=data['organization'],
                                          display_only_username=data['display_only_username'])
-        if commit:
-            user_profile.save()
+        user_profile.save()
         return user

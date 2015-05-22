@@ -43,11 +43,16 @@ class LoginView(View):
         if not request.session.test_cookie_worked():
             return HttpResponse("Please enable cookies and try again.")
         request.session.delete_test_cookie()
-        user = authenticate(**request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
         if user is not None:  # and user.is_active:
             login(request, user)
-            if not user.customuserprofile.conditions_accepted:
-                return HttpResponseRedirect(reverse('signup2'))
+            try:
+                if not user.customuserprofile.conditions_accepted:
+                    return HttpResponseRedirect(reverse('signup2'))
+            except Exception:
+                pass
             return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponse('Invalid login or password', status=400)
@@ -55,7 +60,7 @@ class LoginView(View):
 
 class LogoutView(View):
     def get(self, request):
-        response = logout(request)
+        logout(request)
         request.session.flush()
         return HttpResponseRedirect(reverse('home'))
 
