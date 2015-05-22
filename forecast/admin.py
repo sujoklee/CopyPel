@@ -3,3 +3,5 @@ import models
 
 
 admin.site.register(models.CustomUserProfile)
+admin.site.register(models.Forecast)
+admin.site.register(models.ForecastVotes)

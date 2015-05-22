@@ -18,7 +18,7 @@ class LoginRequiredMixin(object):
 
 
 class EmailConfirmationView(View):
-    template_name = ''  # TODO add template name
+    template_name = 'email_confirm_page.html'
 
     def get(self, request, token):
         res_dict = dict()
@@ -61,7 +61,7 @@ class LogoutView(View):
 
 class SignUpView(View):
     template_name = 'sign_up_page.html'
-    error_template = ''
+    error_template = 'error_login_page.html'
     form = UserRegistrationForm
 
     def get(self, request):
