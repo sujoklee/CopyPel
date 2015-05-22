@@ -1,0 +1,14 @@
+{% extends 'index_page.html' %}
+{% block content %}
+    {% if email_address %}
+
+        <p>You have confirmed your email address'.</p>
+    {% else %}
+
+        <p>Invalid confirmation key.</p>
+
+    {% endif %}
+
+    <p>Go to <a href="{% url 'home' %}">Peleus</a></p>
+
+{% endblock %}

@@ -19,7 +19,7 @@ class LoginRequiredMixin(object):
 
 
 class EmailConfirmationView(View):
-    template_name = ''  # TODO add template name
+    template_name = 'email_confirm_page.html'
 
     def get(self, request, token):
         res_dict = dict()
@@ -43,8 +43,6 @@ class LoginView(View):
         if not request.session.test_cookie_worked():
             return HttpResponse("Please enable cookies and try again.")
         request.session.delete_test_cookie()
-        username = request.POST.get('username')
-        password = request.POST.get('password')
         user = authenticate(**request.POST)
         if user is not None:  # and user.is_active:
             if not user.customuserprofile.conditions_accepted:
@@ -64,7 +62,7 @@ class LogoutView(View):
 
 class SignUpView(View):
     template_name = 'sign_up_page.html'
-    error_template = ''
+    error_template = 'error_login_page.html'
     form = UserRegistrationForm
 
     def get(self, request):
