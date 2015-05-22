@@ -44,7 +44,7 @@ class LoginView(View):
         request.session.delete_test_cookie()
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
+        user = authenticate(**request.POST)
         if user is not None:  # and user.is_active:
             if not user.customuserprofile.conditions_accepted:
                 return HttpResponseRedirect(reverse('signup2'))
