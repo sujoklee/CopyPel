@@ -1,27 +1,22 @@
+<li class="dropdown" id="signin">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        {% if user.is_authenticated %}
+            {{ user.username }}
+        {% else %}
+            Sign In
+        {% endif %}
+        <span class="caret"></span>
+    </a>
+    <ul id="signindrop" class="dropdown-menu" role="menu">
+        {% if not user.is_authenticated %}
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
 
-    <li class="dropdown" id="signin">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            {% if user.is_authenticated %}
-                {{ user.username }}
-            {% else %}
-                Sign In
-            {% endif %}
-            <span class="caret"></span>
-        </a>
-        <ul id="signindrop" class="dropdown-menu" role="menu">
-            {% if not user.is_authenticated %}
-                <form action="{% url 'login' %}" method="post">
-                    {% csrf_token %}
-                    <b>Sign in with your {{ app_name }} account</b>
+                <li><input type="text" name="username" placeholder="Username" class="form-control"/></li>
 
-                    <p>
-                    <li>Username</li>
-                    <li><input type="text" name="username" class="form-control"/></li>
+                <li><input type="password" name="password" placeholder="Password" class="form-control"/></li>
 
-                    <li>Password</li>
-                    <li><input type="password" name="password" class="form-control"/></li>
-
-                  <span class="pull-left">
+                <li><span class="pull-left">
                       <button type="submit" class="btn btn-large btn-primary">Submit</button>
                   </span>
                   <span class="pull-right">
@@ -29,10 +24,11 @@
                   </span>
 
 
-                    <span class="clearfix"></span>
-                </form>
-            {% else %}
-                <a href="{% url 'logout' %}">Logout</a>
-            {% endif %}
-        </ul>
-    </li>
+                    <span class="clearfix"></span></li>
+            </form>
+        {% else %}
+            <a href="{% url 'logout' %}">Logout</a>
+        {% endif %}
+    </ul>
+
+</li>
