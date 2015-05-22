@@ -46,7 +46,7 @@ class LoginView(View):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:  # and user.is_active:
-            if not user.conditions_accepted:
+            if not user.customuserprofile.conditions_accepted:
                 return HttpResponseRedirect(reverse('signup2'))
             login(request, user)
             return HttpResponseRedirect(reverse('home'))
@@ -60,8 +60,10 @@ class LogoutView(View):
         request.session.flush()
         return HttpResponseRedirect(reverse('home'))
 
+
 class SignUpView(View):
     template_name = 'sign_up_page.html'
+    error_template = ''
     form = UserRegistrationForm
 
     def get(self, request):
@@ -73,12 +75,23 @@ class SignUpView(View):
         if signup_form.is_valid():
             signup_form.save()
             return HttpResponseRedirect(reverse('signup2'))
-
+        else:
+            return render(request, self.error_template, {'errors': signup_form.errors})
 
 
 class SignUpSecondView(View):
     template_name = 'sign_up2_page.html'
+    form = SignupCompleteForm
 
     def get(self, request):
-        form = SignupCompleteForm()
+        form = self.form()
         return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form()
+        if form.is_valid():
+            pass
+        user = get_object_or_404(User, pk=request.user.id)
+        user.customuserprofile.conditions_accepted = True
+        user.save()
+        return HttpResponseRedirect(reverse('home'))
