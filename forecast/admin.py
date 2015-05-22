@@ -14,6 +14,7 @@ class CustomUserProfileInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (CustomUserProfileInline,)
 
+admin.site.site_header = 'Peleus administration'
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
