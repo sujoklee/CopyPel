@@ -1,0 +1,24 @@
+.form-center-block{
+    width: 50%;
+}
+.myclassmarker ul {
+	list-style-type: none;
+}
+/*Jquery validate style*/
+
+.my-error-class {
+	
+    color:#D9534F;
+}
+.my-valid-class {
+    color:green;
+}
+
+.pl-search-form {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#signin > ul > form > li {
+    padding: 5px 10px;
+}
