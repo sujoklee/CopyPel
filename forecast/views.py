@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404
+<<<<<<< HEAD
 from django.core.mail import send_mail
+=======
+>>>>>>> d3d624b661f91285f63bb01d934903541e0c0a3f
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -43,11 +46,24 @@ class LoginView(View):
         if not request.session.test_cookie_worked():
             return HttpResponse("Please enable cookies and try again.")
         request.session.delete_test_cookie()
+<<<<<<< HEAD
         user = authenticate(**request.POST)
         if user is not None:  # and user.is_active:
             if not user.customuserprofile.conditions_accepted:
                 return HttpResponseRedirect(reverse('signup2'))
             login(request, user)
+=======
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:  # and user.is_active:
+            login(request, user)
+            try:
+                if not user.customuserprofile.conditions_accepted:
+                    return HttpResponseRedirect(reverse('signup2'))
+            except Exception:
+                pass
+>>>>>>> d3d624b661f91285f63bb01d934903541e0c0a3f
             return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponse('Invalid login or password', status=400)
@@ -55,7 +71,11 @@ class LoginView(View):
 
 class LogoutView(View):
     def get(self, request):
+<<<<<<< HEAD
         response = logout(request)
+=======
+        logout(request)
+>>>>>>> d3d624b661f91285f63bb01d934903541e0c0a3f
         request.session.flush()
         return HttpResponseRedirect(reverse('home'))
 
@@ -78,7 +98,10 @@ class SignUpView(View):
             return render(request, self.error_template, {'errors': signup_form.errors})
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d3d624b661f91285f63bb01d934903541e0c0a3f
 class SignUpSecondView(View):
     template_name = 'sign_up2_page.html'
     form = SignupCompleteForm
@@ -88,6 +111,7 @@ class SignUpSecondView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+<<<<<<< HEAD
         form = self.form()
         if form.is_valid():
             pass
@@ -95,3 +119,13 @@ class SignUpSecondView(View):
         user.customuserprofile.conditions_accepted = True
         user.save()
         return HttpResponseRedirect(reverse('home'))
+=======
+        form = self.form(request.POST)
+        if form.is_valid():
+            user = request.user
+            user.customuserprofile.conditions_accepted = True
+            user.save()
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            return HttpResponseRedirect(reverse('errors'))
+>>>>>>> d3d624b661f91285f63bb01d934903541e0c0a3f

@@ -21,6 +21,7 @@
 
 #signin > ul > form > li {
     padding: 5px 10px;
+
 }
 
 .scrollable-menu {
@@ -31,18 +32,5 @@
 
 /*d3.js*/
 
-.axis path, .axis line {
-    fill: none;
-    stroke: #333;
-}
-.axis .grid-line {
-    stroke: #000;
-    stroke-opacity: 0.1;
-}
-.axis text {
-    font: 10px Arial;
-}
-.bar {
-    stroke: none;
-    fill: #FF4500;
+
 }

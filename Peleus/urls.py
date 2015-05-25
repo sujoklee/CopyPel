@@ -10,10 +10,16 @@ urlpatterns = patterns('',
 
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^$', TemplateView.as_view(template_name='index_page.html'), name='home'),
-                       url(r'signup/$$', views.SignUpView.as_view(), name='signup'),
-                       url(r'signup_last/$', views.SignUpSecondView.as_view(), name='signup2'),
-                       url(r'login/$', views.LoginView.as_view(), name='login'),
-                       url(r'logout/$', views.LogoutView.as_view(), name='logout'),
+
+                      
                        url(r'profile/$', TemplateView.as_view(template_name='profile_page.html'), name='profile'),
 
                        )
+
+                       url(r'signup/$', views.SignUpView.as_view(), name='signup'),
+                       url(r'signuplast/$', views.SignUpSecondView.as_view(), name='signup2'),
+                       url(r'^login/$', views.LoginView.as_view(), name='login'),
+                       url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
+                       url(r'^errors/$', TemplateView.as_view(template_name='error_login_page.html'), name='errors')
+)
+
