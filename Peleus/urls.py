@@ -15,4 +15,6 @@ urlpatterns = patterns('',
                        url(r'login/$', views.LoginView.as_view(), name='login'),
                        url(r'logout/$', views.LogoutView.as_view(), name='logout'),
 
+                       # url(r'home_page/$', views.HomePage.as_view(), name='home_page'), #for histogram
+
                        )
