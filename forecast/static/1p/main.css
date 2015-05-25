@@ -1,4 +1,3 @@
-/*Template styles*/
 .form-center-block{
     width: 50%;
 }
@@ -15,3 +14,11 @@
     color:green;
 }
 
+.pl-search-form {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#signin > ul > form > li {
+    padding: 5px 10px;
+}

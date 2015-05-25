@@ -35,6 +35,7 @@ APP_NAME = "Peleus"
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +46,10 @@ INSTALLED_APPS = (
     'django_countries',
     # 'bootstrapform',
     'forecast',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,13 +65,14 @@ ROOT_URLCONF = 'Peleus.urls'
 
 WSGI_APPLICATION = 'Peleus.wsgi.application'
 
+LOGIN_REDIRECT_URL = '/'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
     # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
+    # 'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'peleus',
     #     'USER': 'peleus',
     #     'PASSWORD': 'WeakPassw0rd!',
@@ -139,7 +145,6 @@ FORECAST_TYPE = (('1', 'Binary'),
                  ('3', 'Magnitude'),
                  ('4', 'Temporal'))
 
-
 AREAS = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
          ('3', "Social Events/Protests"),
@@ -155,3 +160,5 @@ REGIONS = (('1', "Europe"),
            ('5', "South Pacific"),
            ('6', "North America"),
            ('7', "South America"))
+
+DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'

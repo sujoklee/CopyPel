@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
-from django.core import serializers # For JSON
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,10 +7,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 
-
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
 from Peleus.settings import APP_NAME
-
 
 
 class LoginRequiredMixin(object):
@@ -98,14 +95,3 @@ class SignUpSecondView(View):
         user.customuserprofile.conditions_accepted = True
         user.save()
         return HttpResponseRedirect(reverse('home'))
-
-
-# class HomePage(View):
-#     template_name = 'home_page.html'
-    
-#     def tasks_json(request):
-#         tasks = Task.objects.all()
-#         data = serializers.serialize("json", tasks)
-#         return HttpResponse(data, content_type='application/json')
-
-   
