@@ -31,10 +31,7 @@ class Forecast(models.Model):
     end_date = models.DateField()
 
     def is_active(self):
-        this_time = datetime.now()
-        if self.end_date <= this_time:
-            return True
-        return False
+        return self.end_date <= datetime.now()
 
     def __unicode__(self):
         return '%s - %s' % (self.id, self.forecast_question)
