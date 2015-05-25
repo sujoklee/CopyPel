@@ -14,7 +14,7 @@ urlpatterns = patterns('',
                       
                        url(r'profile/$', TemplateView.as_view(template_name='profile_page.html'), name='profile'),
 
-                       )
+                       
 
                        url(r'signup/$', views.SignUpView.as_view(), name='signup'),
                        url(r'signuplast/$', views.SignUpSecondView.as_view(), name='signup2'),
