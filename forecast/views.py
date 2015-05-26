@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -5,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
+from django.utils.translation import ugettext_lazy as _
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
 from Peleus.settings import APP_NAME
@@ -20,19 +22,20 @@ class LoginRequiredMixin(object):
 class EmailConfirmationView(View):
     template_name = 'email_confirm_page.html'
 
-    def get(self, request, token):
+    def get(self, request):
+        token = request.GET.get('token')
         res_dict = dict()
         try:
             user = CustomUserProfile.objects.get(activation_token=token)
         except User.DoesNotExist as ex:
             res_dict['error'] = ex
             return render(request, self.template_name, res_dict)
-        if token == user.activation_token:
+        if token == user.customuserprofile.activation_token and datetime.now() <= user.customuserprofile.expires_at:
             user.email_verified = True
-            res_dict['success'] = 'Email was verified!'
+            res_dict['success'] = _('Email was verified!')
             user.save()
         else:
-            res_dict['error'] = 'Provided token is incorrect'
+            res_dict['error'] = _('Provided token is incorrect or expired')
         return render(request, self.template_name, res_dict)
 
 
@@ -40,7 +43,7 @@ class LoginView(View):
     def post(self, request):
         request.session.set_test_cookie()
         if not request.session.test_cookie_worked():
-            return HttpResponse("Please enable cookies and try again.")
+            return HttpResponse(_("Please enable cookies and try again."))
         request.session.delete_test_cookie()
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -54,7 +57,7 @@ class LoginView(View):
                 pass
             return HttpResponseRedirect(reverse('home'))
         else:
-            return HttpResponse('Invalid login or password', status=400)
+            return HttpResponse(_('Invalid login or password'), status=400)
 
 
 class LogoutView(View):
@@ -76,7 +79,8 @@ class SignUpView(View):
     def post(self, request):
         signup_form = UserRegistrationForm(request.POST)
         if signup_form.is_valid():
-            signup_form.save()
+            user = signup_form.save()
+            request.session['uid'] = user.id
             return HttpResponseRedirect(reverse('signup2'))
         else:
             return render(request, self.error_template, {'errors': signup_form.errors})
@@ -93,9 +97,11 @@ class SignUpSecondView(View):
     def post(self, request):
         form = self.form(request.POST)
         if form.is_valid():
-            user = request.user
-            user.customuserprofile.conditions_accepted = True
-            user.save()
+            user_id = request.session['uid']
+            user_profile = CustomUserProfile.objects.get(user=user_id)
+            user_profile.conditions_accepted = True
+            user_profile.save()
+            form.save(user_id)
             return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponseRedirect(reverse('errors'))
