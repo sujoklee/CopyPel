@@ -1,14 +1,22 @@
-from django.shortcuts import render, get_object_or_404
+import json
+from datetime import date
+
+from django.shortcuts import render
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.serializers import serialize
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
-from Peleus.settings import APP_NAME
+from models import Forecast
+from Peleus.settings import APP_NAME,\
+    FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
 
 
 class LoginRequiredMixin(object):
@@ -35,6 +43,39 @@ class EmailConfirmationView(View):
         else:
             res_dict['error'] = 'Provided token is incorrect'
         return render(request, self.template_name, res_dict)
+
+
+class ForecastsJsonView(View):
+
+    def get(self, request):
+        query = {'end_date__lt': date.today()}
+        qs = Forecast.objects.all()
+
+        if 'id' in request.GET:
+            query['pk__in'] = request.GET.getlist('id')
+            qs = qs.filter(**query)
+            self._respond(qs)
+        # elif 'name' in request.GET:
+        #     query['forecast_question__in'] = request.GET.getlist('name')
+        #     qs = Forecast.objects.filter(**query)
+        else:
+            forecast_filter = request.GET.get('filter', FORECAST_FILTER_MOST_ACTIVE)
+            qs = self._queryset_by_forecast_filter(qs, forecast_filter)
+        return self._respond(qs)
+
+    def _queryset_by_forecast_filter(self, forecasts, forecast_filter):
+        if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
+        elif forecast_filter == FORECAST_FILTER_NEWEST:
+            forecasts = forecasts.order_by('-start_date')
+        elif forecasts == FORECAST_FILTER_CLOSING:
+            forecasts = forecasts.oreder_by('-end_date')
+        return forecasts
+
+    def _respond(self, forecasts):
+        # forecasts = Forecast.objects.all().prefetch_related()
+        return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
+                            content_type='application/json')
 
 
 class LoginView(View):
@@ -84,7 +125,6 @@ class SignUpView(View):
             return render(request, self.error_template, {'errors': signup_form.errors})
 
 
-
 class SignUpSecondView(View):
     template_name = 'sign_up2_page.html'
     form = SignupCompleteForm
@@ -102,4 +142,3 @@ class SignUpSecondView(View):
             return HttpResponseRedirect(reverse('home'))
         else:
             return HttpResponseRedirect(reverse('errors'))
-

@@ -140,10 +140,10 @@ ORGANIZATION_TYPE = (('1', 'School'),
                      ('3', 'Company'),
                      ('4', 'Government Agency'))
 
-FORECAST_TYPE = (('1', 'Binary'),
-                 ('2', 'Probability'),
-                 ('3', 'Magnitude'),
-                 ('4', 'Temporal'))
+FORECAST_TYPE = ((u'1', 'Binary'),
+                 (u'2', 'Probability'),
+                 (u'3', 'Magnitude'),
+                 (u'4', 'Temporal'))
 
 AREAS = (('1', "Elections"),
          ('2', "Conflicts/Wars"),
@@ -160,5 +160,11 @@ REGIONS = (('1', "Europe"),
            ('5', "South Pacific"),
            ('6', "North America"),
            ('7', "South America"))
+
+FORECAST_FILTER_MOST_ACTIVE = "mostactive"
+FORECAST_FILTER_NEWEST = "newest"
+FORECAST_FILTER_CLOSING = "closing"
+
+FORECAST_FILTERS = {FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING}
 
 DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
