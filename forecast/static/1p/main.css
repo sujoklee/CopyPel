@@ -30,3 +30,14 @@
     max-height: 200px;
     overflow-x: hidden;
 }
+
+/*Profile page one's view*/
+
+#message {
+    display:none
+}
+.modal.fade:not(.in) .modal-dialog {
+    -webkit-transform: translate3d(125%, 0, 0);
+    transform: translate3d(125%, 0, 0);
+}
+
