@@ -40,4 +40,26 @@
     -webkit-transform: translate3d(125%, 0, 0);
     transform: translate3d(125%, 0, 0);
 }
+.panel {
+    margin-bottom: 1px;
 
+}
+#performance p {
+    margin-top: 0.5em; /* Отступ сверху */
+    margin-bottom: 0.5em; /* Отступ снизу */
+   }
+#info p {
+    margin-top: 0.5em; /* Отступ сверху */
+    margin-bottom: 0.5em; /* Отступ снизу */
+   }
+#analysis p {
+    margin-top: 0.5em; /* Отступ сверху */
+    margin-bottom: 0.5em; /* Отступ снизу */
+   }
+#rightuserblock {
+    position: fixed; /* Фиксированное положение */
+    right: 20px; /* Расстояние от правого края окна браузера */
+    top: 6%; /* Расстояние сверху */
+
+
+}

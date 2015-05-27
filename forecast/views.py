@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import View
+from django.views.generic import View, DetailView
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
 from Peleus.settings import APP_NAME
@@ -62,6 +62,20 @@ class LogoutView(View):
         logout(request)
         request.session.flush()
         return HttpResponseRedirect(reverse('home'))
+
+
+class ProfileView(View):
+    template_name = 'profile_page.html'
+    model = CustomUserProfile
+
+    def get(self, request):
+
+        if request.user.id == request.user.id:
+            myprofile = True
+        else:
+            myprofile = False
+
+        return render(request, self.template_name, {'myprofile':myprofile})
 
 
 class SignUpView(View):
