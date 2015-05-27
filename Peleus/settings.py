@@ -110,6 +110,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'OPTIONS': {'context_processors': ("django.contrib.auth.context_processors.auth",
+                                           "forecast.context_processors.forecast_user",
+                                           "forecast.context_processors.forecast_interests",
                                            "django.template.context_processors.debug",
                                            "django.template.context_processors.i18n",
                                            "django.template.context_processors.media",

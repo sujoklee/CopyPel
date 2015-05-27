@@ -1,5 +1,6 @@
 import json
-from datetime import datetime, date
+from datetime import date, datetime
+
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -27,11 +28,19 @@ class LoginRequiredMixin(object):
 
 
 class ActiveForecastsView(View):
-    template_name = ''
+    template_name = 'forecast_page.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        forecasts = Forecast.objects.all()
+        return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
+
+class ArchivedForecastsView(View):
+    template_name = 'forecast_page.html'
+
+    def get(self, request):
+        forecasts = Forecast.objects.all()
+        return render(request, self.template_name, {'data': forecasts, 'is_active': False})
 
 class ActiveForecastVoteView(View):
     def post(self, request):
@@ -61,19 +70,32 @@ class EmailConfirmationView(View):
 class ForecastsJsonView(View):
 
     def get(self, request):
-        data = request.GET
-        list_ids = data.getlist('ids')
+        query = {'end_date__lt': date.today()}
+        qs = Forecast.objects.all()
+
+        if 'id' in request.GET:
+            query['pk__in'] = request.GET.getlist('id')
+            qs = qs.filter(**query)
+            self._respond(qs)
+        # elif 'name' in request.GET:
+        #     query['forecast_question__in'] = request.GET.getlist('name')
+        #     qs = Forecast.objects.filter(**query)
+        else:
+            forecast_filter = request.GET.get('filter', FORECAST_FILTER_MOST_ACTIVE)
+            qs = self._queryset_by_forecast_filter(qs, forecast_filter)
+        return self._respond(qs)
 
     def _queryset_by_forecast_filter(self, forecasts, forecast_filter):
         if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
         elif forecast_filter == FORECAST_FILTER_NEWEST:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
+            forecasts = forecasts.order_by('-start_date')
         elif forecasts == FORECAST_FILTER_CLOSING:
             forecasts = forecasts.oreder_by('-end_date')
         return forecasts
 
     def _respond(self, forecasts):
+        # forecasts = Forecast.objects.all().prefetch_related()
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
 
@@ -136,7 +158,7 @@ class SignUpSecondView(View):
     def post(self, request):
         form = self.form(request.POST)
         if form.is_valid():
-            user_id = request.session['uid']
+            user_id = request.session.get('uid') or request.user.id
             user_profile = CustomUserProfile.objects.get(user=user_id)
             user_profile.conditions_accepted = True
             user_profile.save()

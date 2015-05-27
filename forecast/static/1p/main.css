@@ -41,3 +41,13 @@
     transform: translate3d(125%, 0, 0);
 }
 
+/*
+@media (min-width: 767px) {
+    .peleus-sidebar .affix .peleus-sidebar .affix-top {
+        position: static;
+    }
+}
+
+.peleus-sidebar .affix {
+    position: static;
+}*/
