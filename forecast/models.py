@@ -37,6 +37,7 @@ class Forecast(models.Model):
         return '%s - %s' % (self.id, self.forecast_question)
 
     _forecast_types = dict(FORECAST_TYPE)
+
     def to_json(self):
         return {
             'id': self.id,
@@ -44,7 +45,7 @@ class Forecast(models.Model):
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
-            'votes': [{'userId': v.user_id.id, 'vote': v.vote } for v in self.votes.all()]}
+            'votes': [{'userId': v.user_id.id, 'vote': v.vote} for v in self.votes.all()]}
 
     class Meta:
         db_table = 'forecasts'
