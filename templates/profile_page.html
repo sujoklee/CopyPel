@@ -1,97 +1,115 @@
 {% extends "index_page.html" %}
 {% load staticfiles%}
+        
+
+                    
+
 {% block content %}
-<div class="row">
-    <div class="panel col-md-8">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>{%if is_self %}Hello, {%endif%}{{user.name}}</h4>
-            </div>
+    <div class="row">
+        <div class="panel col-md-8">
+
+              <div class="row">
+                  <div class="col-md-6">
+                      <h4>{%if is_self %}Hello, {%endif%}{{user.name}}</h4>
+                  </div>
+                  
+              </div>
+
+              <div class="row">
+                  <p><strong>{%if ... %}My {%else%}{{user.name}}'s {%endif%}Active Forecasts (See Full Set)</strong></p>
+                                                   
+
+                  <p>“Published Analysis: #”</p>
+                  <div class="btn-group">
+                        <div class="panel">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Recently participated <span class="caret"></span></button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                            </ul>
+                        </div>
+                  </div>
+              </div>
+               <div class="row">
+                  <p><strong>{%if ... %}My {%else%}{{user.name}}'s {%endif%}Archived Forecasts (See Full Set)</strong></p>
+                  <div class="btn-group">
+                        <div class="panel">
+                            <button type="button" class="btn btn-info pull right dropdown-toggle" data-toggle="dropdown">Recently closed <span class="caret"></span></button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                            </ul>
+                        </div>
+                  </div>
+              </div>
         </div>
-        <div class="row">
-            <p><strong>{%if ... %}My {%else%}{{user.name}}'s {%endif%}Active Forecasts (See Full Set)</strong></p>
-            <p>“Published Analysis: #”</p>
-        <div class="btn-group">
-            <div class="panel">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Recently participated <span class="caret"></span></button>
-                    <ul class="dropdown-menu scrollable-menu" role="menu">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                    </ul>
-            </div>
-        </div>
-        </div>
-        <div class="row">
-            <p><strong>{%if ... %}My {%else%}{{user.name}}'s {%endif%}Archived Forecasts (See Full Set)</strong></p>
-            <div class="btn-group">
+        <div class=" col-md-offset-1 col-md-3 ">
+            <div class="row">
+              <div class="panel">
+                    
+                    <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Performance</h4>
+                    <p>{{app_name}} Score: XX.X</p>
+                    <p>General Accuracy: XX.X%</p>
+                    <p>Number of Forecasts: {{len_predictions}}</p>
+                    <p>See My Archived Forecasts</p>
+                </div>
                 <div class="panel">
-                <button type="button" class="btn btn-info pull right dropdown-toggle" data-toggle="dropdown">Recently closed <span class="caret"></span></button>
-                    <ul class="dropdown-menu scrollable-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                    </ul>
+                    <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Info</h4>
+                    <p>Profession: {{user.profession}}</p>
+                    <p>Organization: {{user.organization}}</p>
+                    <p>Position: XXX</p>
+                    <p>Location: {{user.country}}</p>
+                    <p>Areas of Interest: {{user.forecast_areas}}</p>
+                    
+                </div>
+                <div class="panel">
+                    <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Analysis</h4>
+                    <p>Profession: {{user.profession}}</p>
+                    <p>Organization: {{user.organization}}</p>
+                    <p>Position: XXX</p>
+                    <p>Location: {{user.country}}</p>
+                    <p>Areas of Interest: {{user.forecast_areas}}</p>
+                    
+                </div>
+                  
+               <div class="panel">
+                        <p><a href="#">Inbox <span class="badge">1</span></a></p>
+                        <p><a href="#">Followers <span class="badge">2</span></a></p>
+                        <p><a href="#">My Followed Users <span class="badge">3</span></a></p>
+                        <p><a href="#">My Groups <span class="badge">4</span></a></p>
+                        <p>Weekly Profile Views:</p>
+               </div>    
+                     
+               
+                  
+                
+                    
                 </div>
             </div>
         </div>
     </div>
-    <div class=" col-md-offset-1 col-md-3 ">
-        <div class="row">
-            <div class="panel">
-                <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Performance</h4>
-                <p>{{app_name}} Score: XX.X</p>
-                <p>General Accuracy: XX.X%</p>
-                <p>Number of Forecasts: {{len_predictions}}</p>
-                <p>See My Archived Forecasts</p>
-            </div>
-            <div class="panel">
-                <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Info</h4>
-                <p>Profession: {{user.profession}}</p>
-                <p>Organization: {{user.organization}}</p>
-                <p>Position: XXX</p>
-                <p>Location: {{user.country}}</p>
-                <p>Areas of Interest: {{user.forecast_areas}}</p>
-            </div>
-            <div class="panel">
-                <h4>{%if is_self %}My {%else%}{{user.name}}'s {%endif%}Analysis</h4>
-                <p>Profession: {{user.profession}}</p>
-                <p>Organization: {{user.organization}}</p>
-                <p>Position: XXX</p>
-                <p>Location: {{user.country}}</p>
-                <p>Areas of Interest: {{user.forecast_areas}}</p>
-            </div>
-            <div class="panel">
-                <p><a href="#">Inbox <span class="badge">1</span></a></p>
-                <p><a href="#">Followers <span class="badge">2</span></a></p>
-                <p><a href="#">My Followed Users <span class="badge">3</span></a></p>
-                <p><a href="#">My Groups <span class="badge">4</span></a></p>
-                <p>Weekly Profile Views:</p>
-            </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}

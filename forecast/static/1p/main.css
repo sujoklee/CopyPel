@@ -22,11 +22,3 @@
 #signin > ul > form > li {
     padding: 5px 10px;
 }
-
-/*Scrollable dropdown button*/
-
-.scrollable-menu {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
-}
