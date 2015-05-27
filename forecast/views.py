@@ -1,3 +1,6 @@
+import json
+from datetime import date, datetime
+
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -84,9 +87,9 @@ class ForecastsJsonView(View):
         if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
         elif forecast_filter == FORECAST_FILTER_NEWEST:
-            forecasts = forecasts.order_by('-start_date')
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
         elif forecasts == FORECAST_FILTER_CLOSING:
-            forecasts = forecasts.oreder_by('-end_date')
+            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
         return forecasts
 
     def _respond(self, forecasts):
