@@ -36,6 +36,17 @@ class Forecast(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.id, self.forecast_question)
 
+    _forecast_types = dict(FORECAST_TYPE)
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'forecastType': self._forecast_types[self.forecast_type],
+            'forecastQuestion': self.forecast_question,
+            'startDate': self.start_date.strftime('%Y-%m-%d'),
+            'endDate': self.end_date.strftime('%Y-%m-%d'),
+            'votes': [{'userId': v.user_id.id, 'vote': v.vote} for v in self.votes.all()]}
+
     class Meta:
         db_table = 'forecasts'
         get_latest_by = 'start_date'
@@ -44,5 +55,5 @@ class Forecast(models.Model):
 
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)
-    forecast_id = models.ForeignKey('Forecast')
+    forecast_id = models.ForeignKey('Forecast', related_name='votes')
     vote = models.IntegerField()

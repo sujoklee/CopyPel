@@ -1,0 +1,16 @@
+<div class="col-sm-2 peleus-sidebar">
+    <ul id="sidebar" class="nav nav-stacked">
+        <li><a href="#">Most Active</a></li>
+        <li><a href="#">Newest</a></li>
+        <li><a href="#">Imminently Closing</a></li>
+        {% if forecast_user %}
+            {% for area in forecast_user.forecast_areas %}
+            <li><a href="#">{{ FORECAST_AREAS|get_item:area }}</a></li>
+            {% endfor %}
+
+            {% for region in forecast_user.forecast_regions %}
+            <li><a href="#">{{ FORECAST_REGIONS|get_item:region }}</a></li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
