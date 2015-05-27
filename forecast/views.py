@@ -19,6 +19,18 @@ class LoginRequiredMixin(object):
         return login_required(view)
 
 
+class ActiveForecastsView(View):
+    template_name = ''
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class ActiveForecastVoteView(View):
+    def post(self, request):
+        data = request.POST
+
+
 class EmailConfirmationView(View):
     template_name = 'email_confirm_page.html'
 

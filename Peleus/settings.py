@@ -162,3 +162,5 @@ REGIONS = (('1', "Europe"),
            ('7', "South America"))
 
 DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
+
+DOMAIN_NAME = 'http://localhost:8000'   # change this in production

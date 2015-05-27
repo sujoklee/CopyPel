@@ -8,7 +8,7 @@ from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
-    DEFAULT_EMAIL
+    DEFAULT_EMAIL, DOMAIN_NAME
 from forecast.models import CustomUserProfile
 from utils.different import generate_activation_key
 
@@ -92,7 +92,7 @@ class UserRegistrationForm(ModelForm):
                                          expires_at=expire_date)
         user_profile.save()
         try:
-            send_mail('confirm your email', 'http://localhost:8000/confirm_email?token=%s' % token, DEFAULT_EMAIL,
+            send_mail('Confirm your email', '%s/confirm_email?token=%s' % (DOMAIN_NAME, token), DEFAULT_EMAIL,
                       [user.email])
         except Exception as ex:
             print ex
