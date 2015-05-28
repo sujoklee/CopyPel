@@ -19,5 +19,6 @@ urlpatterns = patterns(
     url(r'^errors/$', TemplateView.as_view(template_name='error_login_page.html'), name='errors'),
     url(r'^active_forecasts/$', views.ActiveForecastsView.as_view(), name='active_forecasts'),
     url(r'^archived_forecasts/$', views.ArchivedForecastsView.as_view(), name='archived_forecasts'),
+    url(r'^forecast/(?P<id>\d+)/$', views.IndividualForecastView.as_view(), name='individual_forecast'),
     url(r'^forecasts/$', views.ForecastsJsonView.as_view(), name='forecasts'),
 )

@@ -2,6 +2,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.db import models
+from django.db.models import Count
 
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE
 
@@ -45,7 +46,8 @@ class Forecast(models.Model):
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
-            'votes': [{'userId': v.user_id.id, 'vote': v.vote} for v in self.votes.all()]}
+            'votes': [{'vote': v['vote'], 'count': v['num_votes']}
+                      for v in self.votes.values('vote').annotate(num_votes=Count('vote'))]}
 
     class Meta:
         db_table = 'forecasts'
