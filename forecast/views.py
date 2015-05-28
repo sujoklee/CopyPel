@@ -1,7 +1,7 @@
 import json
 from datetime import date, datetime
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -10,7 +10,6 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, DetailView
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
 from models import Forecast
@@ -26,23 +25,24 @@ class LoginRequiredMixin(object):
 
 
 class ActiveForecastsView(View):
-    template_name = 'forecast_page.html'
+    template_name = 'forecasts_page.html'
 
     def get(self, request):
         forecasts = Forecast.objects.all()
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
+class ActiveForecastVoteView(View):
+    def post(self, request):
+        data = request.POST
+
+
 class ArchivedForecastsView(View):
-    template_name = 'forecast_page.html'
+    template_name = 'forecasts_page.html'
 
     def get(self, request):
         forecasts = Forecast.objects.all()
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
-
-class ActiveForecastVoteView(View):
-    def post(self, request):
-        data = request.POST
 
 
 class EmailConfirmationView(View):
@@ -93,10 +93,16 @@ class ForecastsJsonView(View):
         return forecasts
 
     def _respond(self, forecasts):
-        # forecasts = Forecast.objects.all().prefetch_related()
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
 
+
+class IndividualForecastView(View):
+    template_name = 'individual_forecast_page.html'
+
+    def get(self, request, id):
+        forecast = Forecast.objects.get(pk=id)
+        return render(request, self.template_name, {'forecast': forecast})
 
 class LoginView(View):
     def post(self, request):

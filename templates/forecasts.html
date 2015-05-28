@@ -4,14 +4,17 @@
             <div class="panel-heading" role="tab" id="headingOne-{{ el.id }}">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#peleus-active-forecast-accordion"
-                       href="#collapseOne"
+                       href="#collapseOne-{{ el.id }}"
                        aria-expanded="true"
                        aria-controls="collapseOne">
                         {{ el.forecast_question }}
                     </a>
+                    <a href="{% url 'individual_forecast' id=el.id %}" class="pull-right">
+                        More info <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                    </a>
                 </h4>
             </div>
-            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
+            <div id="collapseOne-{{ el.id }}" class="panel-collapse collapse" role="tabpanel"
                  aria-labelledby="headingOne">
                 <div class="panel-body">
                     <div class="navbar navbar-default">
