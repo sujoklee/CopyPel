@@ -5,7 +5,40 @@
 
 {% block content %}
     <script src="{% static '1p/profile.js' %}"></script>
+    <style>
+    path.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
 
+path.area {
+  fill: #e7e7e7;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+
+</style>
+    </style>
 
 <div class="row">
     <div class="panel col-md-8">
@@ -77,7 +110,7 @@ bars.append("text")
 $("#transition").click(function(event) {
 //  //ajax calls
 //  var req = $.ajax({
-//    url: '/models/',
+//    url: '/forecast/',
 //    type: 'GET',
 //    dataType: 'json',
 //    success: function(response) {
