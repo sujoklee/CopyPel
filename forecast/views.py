@@ -8,12 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import View
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, DetailView
 
-from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile
-from models import Forecast
+from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
+from models import Forecast, ForecastVotes
 from Peleus.settings import APP_NAME,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
 
@@ -96,6 +95,24 @@ class ForecastsJsonView(View):
         # forecasts = Forecast.objects.all().prefetch_related()
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
+
+
+class PlaceVoteView(View):
+    def post(self, request):
+        data = request.POST
+        user = request.user
+        form = ForecastForm(data)
+        if not form.is_valid():
+            return HttpResponse(_('Invalid input data!'), status=400)
+        forecast = get_object_or_404(Forecast, pk=data.get('fid'))
+        f_vote = ForecastVotes.objects.filter(user_id__eq=user.id, forecast_id__eq=forecast.id)
+        if f_vote:
+            f_vote.update(vote=data.get('vote'))
+            f_vote.save()
+        else:
+            new_f_vote = ForecastVotes(user_id=request.user, forecast_id=forecast, vote=data.get('vote'))
+            new_f_vote.save()
+        return HttpResponse('ok')
 
 
 class LoginView(View):

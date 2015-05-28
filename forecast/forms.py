@@ -9,8 +9,20 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
     DEFAULT_EMAIL, DOMAIN_NAME
-from forecast.models import CustomUserProfile
+from forecast.models import CustomUserProfile, Forecast, ForecastVotes
 from utils.different import generate_activation_key
+
+
+class ForecastForm(ModelForm):
+    class Meta:
+        model = Forecast
+        fields = '__all__'
+
+
+class ForecastVoteForm(ModelForm):
+    class Meta:
+        model = ForecastVotes
+        fields = '__all__'
 
 
 class SignupCompleteForm(forms.Form):
