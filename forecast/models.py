@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.db import models
@@ -30,14 +30,13 @@ class Forecast(models.Model):
     forecast_question = models.TextField(max_length=1000)
     start_date = models.DateField(auto_now=True)
     end_date = models.DateField()
+    _forecast_types = dict(FORECAST_TYPE)
 
     def is_active(self):
-        return self.end_date <= datetime.now()
+        return self.end_date >= date.today()
 
     def __unicode__(self):
         return '%s - %s' % (self.id, self.forecast_question)
-
-    _forecast_types = dict(FORECAST_TYPE)
 
     def to_json(self):
         return {
@@ -48,6 +47,10 @@ class Forecast(models.Model):
             'endDate': self.end_date.strftime('%Y-%m-%d'),
             'votes': [{'vote': v['vote'], 'count': v['num_votes']}
                       for v in self.votes.values('vote').annotate(num_votes=Count('vote'))]}
+
+    def votes_count(self):
+        votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
+        return votes
 
     class Meta:
         db_table = 'forecasts'
