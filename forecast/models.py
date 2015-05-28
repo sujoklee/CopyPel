@@ -51,6 +51,7 @@ class Forecast(models.Model):
     def votes_count(self):
         votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
         return votes
+    votes_count.admin_order_field = 'votes_count'
 
     class Meta:
         db_table = 'forecasts'

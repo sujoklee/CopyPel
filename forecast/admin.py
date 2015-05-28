@@ -32,13 +32,14 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
             (self.ARCHIVED, 'Archived'),
         )
 
-    def queryset(self, request, queryset):
-        if self.value() == self.ACTIVE:
-            return queryset.filter(end_date__gte=date.today())
-        elif self.value() == self.ARCHIVED:
-            return queryset.filter(end_date__lt=date.today())
+    def queryset(self, request, qs):
+        v = self.value()
+        if v == self.ACTIVE:
+            return qs.filter(end_date__gte=date.today())
+        elif v == self.ARCHIVED:
+            return qs.filter(end_date__lt=date.today())
         else:
-            return queryset
+            return qs.annotate(votes_count=Count('votes'))
 
 
 @admin.register(models.Forecast)
