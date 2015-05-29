@@ -97,30 +97,13 @@ class ForecastsJsonView(View):
                             content_type='application/json')
 
 
-class PlaceVoteView(View):
-    def post(self, request):
-        data = request.POST
-        user = request.user
-        form = ForecastForm(data)
-        if not form.is_valid():
-            return HttpResponse(_('Invalid input data!'), status=400)
-        forecast = get_object_or_404(Forecast, pk=data.get('fid'))
-        f_vote = ForecastVotes.objects.filter(user_id__eq=user.id, forecast_id__eq=forecast.id)
-        if f_vote:
-            f_vote.update(vote=data.get('vote'))
-            f_vote.save()
-        else:
-            new_f_vote = ForecastVotes(user_id=request.user, forecast_id=forecast, vote=data.get('vote'))
-            new_f_vote.save()
-        return HttpResponse('ok')
-
-
 class IndividualForecastView(View):
     template_name = 'individual_forecast_page.html'
 
     def get(self, request, id):
         forecast = Forecast.objects.get(pk=id)
         return render(request, self.template_name, {'forecast': forecast})
+
 
 class LoginView(View):
     def post(self, request):
@@ -148,6 +131,24 @@ class LogoutView(View):
         logout(request)
         request.session.flush()
         return HttpResponseRedirect(reverse('home'))
+
+
+class PlaceVoteView(View):
+    def post(self, request):
+        data = request.POST
+        user = request.user
+        form = ForecastForm(data)
+        if not form.is_valid():
+            return HttpResponse(_('Invalid input data!'), status=400)
+        forecast = get_object_or_404(Forecast, pk=data.get('fid'))
+        f_vote = ForecastVotes.objects.filter(user_id__eq=user.id, forecast_id__eq=forecast.id)
+        if f_vote:
+            f_vote.update(vote=data.get('vote'))
+            f_vote.save()
+        else:
+            new_f_vote = ForecastVotes(user_id=request.user, forecast_id=forecast, vote=data.get('vote'))
+            new_f_vote.save()
+        return HttpResponse('ok')
 
 
 class ProfileView(View):

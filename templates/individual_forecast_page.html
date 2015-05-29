@@ -1,7 +1,19 @@
 {% extends 'index_page.html' %}
 {% block content %}
     <div class="container">
-    <h2>{{ forecast.forecast_question }}</h2>
-    <p>{{ forecast. }}</p>
+        <div class="well well-lg"> {{ forecast.forecast_question }} </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Tags:
+                {% for tag in tags %}
+                    <span class="label label-success">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            <div class="panel-body">
+                <div id="peleus-individual-forecast"></div>
+            </div>
+            <div class="panel-footer">Panel footer</div>
+        </div>
     </div>
 {% endblock %}

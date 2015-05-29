@@ -59,7 +59,18 @@ class Forecast(models.Model):
         ordering = ['-end_date']
 
 
+class ForecastTags(models.Model):
+    forecast_id = models.ForeignKey('Forecast')
+    tag_id = models.ForeignKey('Tags')
+
+
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)
     forecast_id = models.ForeignKey('Forecast', related_name='votes')
     vote = models.IntegerField()
+    stamp = models.DateTimeField(auto_now_add=True)
+
+
+class Tags(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
