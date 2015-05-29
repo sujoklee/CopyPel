@@ -45,21 +45,27 @@
 
 }
 #performance p {
-    margin-top: 0.5em; /* Отступ сверху */
-    margin-bottom: 0.5em; /* Отступ снизу */
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
    }
 #info p {
-    margin-top: 0.5em; /* Отступ сверху */
-    margin-bottom: 0.5em; /* Отступ снизу */
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
    }
 #analysis p {
-    margin-top: 0.5em; /* Отступ сверху */
-    margin-bottom: 0.5em; /* Отступ снизу */
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
    }
 #rightuserblock {
-    position: fixed; /* Фиксированное положение */
-    right: 20px; /* Расстояние от правого края окна браузера */
-    top: 6%; /* Расстояние сверху */
-
-
+    position: fixed;
+    right: 20px;
+    top: 6%;
+}
+#head {
+    width: 70%;
+    float:left;
+}
+#edit {
+    width: 30%;
+    float: right;
 }
