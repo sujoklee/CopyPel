@@ -5,13 +5,46 @@
 
 {% block content %}
     <script src="{% static '1p/profile.js' %}"></script>
+    <style>
+    path.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
 
+path.area {
+  fill: #e7e7e7;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+
+</style>
+    </style>
 
 <div class="row">
     <div class="panel col-md-8">
         <div class="row">
             <div class="col-md-6">
-                <h4>{% if myprofile == True %} Hello, {{ user.username }}{% endif %}</h4>
+                <h4>Hello, {{ user.username }}</h4>
 
 
             </div>
@@ -43,7 +76,7 @@ var y = d3.scale.ordinal()
   .domain(d3.range(data.length))
   .rangeBands([0, h], 0.1);
 var color = d3.scale.ordinal()
-  .range(["red", "blue"]);
+  .range(["blue", "blue"]);
 
 //initial svg creation
 var svg = d3.select("#test-chart")
@@ -70,14 +103,14 @@ bars.append("text")
   .attr("y", 1 + y.rangeBand() / 2)
   .attr("dx", -6)
   .attr("dy", ".35em")
-  .attr("text-anchor", "end")
+  .attr("text-anchor", "middle")
   .text(function(d) { return d.value; });
 
 //button press
 $("#transition").click(function(event) {
 //  //ajax calls
 //  var req = $.ajax({
-//    url: '/models/',
+//    url: '/forecast/',
 //    type: 'GET',
 //    dataType: 'json',
 //    success: function(response) {
@@ -106,7 +139,7 @@ $("#transition").click(function(event) {
                 </script>
 
             </div>
-            <p>“Published Analysis: #”</p>
+
 
         <div class="btn-group">
             <div class="panel">
@@ -166,28 +199,30 @@ $("#transition").click(function(event) {
                 <p>Number of Forecasts: {{len_predictions}}</p>
                 <p>See My Archived Forecasts</p>
             </div>
-            <div class="panel" id="info">
-                <h4>My Info</h4>
-                <p>Profession: {{user.profession}}</p>
-                <p>Organization: {{user.organization}}</p>
-                <p>Position: XXX</p>
-                <p>Location: {{user.country}}</p>
-                <p>Areas of Interest: {{user.forecast_areas}}</p>
-            </div>
             <div class="panel" id="analysis">
                 <h4>My Analysis</h4>
                 <p>Profession: {{user.profession}}</p>
                 <p>Organization: {{user.organization}}</p>
                 <p>Position: XXX</p>
                 <p>Location: {{user.country}}</p>
-                <p>Areas of Interest: {{user.forecast_areas}}</p>
+                <p>Published Analysis:</p>
             </div>
-            <div class="panel">
+             <div class="panel">
+                <h4>Connection Center</h4>
                 <p id="messclick"><a href="#">Inbox <span class="badge">1</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#Fol">Followers <span class="badge">2</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#FolUsers">My Followed Users <span class="badge">3</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#MyGroups">My Groups <span class="badge">4</span></a></p>
                 <p>Weekly Profile Views:</p>
+            </div>
+            <div class="panel" id="info">
+                <div id="head"><h4>My Info</h4></div>
+                <div id="edit"><a href="#"><h5>Edit</h5></a></div>
+                <div style="clear: left"></div>
+                <p>Profession: {{user.profession}}</p>
+                <p>Organization: {{user.organization}}</p>
+                <p>Position: XXX</p>
+                <p>Location: {{user.country}}</p>
             </div>
                     <div class="modal fade" id="Fol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                       <div class="modal-dialog">

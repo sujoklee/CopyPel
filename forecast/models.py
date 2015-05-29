@@ -30,7 +30,6 @@ class Forecast(models.Model):
     forecast_question = models.TextField(max_length=1000)
     start_date = models.DateField(auto_now=True)
     end_date = models.DateField()
-    _forecast_types = dict(FORECAST_TYPE)
 
     def is_active(self):
         return self.end_date >= date.today()
@@ -41,7 +40,7 @@ class Forecast(models.Model):
     def to_json(self):
         return {
             'id': self.id,
-            'forecastType': self._forecast_types[self.forecast_type],
+            'forecastType': self.get_forecast_type_display(),
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
