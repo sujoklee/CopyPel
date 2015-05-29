@@ -14,16 +14,6 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="form-group{% if field.error %} error{% endif %}">
-                <label for="{{ field.name }}" class="col-sm-4">{{ field.label }}</label>
-
-                <div class="col-sm-8">
-                    <p>{{ field }}</p>
-                    {% if field.error %}
-                        <label>{{ field.error }}</label>
-                    {% endif %}
-                </div>
-            </div>
             {% endfor %}
             <button type="submit" class="btn btn-success">Propose!</button>
         </div>
