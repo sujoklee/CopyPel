@@ -34,12 +34,14 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
 
     def queryset(self, request, qs):
         v = self.value()
+        qs = qs.annotate(votes_count=Count('votes'))
+
         if v == self.ACTIVE:
             return qs.filter(end_date__gte=date.today())
         elif v == self.ARCHIVED:
             return qs.filter(end_date__lt=date.today())
         else:
-            return qs.annotate(votes_count=Count('votes'))
+            return qs
 
 
 @admin.register(models.Forecast)
@@ -47,3 +49,4 @@ class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
 
+admin.site.register(models.ForecastVotes)
