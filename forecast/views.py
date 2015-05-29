@@ -97,6 +97,14 @@ class ForecastsJsonView(View):
                             content_type='application/json')
 
 
+class IndexPageView(View):
+    template_name = 'index_page.html'
+
+    def get(self, request):
+        forecasts = Forecast.objects.all()
+        return render(request, self.template_name, {'data': forecasts})
+
+
 class IndividualForecastView(View):
     template_name = 'individual_forecast_page.html'
 

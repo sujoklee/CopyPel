@@ -6,7 +6,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 Tags:
-                {% for tag in tags %}
+                {% for tag in forecast.tags %}
                     <span class="label label-success">{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -16,4 +16,9 @@
             <div class="panel-footer">Panel footer</div>
         </div>
     </div>
+{% endblock %}
+
+{% block postbodyscripts %}
+    {% load staticfiles %}
+    <script src="{% static '1p/individual_forecast_page_chart.js' %}"></script>
 {% endblock %}

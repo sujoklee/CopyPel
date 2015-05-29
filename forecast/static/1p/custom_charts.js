@@ -1,4 +1,4 @@
-function draw_custom_chart(selector, data) {
+function draw_timeseries_chart(selector, data) {
     var chart = c3.generate({
         bindto: selector,
         data: {

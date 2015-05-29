@@ -11,3 +11,8 @@
         {% include 'forecasts.html' %}
     {% endif %}
 {% endblock %}
+
+{% block postbodyscripts %}
+    {% load staticfiles %}
+    <script src="{% static '1p/active_forecast_page_charts.js' %}"></script>
+{% endblock %}

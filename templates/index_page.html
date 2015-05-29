@@ -16,11 +16,42 @@
     <div class="row">
         {% include 'forecasts_sidebar_filter.html' %}
         <div class="col-sm-10">
-            <div id="peleus-home-page-chart"></div>
+            {% if not data %}
+                <div class="well well-lg">There are no forecasts</div>
+            {% endif %}
+            {% for el in data %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="well">
+                            <h4>
+                                <a href="/forecast/{{ el.id }}/">{{ el.forecast_question }}</a>
+                            </h4>
+                        </div>
+                        <span class="label label-default">Tags:</span>
+                        {% for tag in el.tags %}
+                            <span class="label label-success">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="panel-body">
+                        <div id="peleus-home-page-chart-{{ el.id }}">
+                            {% if not el.votes %}
+                                <p>No current forecast's votes!</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% comment %}<div class="panel-footer">Panel footer</div>{% endcomment %}
+                </div>
+                <br>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
 
-{%  block footer %}
+{% block footer %}
     {% include 'footer.html' %}
+{% endblock %}
+
+{% block postbodyscripts %}
+    {% load staticfiles %}
+    <script src="{% static '1p/home_page_charts.js' %}"></script>
 {% endblock %}

@@ -10,7 +10,7 @@ urlpatterns = patterns(
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', TemplateView.as_view(template_name='index_page.html'), name='home'),
+    url(r'^$', views.IndexPageView.as_view(), name='home'),
     url(r'profile/$', TemplateView.as_view(template_name='profile_page.html'), name='profile'),
     url(r'signup/$', views.SignUpView.as_view(), name='signup'),
     url(r'signuplast/$', views.SignUpSecondView.as_view(), name='signup2'),
