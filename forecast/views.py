@@ -25,23 +25,24 @@ class LoginRequiredMixin(object):
 
 
 class ActiveForecastsView(View):
-    template_name = 'forecast_page.html'
+    template_name = 'forecasts_page.html'
 
     def get(self, request):
         forecasts = Forecast.objects.all()
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
+class ActiveForecastVoteView(View):
+    def post(self, request):
+        data = request.POST
+
+
 class ArchivedForecastsView(View):
-    template_name = 'forecast_page.html'
+    template_name = 'forecasts_page.html'
 
     def get(self, request):
         forecasts = Forecast.objects.all()
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
-
-class ActiveForecastVoteView(View):
-    def post(self, request):
-        data = request.POST
 
 
 class EmailConfirmationView(View):
@@ -92,7 +93,6 @@ class ForecastsJsonView(View):
         return forecasts
 
     def _respond(self, forecasts):
-        # forecasts = Forecast.objects.all().prefetch_related()
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
 
@@ -114,6 +114,13 @@ class PlaceVoteView(View):
             new_f_vote.save()
         return HttpResponse('ok')
 
+
+class IndividualForecastView(View):
+    template_name = 'individual_forecast_page.html'
+
+    def get(self, request, id):
+        forecast = Forecast.objects.get(pk=id)
+        return render(request, self.template_name, {'forecast': forecast})
 
 class LoginView(View):
     def post(self, request):
