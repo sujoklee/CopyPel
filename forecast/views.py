@@ -72,7 +72,7 @@ class ForecastsJsonView(View):
         qs = Forecast.objects.all()
 
         if 'id' in request.GET:
-            query['pk__in'] = request.GET.getlist('id')
+            query['pk__in'] = request.GET.getlist('fid')
             qs = qs.filter(**query)
             self._respond(qs)
         # elif 'name' in request.GET:

@@ -4,7 +4,7 @@ $(document).ready(function (e) {
         url: "/forecasts/",
         method: 'GET',
         data:{
-            id: forecast_id
+            fid: forecast_id
         }
 
     }).done(function (data) {
