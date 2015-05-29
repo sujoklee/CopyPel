@@ -2,7 +2,7 @@ from datetime import date, datetime
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Avg
 
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE
 
@@ -44,8 +44,8 @@ class Forecast(models.Model):
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
-            'votes': [{'vote': v['vote'], 'count': v['num_votes']}
-                      for v in self.votes.values('vote').annotate(num_votes=Count('vote'))]}
+            'votes': [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
+                      for v in self.votes.values('date').annotate(avg_votes=Avg('vote'))]}
 
     def votes_count(self):
         votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
@@ -67,7 +67,7 @@ class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)
     forecast_id = models.ForeignKey('Forecast', related_name='votes')
     vote = models.IntegerField()
-    stamp = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
 
 class Tags(models.Model):
