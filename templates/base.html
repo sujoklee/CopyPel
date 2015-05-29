@@ -25,6 +25,8 @@
 
     {% load staticfiles %}
     <link href="{% static '1p/main.css' %}" rel="stylesheet">
+    {% load staticfiles %}
+    <link href="{% static '3p/c3/c3.min.css' %}" rel="stylesheet">
 
     {% load staticfiles %}
     <link rel="{% static '3p/sticky-footer-navbar.css' %}">
@@ -37,6 +39,10 @@
     <script src="{% static '3p/bootstrap.min.js' %}"></script>
     {% load staticfiles %}
     <script src="{% static '3p/d3.v3.min.js' %}"></script>
+    {% load staticfiles %}
+    <script src="{% static '3p/c3/c3.min.js' %}"></script>
+    {% load staticfiles %}
+    <script src="{% static '1p/custom_charts.js' %}"></script>
     {% block headerscripts %}{% endblock %}
 </head>
 
