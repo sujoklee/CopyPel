@@ -1,4 +1,5 @@
 $(document).ready(function (e) {
+    var forecast_id = $('#peleus-individual-forecast').attr('forecast-id');
     $.ajax({
         url: "/forecasts/",
         method: 'GET'
