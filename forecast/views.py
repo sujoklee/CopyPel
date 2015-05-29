@@ -173,6 +173,21 @@ class ProfileView(View):
         return render(request, self.template_name, {'myprofile':myprofile})
 
 
+class ProposeForecastView(View):
+    template_name = 'propose_forecast_page.html'
+    form = ForecastForm
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form()})
+
+    def post(self, request):
+        form = self.form(request.POST)
+        if form.is_valid():
+            return HttpResponse('Thank you for your forecast. It *might* be published later. lol')
+        else:
+            return render(request, self.template_name, {'form': form})
+
+
 class SignUpView(View):
     template_name = 'sign_up_page.html'
     error_template = 'error_login_page.html'
