@@ -1,16 +1,11 @@
 import ast
 
-from django.template.defaulttags import register
-
 from models import CustomUserProfile
 from Peleus.settings import REGIONS, AREAS
 
 FORECAST_REGIONS = dict(REGIONS)
 FORECAST_AREAS = dict(AREAS)
 
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
 
 def forecast_user(request):
     try:
