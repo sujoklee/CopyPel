@@ -50,3 +50,4 @@ class ForecastAdmin(ModelAdmin):
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
 
 admin.site.register(models.ForecastVotes)
+

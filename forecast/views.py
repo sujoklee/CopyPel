@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, DetailView
+from django.views.generic import View
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
 from models import Forecast, ForecastVotes
@@ -157,18 +157,18 @@ class PlaceVoteView(View):
         return HttpResponse('ok')
 
 
-class ProfileView(View):
-    template_name = 'profile_page.html'
-    model = CustomUserProfile
-
-    def get(self, request):
-
-        if request.user.id == request.user.id:
-            myprofile = True
-        else:
-            myprofile = False
-
-        return render(request, self.template_name, {'myprofile':myprofile})
+# class ProfileView(View):
+#     template_name = 'profile_page.html'
+#     model = CustomUserProfile
+#
+#     def get(self, request):
+#
+#         if request.user.id == request.user.id:
+#             myprofile = True
+#         else:
+#             myprofile = False
+#
+#         return render(request, self.template_name, {'myprofile':myprofile})
 
 
 class ProposeForecastView(View):
@@ -181,6 +181,13 @@ class ProposeForecastView(View):
     def post(self, request):
         form = self.form(request.POST)
         if form.is_valid():
+            forecast_type = form.cleaned_data['forecast_type']
+            forecast_question = form.cleaned_data['forecast_question']
+            propose = Forecast.objects.create(
+                                        forecast_type = forecast_type,
+                                        forecast_question = forecast_question
+                                        )
+            propose.save()
             return HttpResponse('Thank you for your forecast. It *might* be published later. lol')
         else:
             return render(request, self.template_name, {'form': form})

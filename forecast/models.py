@@ -29,7 +29,7 @@ class Forecast(models.Model):
     forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question = models.TextField(max_length=1000)
     start_date = models.DateField(auto_now=True)
-    end_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
 
     def is_active(self):
         return self.end_date >= date.today()
@@ -69,6 +69,10 @@ class ForecastVotes(models.Model):
     vote = models.IntegerField()
     date = models.DateField(auto_now_add=True)
 
+
+# class ForecastPropose(models.Model):
+#     forecast_type = models.ForeignKey('Forecast')
+#     forecast_question = models.ForeignKey('Forecast')
 
 class Tags(models.Model):
     name = models.CharField(max_length=100, unique=True)

@@ -10,7 +10,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
     DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
-from forecast.models import CustomUserProfile, Forecast, ForecastVotes
+from forecast.models import CustomUserProfile, ForecastVotes, Forecast
 from utils.different import generate_activation_key
 
 
