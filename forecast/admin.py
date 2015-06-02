@@ -49,4 +49,15 @@ class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
 
-admin.site.register(models.ForecastVotes)
+@admin.register(models.ForecastVotes)
+class ForecastVotesAdmin(ModelAdmin):
+    list_display = ('user_display', 'forecast_question_display', 'vote', 'date',)
+
+    def user_display(self, obj):
+        return obj.user_id
+    user_display.short_description = 'User'
+    user_display.admin_order_field = 'user_id'
+
+    def forecast_question_display(self, obj):
+        return obj.forecast_id.forecast_question
+    forecast_question_display.short_description = 'Question'
