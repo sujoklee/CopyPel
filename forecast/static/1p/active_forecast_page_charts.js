@@ -1,6 +1,6 @@
 $(document).ready(function (e) {
     $.ajax({
-        url: "/active_forecasts/",
+        url: "/forecasts/",
         method: 'GET'
 
     }).done(function (data) {

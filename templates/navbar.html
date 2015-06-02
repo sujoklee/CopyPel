@@ -28,7 +28,7 @@
                     </ul>
                 </li>
                 <li><a href="#">User Rankings</a></li>
-                <li><a href="#">About {{ app_name }}</a></li>
+                <li><a href="{% url 'about' %}">About {{ app_name }}</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'propose_forecast' %}">Propose new forecast</a></li>{% endif %}
             </ul>

@@ -68,15 +68,16 @@ class EmailConfirmationView(View):
 class ForecastsJsonView(View):
 
     def get(self, request):
-        qs = Forecast.objects.filter(end_date__lt=date.today())
+        qs = Forecast.objects.all()
 
         if 'id' in request.GET:
-            qs = qs.filter(pk__in=request.GET.getlist('fid'))
+            qs = qs.filter(pk__in=request.GET.getlist('id'))
             self._respond(qs)
         # elif 'name' in request.GET:
         #     query['forecast_question__in'] = request.GET.getlist('name')
         #     qs = Forecast.objects.filter(**query)
         else:
+            qs = Forecast.objects.filter(end_date__gte=date.today())
             forecast_filter = request.GET.get('filter', FORECAST_FILTER_MOST_ACTIVE)
             qs = self._queryset_by_forecast_filter(qs, forecast_filter)
         return self._respond(qs)
@@ -155,20 +156,6 @@ class PlaceVoteView(View):
             new_f_vote = ForecastVotes(user_id=request.user, forecast_id=forecast, vote=data.get('vote'))
             new_f_vote.save()
         return HttpResponse('ok')
-
-
-# class ProfileView(View):
-#     template_name = 'profile_page.html'
-#     model = CustomUserProfile
-#
-#     def get(self, request):
-#
-#         if request.user.id == request.user.id:
-#             myprofile = True
-#         else:
-#             myprofile = False
-#
-#         return render(request, self.template_name, {'myprofile':myprofile})
 
 
 class ProposeForecastView(View):
