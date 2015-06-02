@@ -4,11 +4,12 @@ from datetime import datetime, timedelta
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from django.forms.extras import SelectDateWidget
 from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
-    DEFAULT_EMAIL, DOMAIN_NAME
+    DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
 from forecast.models import CustomUserProfile, Forecast, ForecastVotes
 from utils.different import generate_activation_key
 
@@ -16,7 +17,12 @@ from utils.different import generate_activation_key
 class ForecastForm(ModelForm):
     class Meta:
         model = Forecast
-        fields = '__all__'
+        fields = ('forecast_type', 'forecast_question',)
+
+    forecast_type = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
+                                      widget=forms.Select(attrs={'class': 'form-control input-sm'}))
+    forecast_question = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
+    # end_date = forms.DateField(required=True, widget=SelectDateWidget(attrs={'class': 'form-control input-sm'}))
 
 
 class ForecastVoteForm(ModelForm):
