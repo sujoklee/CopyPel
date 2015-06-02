@@ -71,8 +71,10 @@ class ForecastVotes(models.Model):
 
 
 # class ForecastPropose(models.Model):
+#     user_id = models.ForeignKey(User)
 #     forecast_type = models.ForeignKey('Forecast')
 #     forecast_question = models.ForeignKey('Forecast')
+
 
 class Tags(models.Model):
     name = models.CharField(max_length=100, unique=True)

@@ -50,9 +50,6 @@ class ForecastAdmin(ModelAdmin):
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
 
 
-admin.site.register(models.ForecastVotes)
-
-
 @admin.register(models.ForecastVotes)
 class ForecastVotesAdmin(ModelAdmin):
     list_display = ('user_display', 'forecast_question_display', 'vote', 'date',)
