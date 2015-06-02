@@ -75,6 +75,10 @@ class ForecastVotes(models.Model):
     vote = models.IntegerField()
     date = models.DateField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'forecast vote'
+        verbose_name_plural = 'forecast votes'
+
 
 class Tags(models.Model):
     name = models.CharField(max_length=100, unique=True)
