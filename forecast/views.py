@@ -68,12 +68,10 @@ class EmailConfirmationView(View):
 class ForecastsJsonView(View):
 
     def get(self, request):
-        query = {'end_date__lt': date.today()}
-        qs = Forecast.objects.all()
+        qs = Forecast.objects.filter(end_date__lt=date.today())
 
         if 'id' in request.GET:
-            query['pk__in'] = request.GET.getlist('fid')
-            qs = qs.filter(**query)
+            qs = qs.filter(pk__in=request.GET.getlist('fid'))
             self._respond(qs)
         # elif 'name' in request.GET:
         #     query['forecast_question__in'] = request.GET.getlist('name')
