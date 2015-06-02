@@ -63,17 +63,17 @@ class ForecastTags(models.Model):
     tag_id = models.ForeignKey('Tags')
 
 
+class ForecastPropose(models.Model):
+    user_id = models.ForeignKey(User)
+    forecast_type_new = models.CharField(max_length=2, choices=FORECAST_TYPE)
+    forecast_question_new = models.TextField(max_length=1000)
+
+
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)
     forecast_id = models.ForeignKey('Forecast', related_name='votes')
     vote = models.IntegerField()
     date = models.DateField(auto_now_add=True)
-
-
-# class ForecastPropose(models.Model):
-#     user_id = models.ForeignKey(User)
-#     forecast_type = models.ForeignKey('Forecast')
-#     forecast_question = models.ForeignKey('Forecast')
 
 
 class Tags(models.Model):

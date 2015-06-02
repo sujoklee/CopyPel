@@ -10,18 +10,17 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
     DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
-from forecast.models import CustomUserProfile, ForecastVotes, Forecast
+from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose
 from utils.different import generate_activation_key
 
 
 class ForecastForm(ModelForm):
     class Meta:
-        model = Forecast
-        fields = ('forecast_type', 'forecast_question',)
-
-    forecast_type = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
+        model = ForecastPropose
+        fields = ('forecast_type_new', 'forecast_question_new',)
+    forecast_type_new = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
                                       widget=forms.Select(attrs={'class': 'form-control input-sm'}))
-    forecast_question = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
+    forecast_question_new = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
     # end_date = forms.DateField(required=True, widget=SelectDateWidget(attrs={'class': 'form-control input-sm'}))
 
 

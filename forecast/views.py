@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
-from models import Forecast, ForecastVotes
+from models import Forecast, ForecastPropose, ForecastVotes
 from Peleus.settings import APP_NAME,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
 
@@ -166,16 +166,18 @@ class ProposeForecastView(View):
         return render(request, self.template_name, {'form': self.form()})
 
     def post(self, request):
+        user = request.user
         form = self.form(request.POST)
         if form.is_valid():
-            forecast_type = form.cleaned_data['forecast_type']
-            forecast_question = form.cleaned_data['forecast_question']
-            propose = Forecast.objects.create(
-                                        forecast_type = forecast_type,
-                                        forecast_question = forecast_question
+            forecast_type_new = form.cleaned_data['forecast_type_new']
+            forecast_question_new = form.cleaned_data['forecast_question_new']
+            propose = ForecastPropose.objects.create(
+                                        user_id=request.user,
+                                        forecast_type_new = forecast_type_new,
+                                        forecast_question_new = forecast_question_new
                                         )
             propose.save()
-            return HttpResponse('Thank you for your forecast. It *might* be published later. lol')
+            return HttpResponse('Thank you for your forecast.')
         else:
             return render(request, self.template_name, {'form': form})
 
