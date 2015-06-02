@@ -1,0 +1,41 @@
+<div class="col-sm-2 peleus-sidebar">
+
+    <div id="peleus-toggle-wrap">
+        <div class="peleus-toggle collapse">
+            <form>
+                <div class="form-group">
+                    {#                    <span>Input initial prediction</span>#}
+                    <input type="number" min="0" max="100" value="" class="form-control"
+                           placeholder="Initial prediction">
+                </div>
+                <div class="form-group">
+                    <a href="#modal-dialog" class="form-control btn btn-success" data-toggle="modal">Initiate
+                        forecast</a>
+                </div>
+            </form>
+        </div>
+        <div class="peleus-toggle collapse in">
+            <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-toggle"
+                    data-parent="#peleus-toggle-wrap">
+                Initiate forecast
+            </button>
+        </div>
+    </div>
+    <div id="modal-dialog" class="modal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Are you sure?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to submit the form?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">No</button>
+                    <button class="btn btn-primary">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
