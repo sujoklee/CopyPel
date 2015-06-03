@@ -4,7 +4,7 @@ from django_countries.fields import CountryField
 from django.db import models
 from django.db.models import Count, Avg
 
-from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE
+from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
 
 
 class CustomUserProfile(models.Model):
@@ -67,7 +67,8 @@ class ForecastPropose(models.Model):
     user_id = models.ForeignKey(User)
     forecast_type_new = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question_new = models.TextField(max_length=1000)
-
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Unpublished')
 
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)

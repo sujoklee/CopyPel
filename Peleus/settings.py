@@ -163,6 +163,9 @@ REGIONS = (('1', "Europe"),
            ('6', "North America"),
            ('7', "South America"))
 
+STATUS_CHOICES = (('u', "Unpublished"),
+                  ('p', "Published"))
+
 FORECAST_FILTER_MOST_ACTIVE = "mostactive"
 FORECAST_FILTER_NEWEST = "newest"
 FORECAST_FILTER_CLOSING = "closing"
