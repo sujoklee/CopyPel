@@ -23,4 +23,5 @@ urlpatterns = patterns(
     url(r'^propose_forecast/$', views.ProposeForecastView.as_view(), name='propose_forecast'),
     url(r'^forecast/(?P<id>\d+)/$', views.IndividualForecastView.as_view(), name='individual_forecast'),
     url(r'^forecasts/$', views.ForecastsJsonView.as_view(), name='forecasts'),
+    url(r'^forecast_vote/$', views.ActiveForecastVoteView.as_view(), name='forecast_vote')
 )
