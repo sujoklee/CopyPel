@@ -5,7 +5,14 @@
         {% include 'individual_forecast_sidebar.html' %}
         {% else %}
         <div class="col-sm-2 peleus-sidebar">
-            <span>Please, Sign in to participate this forecast</span>
+            <span>Please, <a href="#" id="peleus-sidebar-signin">Sign in</a> to participate this forecast</span>
+            <script type="text/javascript">
+                $('#peleus-sidebar-signin').click(function (e) {
+                    e.stopPropagation();
+                    $('#signin').find('.dropdown-toggle').dropdown('toggle');
+                    $('input[name=username]').focus()
+                })
+            </script>
         </div>
     {% endif %}
 
