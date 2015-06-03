@@ -7,7 +7,6 @@ from django.db.models import Count
 
 import models
 
-
 admin.site.site_header = 'Peleus administration'
 admin.site.site_title = 'Peleus site admin'
 
@@ -51,12 +50,19 @@ class ForecastAdmin(ModelAdmin):
 
 
 @admin.register(models.ForecastPropose)
-class ForecastAdmin(ModelAdmin):
+class ForecastProposeAdmin(ModelAdmin):
     list_display = ('forecast_question_new', 'forecast_type_new', 'date', 'status')
     actions = ['make_published']
 
     def make_published(self, request, queryset):
         rows_updated = queryset.update(status='p')
+
+        for fPropose in queryset:
+            f = models.Forecast.objects.create(forecast_type = fPropose.forecast_type_new,
+                                               forecast_question = fPropose.forecast_question_new,
+                                               end_date = fPropose.date)
+            f.save()
+
         if rows_updated == 1:
             message_bit = "1 forecast was"
         else:

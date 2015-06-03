@@ -70,6 +70,7 @@ class ForecastPropose(models.Model):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Unpublished')
 
+
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)
     forecast_id = models.ForeignKey('Forecast', related_name='votes')
