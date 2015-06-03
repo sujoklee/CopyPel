@@ -2,14 +2,16 @@
 
     <div id="peleus-toggle-wrap">
         <div class="peleus-toggle collapse">
-            <form>
+            <form id="forecast-vote-form" action="{% url 'forecast_vote' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="forecast-id" value="{{ forecast.id }}">
                 <div class="form-group">
                     {#                    <span>Input initial prediction</span>#}
                     <input type="number" min="0" max="100" value="" class="form-control"
-                           placeholder="Initial prediction">
+                           placeholder="Initial prediction" name="forecast-vote" id="forecast-vote" required>
                 </div>
                 <div class="form-group">
-                    <a href="#modal-dialog" class="form-control btn btn-success" data-toggle="modal">Initiate
+                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">Initiate
                         forecast</a>
                 </div>
             </form>
@@ -29,13 +31,33 @@
                     <h4 class="modal-title">Are you sure?</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Do you want to submit the form?</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-default" data-dismiss="modal">No</button>
-                    <button class="btn btn-primary">Yes</button>
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="forecast-btn-submit">Confirm</button>
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#vote').click(function() {
+                var form = $('#forecast-vote-form');
+                var vote = $('#forecast-vote').val();
+                var name = $('#forecast-question').html();
+                if(vote) {
+                    $('#modal-dialog .modal-body').html(
+                        '<p>Please confirm you wish to initiate your forecast on ' + name +
+                        ' at ' + vote + '</p>');
+                    $('#modal-dialog').modal('show');
+
+                    $('#forecast-btn-submit').click(function () {
+                       form.submit();
+                    });
+                } else {
+                    // form.submit(function (event) {})
+                }
+            })
+        })
+    </script>
 </div>
