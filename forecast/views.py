@@ -179,7 +179,6 @@ class ProposeForecastView(View):
         return render(request, self.template_name, {'form': self.form()})
 
     def post(self, request):
-        user = request.user
         form = self.form(request.POST)
         if form.is_valid():
             forecast_type_new = form.cleaned_data['forecast_type_new']
