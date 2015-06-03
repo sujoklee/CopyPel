@@ -122,6 +122,9 @@ TEMPLATES = [
     },
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'forecast', 'static', 'media')
+MEDIA_URL = '/media/'
+
 RECAPTCHA_PUBLIC_KEY = '6Ldr5gYTAAAAAOWBFg4rtP6UKZs54wqC1Xa7t4UR'
 RECAPTCHA_PRIVATE_KEY = '6Ldr5gYTAAAAAMfzv_K8zfPcdzSi1YSU2_PbvZH5'
 NOCAPTCHA = True

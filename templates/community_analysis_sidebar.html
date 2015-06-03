@@ -1,0 +1,19 @@
+<div class="col-sm-2 peleus-sidebar">
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Community analysis</div>
+        {% for analysis in analysis_set %}
+        <div class="panel-body">
+            <div class="well">
+                {{ analysis.title }}
+            </div>
+            <div>
+                {{ analysis.body }}
+            </div>
+            <p>posted by {{ analysis.user }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>

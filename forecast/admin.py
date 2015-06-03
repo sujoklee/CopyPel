@@ -16,6 +16,12 @@ class CustomUserProfileInline(StackedInline):
     verbose_name = 'forecast user'
     verbose_name_plural = 'forecast users'
 
+
+# class TagsInline(StackedInline):
+#     model = models.Tags
+#     verbose_name = 'tag'
+#     verbose_name_plural = 'tags'
+
 UserAdmin.inlines = (CustomUserProfileInline,)
 
 
@@ -47,6 +53,7 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
+    # inlines = (TagsInline,)
 
 
 @admin.register(models.ForecastPropose)
@@ -83,3 +90,12 @@ class ForecastVotesAdmin(ModelAdmin):
         return obj.forecast_id.forecast_question
     forecast_question_display.short_description = 'Question'
 
+
+@admin.register(models.ForecastMedia)
+class ForecastMediaAdmin(ModelAdmin):
+    list_display = ('forecast', 'name', 'url', 'image')
+
+
+@admin.register(models.ForecastAnalysis)
+class ForecastAnalysis(ModelAdmin):
+    list_display = ('user', 'forecast', 'title', 'body')

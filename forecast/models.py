@@ -85,3 +85,16 @@ class ForecastVotes(models.Model):
 class Tags(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
+
+class ForecastAnalysis(models.Model):
+    user = models.ForeignKey(User)
+    forecast = models.ForeignKey('Forecast')
+    title = models.CharField(max_length=100, blank=True, null=True)
+    body = models.TextField(max_length=1000, blank=True, null=True)
+
+
+class ForecastMedia(models.Model):
+    forecast = models.ForeignKey('Forecast')
+    name = models.CharField(max_length=100, blank=True, null=True)
+    url = models.URLField()
+    image = models.ImageField()

@@ -16,7 +16,7 @@
         </div>
     {% endif %}
 
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <div class="well well-lg" id="forecast-question"> {{ forecast.forecast_question }} </div>
 
             <div class="panel panel-default">
@@ -32,6 +32,8 @@
                 <div class="panel-footer">Panel footer</div>
             </div>
         </div>
+
+    {% include 'community_analysis_sidebar.html' %}
 
     </div>
 {% endblock %}

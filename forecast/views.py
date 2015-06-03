@@ -121,8 +121,11 @@ class IndividualForecastView(View):
 
     def get(self, request, id):
         forecast = Forecast.objects.get(pk=id)
-        voted_before = forecast.votes.filter()
-        return render(request, self.template_name, {'forecast': forecast})
+        analysis_set = forecast.forecastanalysis_set.all()
+        # TODO check if user already made predictions for this forecast
+        # voted_before = forecast.votes.filter()
+        return render(request, self.template_name, {'forecast': forecast,
+                                                    'analysis_set': analysis_set})
 
 
 class LoginView(View):

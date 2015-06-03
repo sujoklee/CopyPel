@@ -1,8 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf import settings
+from django.conf.urls import patterns, include, url, static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
 import forecast.views as views
+from Peleus.settings import MEDIA_ROOT
 
 admin.autodiscover()
 urlpatterns = patterns(
@@ -24,4 +26,4 @@ urlpatterns = patterns(
     url(r'^forecast/(?P<id>\d+)/$', views.IndividualForecastView.as_view(), name='individual_forecast'),
     url(r'^forecasts/$', views.ForecastsJsonView.as_view(), name='forecasts'),
     url(r'^forecast_vote/$', views.ActiveForecastVoteView.as_view(), name='forecast_vote')
-)
+) + static.static(settings.MEDIA_URL, document_root=MEDIA_ROOT)
