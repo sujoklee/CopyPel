@@ -1,20 +1,25 @@
 {% extends 'index_page.html' %}
 {% block content %}
-    <div class="container">
-        <div class="well well-lg"> {{ forecast.forecast_question }} </div>
+    <div class="row">
+        {% include 'individual_forecast_sidebar.html' %}
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Tags:
-                {% for tag in forecast.tags %}
-                    <span class="label label-success">{{ tag }}</span>
-                {% endfor %}
+        <div class="col-sm-10">
+            <div class="well well-lg"> {{ forecast.forecast_question }} </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Tags:
+                    {% for tag in forecast.tags %}
+                        <span class="label label-success">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                <div class="panel-body">
+                    <div id="peleus-individual-forecast" forecast-id="{{ forecast.id }}"></div>
+                </div>
+                <div class="panel-footer">Panel footer</div>
             </div>
-            <div class="panel-body">
-                <div id="peleus-individual-forecast" forecast-id="{{ forecast.id }}"></div>
-            </div>
-            <div class="panel-footer">Panel footer</div>
         </div>
+
     </div>
 {% endblock %}
 

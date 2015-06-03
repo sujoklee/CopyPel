@@ -69,3 +69,7 @@
     width: 30%;
     float: right;
 }
+
+.btn-default, .btn-default:hover {
+    color: black;
+}
