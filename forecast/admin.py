@@ -52,7 +52,16 @@ class ForecastAdmin(ModelAdmin):
 
 @admin.register(models.ForecastPropose)
 class ForecastAdmin(ModelAdmin):
-    list_display = ('forecast_question_new', 'forecast_type_new')
+    list_display = ('forecast_question_new', 'forecast_type_new', 'date', 'status')
+    actions = ['make_published']
+
+    def make_published(self, request, queryset):
+        rows_updated = queryset.update(status='p')
+        if rows_updated == 1:
+            message_bit = "1 forecast was"
+        else:
+            message_bit = "%s forecasts were" % rows_updated
+        self.message_user(request, "%s successfully marked as published." % message_bit)
 
 
 @admin.register(models.ForecastVotes)
