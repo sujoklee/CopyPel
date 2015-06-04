@@ -6,20 +6,24 @@
                 {% csrf_token %}
                 <input type="hidden" name="forecast-id" value="{{ forecast.id }}">
                 <div class="form-group">
-                    {#                    <span>Input initial prediction</span>#}
-                    <input type="number" min="0" max="100" value="" class="form-control"
-                           placeholder="Initial prediction" name="forecast-vote" id="forecast-vote" required>
+                    <span>
+                        {% if last_vote == None %}Input initial prediction
+                        {% else %}Adjust your prediction{% endif %}</span>
+                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}" class="form-control"
+                           placeholder="{% if last_vote == None %}Initial
+                           {% else %}Adjust{% endif %} prediction" name="forecast-vote" id="forecast-vote" required>
                 </div>
                 <div class="form-group">
-                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">Initiate
-                        forecast</a>
+                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">{% if last_vote == None %}Initiate
+                        forecast{% else %}Adjust prediction{% endif %}</a>
                 </div>
             </form>
         </div>
         <div class="peleus-toggle collapse in">
+            {% if last_vote != None %}<span>My Current Prediction: {{ last_vote }}</span>{% endif %}
             <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-toggle"
                     data-parent="#peleus-toggle-wrap">
-                Initiate forecast
+                {% if last_vote == None %}Initiate forecast{% else %}Adjust prediction{% endif %}
             </button>
         </div>
     </div>

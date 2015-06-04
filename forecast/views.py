@@ -120,12 +120,18 @@ class IndividualForecastView(View):
     template_name = 'individual_forecast_page.html'
 
     def get(self, request, id):
+        user = request.user
         forecast = Forecast.objects.get(pk=id)
         analysis_set = forecast.forecastanalysis_set.all()
-        # TODO check if user already made predictions for this forecast
-        # voted_before = forecast.votes.filter()
-        return render(request, self.template_name, {'forecast': forecast,
-                                                    'analysis_set': analysis_set})
+
+        try:
+            last_vote = forecast.votes.filter(user_id=user).order_by('-date')[0].vote
+        except IndexError:
+            last_vote = None
+        return render(request, self.template_name,
+                      {'forecast': forecast,
+                       'analysis_set': analysis_set,
+                       'last_vote': last_vote,})
 
 
 class LoginView(View):

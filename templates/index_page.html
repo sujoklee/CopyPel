@@ -24,7 +24,7 @@
                     <div class="panel-heading">
                         <div class="well">
                             <h4>
-                                <a href="/forecast/{{ el.id }}/">{{ el.forecast_question }}</a>
+                                <a href="{% url 'individual_forecast' id=el.id %}">{{ el.forecast_question }}</a>
                             </h4>
                         </div>
                         <span class="label label-default">Tags:</span>
