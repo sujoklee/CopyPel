@@ -126,7 +126,7 @@ class IndividualForecastView(View):
 
         try:
             last_vote = forecast.votes.filter(user_id=user).order_by('-date')[0].vote
-        except IndexError:
+        except:
             last_vote = None
         return render(request, self.template_name,
                       {'forecast': forecast,
