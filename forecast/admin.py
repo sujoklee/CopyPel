@@ -76,6 +76,8 @@ class ForecastProposeAdmin(ModelAdmin):
             message_bit = "%s forecasts were" % rows_updated
         self.message_user(request, "%s successfully marked as published." % message_bit)
 
+        published = models.ForecastPropose.objects.filter(status='p')
+        published.delete()
 
 @admin.register(models.ForecastVotes)
 class ForecastVotesAdmin(ModelAdmin):
