@@ -112,7 +112,7 @@ class IndexPageView(View):
     template_name = 'index_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+        forecasts = Forecast.objects.annotate(forecasters=Count('votes__user_id', distinct=True))
         return render(request, self.template_name, {'data': forecasts})
 
 
