@@ -38,11 +38,11 @@ class LoginRequiredMixin(object):
         return login_required(view)
 
 
-class ActiveForecastsView(View):
+class ActiveForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+        forecasts = self._queryset_by_forecast_filter(request)
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
