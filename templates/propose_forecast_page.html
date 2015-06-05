@@ -1,6 +1,8 @@
 {% extends 'index_page.html' %}
 
 {% block content %}
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
     <form class="form-horizontal" action="{% url 'propose_forecast' %}" method="post">
         {% csrf_token %}
         <div class="center-block form-center-block">
@@ -15,6 +17,17 @@
                 </div>
             </div>
             {% endfor %}
+        <div>
+            <label>Tags</label>
+            <select class="js-example-tags form-control" multiple="multiple">
+
+        </select>
+        </div>
+        <script type="text/javascript">
+                $(".js-example-tags").select2({
+                 tags: true
+                 })
+        </script>
             <button type="submit" class="btn btn-success">Propose!</button>
         </div>
     </form>
