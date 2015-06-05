@@ -13,8 +13,22 @@ from django.views.generic import View
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
 from models import Forecast, ForecastPropose, ForecastVotes
-from Peleus.settings import APP_NAME,\
+from Peleus.settings import APP_NAME, FORECAST_FILTER,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
+
+
+class ForecastFilterMixin(object):
+    def _queryset_by_forecast_filter(self, request):
+        forecasts = Forecast.objects.filter(end_date__gte=date.today())
+        forecast_filter = request.GET.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
+
+        if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
+        elif forecast_filter == FORECAST_FILTER_NEWEST:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
+        elif forecasts == FORECAST_FILTER_CLOSING:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
+        return forecasts
 
 
 class LoginRequiredMixin(object):
@@ -53,7 +67,7 @@ class ArchivedForecastsView(View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+        forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
 
 
@@ -77,42 +91,30 @@ class EmailConfirmationView(View):
         return render(request, self.template_name, res_dict)
 
 
-class ForecastsJsonView(View):
+class ForecastsJsonView(ForecastFilterMixin, View):
 
     def get(self, request):
         qs = Forecast.objects.all()
 
         if 'id' in request.GET:
             qs = qs.filter(pk__in=request.GET.getlist('id'))
-            self._respond(qs)
-        # elif 'name' in request.GET:
-        #     query['forecast_question__in'] = request.GET.getlist('name')
-        #     qs = Forecast.objects.filter(**query)
         else:
-            qs = Forecast.objects.filter(end_date__gte=date.today())
-            forecast_filter = request.GET.get('filter', FORECAST_FILTER_MOST_ACTIVE)
-            qs = self._queryset_by_forecast_filter(qs, forecast_filter)
+            qs = self._queryset_by_forecast_filter(request)
         return self._respond(qs)
-
-    def _queryset_by_forecast_filter(self, forecasts, forecast_filter):
-        if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
-        elif forecast_filter == FORECAST_FILTER_NEWEST:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
-        elif forecasts == FORECAST_FILTER_CLOSING:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
-        return forecasts
 
     def _respond(self, forecasts):
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
 
 
-class IndexPageView(View):
+class IndexPageView(ForecastFilterMixin, View):
     template_name = 'index_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.annotate(forecasters=Count('votes__user_id', distinct=True))
+
+        forecasts = self._queryset_by_forecast_filter(request).annotate(
+            forecasters=Count('votes__user_id', distinct=True))
+
         return render(request, self.template_name, {'data': forecasts})
 
 

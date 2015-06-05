@@ -112,6 +112,7 @@ TEMPLATES = [
         'OPTIONS': {'context_processors': ("django.contrib.auth.context_processors.auth",
                                            "forecast.context_processors.forecast_user",
                                            "forecast.context_processors.forecast_interests",
+                                           "forecast.context_processors.forecast_filters",
                                            "django.template.context_processors.debug",
                                            "django.template.context_processors.i18n",
                                            "django.template.context_processors.media",
@@ -169,11 +170,14 @@ REGIONS = (('1', "Europe"),
 STATUS_CHOICES = (('u', "Unpublished"),
                   ('p', "Published"))
 
+FORECAST_FILTER = "filter"
 FORECAST_FILTER_MOST_ACTIVE = "mostactive"
 FORECAST_FILTER_NEWEST = "newest"
 FORECAST_FILTER_CLOSING = "closing"
 
-FORECAST_FILTERS = {FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING}
+FORECAST_FILTERS = {'FORECAST_FILTER_MOST_ACTIVE': FORECAST_FILTER_MOST_ACTIVE,
+                    'FORECAST_FILTER_NEWEST': FORECAST_FILTER_NEWEST,
+                    'FORECAST_FILTER_CLOSING': FORECAST_FILTER_CLOSING}
 
 DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
 
