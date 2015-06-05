@@ -47,7 +47,7 @@
                 var form = $('#forecast-vote-form');
                 var vote = $('#forecast-vote').val();
                 var name = $('#forecast-question').html();
-                if(voteInput.reportValidity()) {
+                if(voteInput.checkValidity()) {
                     $('#modal-dialog .modal-body').html(
                         '<p>Please confirm you wish to initiate your forecast on <i>' + name +
                         '</i> at <i>' + vote + '</i></p>');
