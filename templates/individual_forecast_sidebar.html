@@ -45,22 +45,31 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#vote').click(function() {
+            var voteInput = $('#forecast-vote')[0];
+
+            function submitVote() {
                 var form = $('#forecast-vote-form');
                 var vote = $('#forecast-vote').val();
                 var name = $('#forecast-question').html();
-                if(vote) {
+                if(voteInput.reportValidity()) {
                     $('#modal-dialog .modal-body').html(
-                        '<p>Please confirm you wish to initiate your forecast on ' + name +
-                        ' at ' + vote + '</p>');
+                        '<p>Please confirm you wish to initiate your forecast on <i>' + name +
+                        '</i> at <i>' + vote + '</i></p>');
                     $('#modal-dialog').modal('show');
 
-                    $('#forecast-btn-submit').click(function () {
-                       form.submit();
+                    $('#forecast-btn-submit').click(function (e) {
+                        form.submit();
                     });
-                } else {
-                    // form.submit(function (event) {})
                 }
+            }
+
+            $('#vote').click(submitVote);
+            $(voteInput).keypress(function (e) {
+                if(e.keyCode === 13) {
+                    submitVote();
+                    return false;
+                }
+                return true;
             })
         })
     </script>
