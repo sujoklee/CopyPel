@@ -184,14 +184,10 @@ class ProposeForecastView(View):
     def post(self, request):
         form = self.form(request.POST)
         if form.is_valid():
-            forecast_type_new = form.cleaned_data['forecast_type_new']
-            forecast_question_new = form.cleaned_data['forecast_question_new']
-            propose = ForecastPropose.objects.create(
-                                        user_id=request.user,
-                                        forecast_type_new = forecast_type_new,
-                                        forecast_question_new = forecast_question_new
-                                        )
+            propose = form.save(commit=False)
+            propose.user_id = request.user
             propose.save()
+            form.save_m2m()
             return HttpResponse('Thank you for your forecast.')
         else:
             return render(request, self.template_name, {'form': form})

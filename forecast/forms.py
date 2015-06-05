@@ -12,17 +12,21 @@ from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_E
     DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
 from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose
 from utils.different import generate_activation_key
-
+from taggit.forms import TagWidget
 
 class ForecastForm(ModelForm):
-    class Meta:
-        model = ForecastPropose
-        fields = ('forecast_type_new', 'forecast_question_new',)
+
     forecast_type_new = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
                                       widget=forms.Select(attrs={'class': 'form-control input-sm'}))
     forecast_question_new = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
     # end_date = forms.DateField(required=True, widget=SelectDateWidget(attrs={'class': 'form-control input-sm'}))
 
+    class Meta:
+        model = ForecastPropose
+        fields = ('forecast_type_new', 'forecast_question_new',)
+        widgets = {
+            'tags': TagWidget(attrs={'class': "form-control input-sm"})
+        }
 
 class ForecastVoteForm(ModelForm):
     class Meta:
