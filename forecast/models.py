@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import Count, Avg
 
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
-# from taggit.managers import TaggableManager
 
 
 class CustomUserProfile(models.Model):
