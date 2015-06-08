@@ -1,6 +1,7 @@
 {% extends 'index_page.html' %}
 {% block content %}
     <div class="row">
+    {% if forecast.is_active %}
     {% if user.is_authenticated %}
         {% include 'individual_forecast_sidebar.html' %}
         {% else %}
@@ -15,8 +16,9 @@
             </script>
         </div>
     {% endif %}
+    {% endif %}
 
-        <div class="col-sm-8">
+        <div class="col-sm-{% if forecast.is_active %}8{% else %}10{% endif %}">
             <div class="well well-lg" id="forecast-question"> {{ forecast.forecast_question }} </div>
 
             <div class="panel panel-default">

@@ -54,11 +54,12 @@ class ActiveForecastVoteView(View):
         if not forecast_id and not vote:
             return HttpResponseRedirect(reverse('home'))
         forecast = Forecast.objects.get(pk=forecast_id)
-        todays_vote = forecast.votes.filter(date=date.today(), user_id=request.user)
-        if todays_vote.count() == 0:
-            forecast.votes.create(user_id=request.user, vote=vote, date=date.today())
-        else:
-            todays_vote.update(vote=vote)
+        if forecast.is_active():
+            todays_vote = forecast.votes.filter(date=date.today(), user_id=request.user)
+            if todays_vote.count() == 0:
+                forecast.votes.create(user_id=request.user, vote=vote, date=date.today())
+            else:
+                todays_vote.update(vote=vote)
 
         return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': forecast_id}))
 
