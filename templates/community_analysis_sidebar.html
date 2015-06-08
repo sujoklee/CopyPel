@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <div class="col-sm-3 peleus-sidebar">
 
 
@@ -8,12 +9,21 @@
             <div class="well">
                 {{ analysis.title }}
             </div>
-            <div>
+            <div class="analysis-text">
                 {{ analysis.body }}
             </div>
-            <p>posted by {{ analysis.user }}</p>
+            <p class="pull-right">by {{ analysis.user }}</p>
         </div>
         {% endfor %}
     </div>
 
+    <script type="text/javascript" src="{% static '3p/jquery.jtruncate.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.analysis-text').jTruncate({
+                length: 100,
+                ellipsisText: ' ...'
+            });
+        })
+    </script>
 </div>
