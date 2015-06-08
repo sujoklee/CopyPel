@@ -73,3 +73,8 @@
 .btn-default, .btn-default:hover {
     color: black;
 }
+
+.community-analysis {
+    max-height: 500px;
+    overflow-y: auto;
+}

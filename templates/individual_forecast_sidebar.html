@@ -1,28 +1,37 @@
 <div class="col-sm-2 peleus-sidebar">
 
-    <div id="peleus-toggle-wrap">
-        <div class="peleus-toggle collapse">
+    <div id="peleus-left-toggle-wrap">
+        <div class="peleus-left-toggle collapse">
             <form id="forecast-vote-form" action="{% url 'forecast_vote' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="forecast-id" value="{{ forecast.id }}">
+
                 <div class="form-group">
                     <span>
                         {% if last_vote == None %}Input initial prediction
                         {% else %}Adjust your prediction{% endif %}</span>
-                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}" class="form-control"
+                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}"
+                           class="form-control"
                            placeholder="{% if last_vote == None %}Initial
                            {% else %}Adjust{% endif %} prediction" name="forecast-vote" id="forecast-vote" required>
                 </div>
                 <div class="form-group">
-                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">{% if last_vote == None %}Initiate
-                        forecast{% else %}Adjust prediction{% endif %}</a>
+                    <a class="btn btn-danger btn-sm btn-block" data-toggle="collapse"
+                       data-target=".peleus-left-toggle" href="#"
+                       data-parent="#peleus-left-toggle-wrap">Cancel</a>
+                </div>
+                <div class="form-group">
+
+                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">
+                        {% if last_vote == None %}Initiate
+                            forecast{% else %}Adjust prediction{% endif %}</a>
                 </div>
             </form>
         </div>
-        <div class="peleus-toggle collapse in">
+        <div class="peleus-left-toggle collapse in">
             {% if last_vote != None %}<span>My Current Prediction: {{ last_vote }}</span>{% endif %}
-            <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-toggle"
-                    data-parent="#peleus-toggle-wrap">
+            <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-left-toggle"
+                    data-parent="#peleus-left-toggle-wrap">
                 {% if last_vote == None %}Initiate forecast{% else %}Adjust prediction{% endif %}
             </button>
         </div>
@@ -40,17 +49,17 @@
         </div>
     </div>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             var voteInput = $('#forecast-vote')[0];
 
             function submitVote() {
                 var form = $('#forecast-vote-form');
                 var vote = $('#forecast-vote').val();
                 var name = $('#forecast-question').html();
-                if(voteInput.checkValidity()) {
+                if (voteInput.checkValidity()) {
                     $('#modal-dialog .modal-body').html(
-                        '<p>Please confirm you wish to initiate your forecast on <i>' + name +
-                        '</i> at <i>' + vote + '</i></p>');
+                            '<p>Please confirm you wish to initiate your forecast on <i>' + name +
+                            '</i> at <i>' + vote + '</i></p>');
                     $('#modal-dialog').modal('show');
 
                     $('#forecast-btn-submit').click(function (e) {
@@ -61,7 +70,7 @@
 
             $('#vote').click(submitVote);
             $(voteInput).keypress(function (e) {
-                if(e.keyCode === 13) {
+                if (e.keyCode === 13) {
                     submitVote();
                     return false;
                 }

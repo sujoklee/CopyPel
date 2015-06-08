@@ -1,12 +1,11 @@
 {% load staticfiles %}
 <div class="col-sm-3 peleus-sidebar">
 
-
-    <div class="panel panel-default">
+    <div class="panel panel-default community-analysis">
         <div class="panel-heading">Community analysis</div>
         {% for analysis in analysis_set %}
         <div class="panel-body">
-            <div class="well">
+            <div class="well well-sm">
                 {{ analysis.title }}
             </div>
             <div class="analysis-text">
@@ -26,4 +25,31 @@
             });
         })
     </script>
+    {% if forecast.is_active %}
+        <div id="peleus-right-toggle-wrap">
+            <div class="peleus-right-toggle collapse">
+                <form action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input class="form-control" name="title" type="text" maxlength="100" placeholder="Title" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="body" maxlength="1000" placeholder="Your post" required></textarea>
+                    </div>
+                    <div class="form-group pull-right">
+                        <a class="btn btn-danger" data-toggle="collapse"
+                           data-target=".peleus-right-toggle" href="#"
+                           data-parent="#peleus-right-toggle-wrap">Cancel</a>
+                        <input class="btn btn-success" type="submit" value="Post Analysis">
+                    </div>
+                </form>
+            </div>
+            <div class="peleus-right-toggle collapse in">
+                <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-right-toggle"
+                        data-parent="#peleus-right-toggle-wrap">
+                    Post Analysis
+                </button>
+            </div>
+        </div>
+    {% endif %}
 </div>

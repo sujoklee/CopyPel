@@ -11,8 +11,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
-from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
-from models import Forecast, ForecastPropose, ForecastVotes
+from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm
+from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis
 from Peleus.settings import APP_NAME, FORECAST_FILTER,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
 
@@ -70,6 +70,16 @@ class ArchivedForecastsView(View):
     def get(self, request):
         forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
+
+
+class CommunityAnalysisPostView(View):
+    def post(self, request, id):
+
+        form = CommunityAnalysisForm(request.POST, id=id, user=request.user)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': id}))
 
 
 class EmailConfirmationView(View):
