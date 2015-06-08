@@ -136,6 +136,7 @@ class IndividualForecastView(View):
         user = request.user
         forecast = Forecast.objects.get(pk=id)
         analysis_set = forecast.forecastanalysis_set.all()
+        media_set = forecast.forecastmedia_set.all()
 
         try:
             last_vote = forecast.votes.filter(user_id=user).order_by('-date')[0].vote
@@ -144,6 +145,7 @@ class IndividualForecastView(View):
         return render(request, self.template_name,
                       {'forecast': forecast,
                        'analysis_set': analysis_set,
+                       'media_set': media_set,
                        'last_vote': last_vote,})
 
 

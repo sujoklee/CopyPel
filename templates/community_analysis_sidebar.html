@@ -14,6 +14,36 @@
             <p class="pull-right">by {{ analysis.user }}</p>
         </div>
         {% endfor %}
+        {% if forecast.is_active %}
+            <div id="peleus-right-toggle-wrap">
+                <div class="peleus-right-toggle collapse">
+                    <form action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input class="form-control" name="title" type="text" maxlength="100" placeholder="Title"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" name="body" maxlength="1000" placeholder="Your post"
+                                      required></textarea>
+                        </div>
+                        <div class="form-group pull-right">
+                            <a class="btn btn-danger" data-toggle="collapse"
+                               data-target=".peleus-right-toggle" href="#"
+                               data-parent="#peleus-right-toggle-wrap">Cancel</a>
+                            <input class="btn btn-success" type="submit" value="Post Analysis">
+                        </div>
+                    </form>
+                </div>
+                <div class="peleus-right-toggle collapse in">
+                    <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-right-toggle"
+                            data-parent="#peleus-right-toggle-wrap">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Post Analysis
+                    </button>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <script type="text/javascript" src="{% static '3p/jquery.jtruncate.min.js' %}"></script>
@@ -25,32 +55,24 @@
             });
         })
     </script>
-    {% if forecast.is_active %}
-        <div id="peleus-right-toggle-wrap">
-            <div class="peleus-right-toggle collapse">
-                <form action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input class="form-control" name="title" type="text" maxlength="100" placeholder="Title" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" name="body" maxlength="1000" placeholder="Your post" required></textarea>
-                    </div>
-                    <div class="form-group pull-right">
-                        <a class="btn btn-danger" data-toggle="collapse"
-                           data-target=".peleus-right-toggle" href="#"
-                           data-parent="#peleus-right-toggle-wrap">Cancel</a>
-                        <input class="btn btn-success" type="submit" value="Post Analysis">
-                    </div>
-                </form>
-            </div>
-            <div class="peleus-right-toggle collapse in">
-                <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-right-toggle"
-                        data-parent="#peleus-right-toggle-wrap">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Post Analysis
-                </button>
+
+{# TODO move related media to another template or rename this #}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Related Media</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                {% for media in media_set %}
+                <div class="col-sm-12">
+                    <a href="{{ media.url }}" target="_blank" class="thumbnail">
+                        <img src="{{ media.image.url }}" alt="{{ media.name }}">
+                    </a>
+                    <h4><a href="{{ media.url }}" target="_blank"> {{ media.name }}</a></h4>
+                </div>
+                {% endfor %}
             </div>
         </div>
-    {% endif %}
+    </div>
+
 </div>
