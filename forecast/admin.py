@@ -100,4 +100,5 @@ class ForecastMediaAdmin(ModelAdmin):
 
 @admin.register(models.ForecastAnalysis)
 class ForecastAnalysis(ModelAdmin):
-    list_display = ('user', 'forecast', 'title', 'body')
+    list_display = ('title', 'body', 'forecast', 'user',)
+    list_display_links = ('title', 'body',)
