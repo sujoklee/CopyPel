@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <div class="col-sm-3 peleus-sidebar">
 
-    <div class="panel panel-default community-analysis">
+    <div class="panel panel-default peleus-scrollable-block">
         <div class="panel-heading">Community analysis</div>
         {% for analysis in analysis_set %}
         <div class="panel-body">
@@ -57,7 +57,7 @@
     </script>
 
 {# TODO move related media to another template or rename this #}
-    <div class="panel panel-default">
+    <div class="panel panel-default peleus-scrollable-block">
         <div class="panel-heading">
             <h3 class="panel-title">Related Media</h3>
         </div>
