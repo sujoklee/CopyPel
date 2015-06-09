@@ -195,6 +195,20 @@ class PlaceVoteView(View):
         return HttpResponse('ok')
 
 
+class ProfileView(View):
+    template_name = 'profile_page.html'
+
+    def get(self, request, id):
+        owner = request.user.id == int(id)
+        profile = get_object_or_404(User, pk=id)
+        return render(request, self.template_name, {'owner': owner, 'profile': profile })
+
+# class ProfilePageView(View):
+#     template_name = 'profile_page.html'
+#
+#     def profile_view(request):
+#         profile = request.user.get_profile()
+
 class ProposeForecastView(View):
     template_name = 'propose_forecast_page.html'
     form = ForecastForm

@@ -182,3 +182,5 @@ FORECAST_FILTERS = {'FORECAST_FILTER_MOST_ACTIVE': FORECAST_FILTER_MOST_ACTIVE,
 DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
 
 DOMAIN_NAME = 'http://localhost:8000'   # change this in production
+
+AUTH_PROFILE_MODULE = 'forecast.CustomUserProfile'

@@ -5,39 +5,6 @@
 
 {% block content %}
     <script src="{% static '1p/profile.js' %}"></script>
-    <style>
-    path.line {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
-}
-
-path.area {
-  fill: #e7e7e7;
-}
-
-.axis {
-  shape-rendering: crispEdges;
-}
-
-.x.axis line {
-  stroke: #fff;
-}
-
-.x.axis .minor {
-  stroke-opacity: .5;
-}
-
-.x.axis path {
-  display: none;
-}
-
-.y.axis line, .y.axis path {
-  fill: none;
-  stroke: #000;
-}
-
-</style>
 
 <div class="row">
     <div class="panel col-md-8">
@@ -56,89 +23,15 @@ path.area {
 
         </div>
         <div class="row">
-            <p><strong>My Active Forecasts<a href="#">(See Full Set)</a></strong></p>
-            <p><strong>{%if myprofile == False %} {{user.nam}}'s Active Forecasts
-                <a href="#">(See Full Set)</a> {%endif%}</strong></p>
 
-            <div>
-                <button button type="button" class="btn btn-info" id="transition">update</button>
-                <div id="test-chart"></div>
-                <script>
-                    $().ready(function() {
-var data = [{"number":1, "value":8},{"number":2, "value":16},{"number":3, "value":32},{"number":4, "value":64}];
-var w = 515;
-var h = 660;
-var x = d3.scale.linear()
-  .domain([0, d3.max(data, function(d) { return d.value; })])
-  .range([0, w]);
-var y = d3.scale.ordinal()
-  .domain(d3.range(data.length))
-  .rangeBands([0, h], 0.1);
-var color = d3.scale.ordinal()
-  .range(["blue", "blue"]);
+            <p><strong>
+            {%if owner %}
+                My Active Forecasts <a href="#">(See Full Set)</a>
+                {% else %}
+                {{ profile.customuserprofile.username }}'s Active Forecasts <a href="#">(See Full Set)</a>
 
-//initial svg creation
-var svg = d3.select("#test-chart")
-  .append("svg")
-    .attr("width", 815 + 40)
-    .attr("height", h + 20)
-  .append("g")
-    .attr("transform", "translate(30,550) rotate(-90)");
-
-//bars
-var bars = svg.selectAll(".bar")
-    .data(data)
-  .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d, i) { return "translate(" + 0 + "," + y(i+1) + ")"; });
-//bar rectangles
-bars.append("rect")
-  .attr("fill", function(d, i) { return color(i%2); })
-  .attr("width", function(d) { return x(d.value); })
-  .attr("height", y.rangeBand());
-//bar labels
-bars.append("text")
-  .attr("x", function(d) { return x(d.value); })
-  .attr("y", 1 + y.rangeBand() / 2)
-  .attr("dx", -6)
-  .attr("dy", ".35em")
-  .attr("text-anchor", "middle")
-  .text(function(d) { return d.value; });
-
-//button press
-$("#transition").click(function(event) {
-//  //ajax calls
-//  var req = $.ajax({
-//    url: '/forecast/',
-//    type: 'GET',
-//    dataType: 'json',
-//    success: function(response) {
-//      data = response;
-//    }
-//  });
-//  //update d3 charts after ajax call complete
-//  $.when(req).done(function() {
-    data = [];
-    for(var i = 0; i < 4; i++) {
-      data.push({"number":i, "value": Math.floor(Math.random()*64)});
-    }
-    var rect = svg.selectAll(".bar rect").data(data);
-    var text = svg.selectAll(".bar text").data(data);
-    var delay = function(d, i) { return i * 50; };
-    rect.transition().duration(750)
-      .delay(delay)
-      .attr("width", function(d) { return x(d.value); });
-    text.transition().duration(750)
-      .delay(delay)
-      .attr("x", function(d) { return x(d.value); })
-      .text(function(d) { return d.value; });
-//  });
-});
-});
-                </script>
-
-            </div>
-
+            {%endif%}
+            </strong></p>
 
         <div class="btn-group">
             <div class="panel">
@@ -163,9 +56,14 @@ $("#transition").click(function(event) {
         </div>
         </div>
         <div class="row">
-            <p><strong>My Archived Forecasts<a href="#">(See Full Set)</a></strong></p>
-            <p><strong>{%if myprofile == False %} {{user.nam}}'s Archived Forecasts
-                <a href="#">(See Full Set)</a> {%endif%}</strong></p>
+            <p><strong>
+            {%if owner %}
+                My Archived Forecasts <a href="#">(See Full Set)</a>
+                {% else %}
+                {{ user.username }}'s Archived Forecasts <a href="#">(See Full Set)</a>
+
+            {%endif%}
+            </strong></p>
             <div class="btn-group">
                 <div class="panel">
                 <button type="button" class="btn btn-info pull right dropdown-toggle" data-toggle="dropdown">Recently closed <span class="caret"></span></button>
@@ -192,14 +90,36 @@ $("#transition").click(function(event) {
     <div id="rightuserblock" class=" col-md-offset-1 col-md-3 ">
         <div class="row">
             <div class="panel" id="performance">
-                <h4>My Performance</h4>
+            <h4>
+            {%if owner %}
+                My Performance
+                {% else %}
+                {{ user.username }}'s Performance </a>
+
+            {%endif%}
+            </h4>
+
                 <p>{{app_name}} Score: XX.X</p>
                 <p>General Accuracy: XX.X%</p>
                 <p>Number of Forecasts: {{len_predictions}}</p>
-                <p>See My Archived Forecasts</p>
+                <p>
+                {%if owner %}
+                See My Archived Forecasts</p>
+                {% else %}
+                See {{ user.username }}'s Archived Forecasts
+                            {%endif%}
+                </p>
+
             </div>
             <div class="panel" id="analysis">
-                <h4>My Analysis</h4>
+            <h4>
+            {%if owner %}
+                My Analysis
+                {% else %}
+                {{ user.username }}'s Analysis </a>
+
+            {%endif%}
+            </h4>
                 <p>Profession: {{user.profession}}</p>
                 <p>Organization: {{user.organization}}</p>
                 <p>Position: XXX</p>
@@ -213,11 +133,19 @@ $("#transition").click(function(event) {
                 <p><a href="#" data-toggle="modal" data-target="#FolUsers">My Followed Users <span class="badge">3</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#MyGroups">My Groups <span class="badge">4</span></a></p>
                 <p>Weekly Profile Views:</p>
+
             </div>
             <div class="panel" id="info">
-                <div id="head"><h4>My Info</h4></div>
+
+            {%if owner %}
+
+                <h4>My Info</h4>
                 <div id="edit"><a href="#"><h5>Edit</h5></a></div>
                 <div style="clear: left"></div>
+                {% else %}
+                <h4>{{user.username}}'s Info</h4>
+
+            {%endif%}
                 <p>Profession: {{user.profession}}</p>
                 <p>Organization: {{user.organization}}</p>
                 <p>Position: XXX</p>
@@ -244,7 +172,7 @@ $("#transition").click(function(event) {
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">My Followed Users</h4>
+                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{user.username}}'s {%endif%}abel">My Followed Users</h4>
                           </div>
                           <div class="modal-body">
                             ...
@@ -261,7 +189,7 @@ $("#transition").click(function(event) {
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">My Groups</h4>
+                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{user.username}}'s {%endif%}abel">My Groups</h4>
                           </div>
                           <div class="modal-body">
                             ...

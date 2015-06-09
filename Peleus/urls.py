@@ -14,7 +14,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'about/$', TemplateView.as_view(template_name='about_page.html'), name='about'),
     url(r'^$', views.IndexPageView.as_view(), name='home'),
-    url(r'profile/$', TemplateView.as_view(template_name='profile_page.html'), name='profile'),
+    url(r'profile/(?P<id>\d+)/$', views.ProfileView.as_view(), name='profile'),
     url(r'signup/$', views.SignUpView.as_view(), name='signup'),
     url(r'signuplast/$', views.SignUpSecondView.as_view(), name='signup2'),
     url(r'^login/$', views.LoginView.as_view(), name='login'),
