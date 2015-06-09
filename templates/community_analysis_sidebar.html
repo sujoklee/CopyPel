@@ -17,7 +17,7 @@
         {% if forecast.is_active and user.is_authenticated %}
             <div id="peleus-right-toggle-wrap">
                 <div class="peleus-right-toggle collapse">
-                    <form action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
+                    <form id="post-analysis-form" action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
                         {% csrf_token %}
                         <div class="form-group">
                             <input class="form-control" name="title" type="text" maxlength="100" placeholder="Title"
@@ -31,7 +31,7 @@
                             <a class="btn btn-danger" data-toggle="collapse"
                                data-target=".peleus-right-toggle" href="#"
                                data-parent="#peleus-right-toggle-wrap">Cancel</a>
-                            <input class="btn btn-success" type="submit" value="Post Analysis">
+                            <a id="post-analysis" class="btn btn-success" role="button">Post Analysis</a>
                         </div>
                     </form>
                 </div>
@@ -43,6 +43,50 @@
                     </button>
                 </div>
             </div>
+
+            <div id="modal-analysis-confirm" class="modal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>Please confirm you wish to post this analysis</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" id="analysis-btn-submit">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    var form = $('#post-analysis-form').get(0);
+
+                    function submitAnalysis() {
+                        if (form.checkValidity()) {
+                            $('#modal-analysis-confirm').modal('show');
+
+                            $('#analysis-btn-submit').click(function (e) {
+                                form.submit();
+                            });
+                        }
+                    }
+
+                    $('#post-analysis').click(submitAnalysis);
+                    $(form).find(':input').each(function () {
+                        if (!$(this).is('textarea')) {
+                            $(this).keypress(function (e) {
+                                if (e.keyCode === 13) {
+                                    submitAnalysis();
+                                    return false;
+                                }
+                                return true;
+                            })
+                        }
+                    });
+
+                })
+            </script>
         {% endif %}
     </div>
 
