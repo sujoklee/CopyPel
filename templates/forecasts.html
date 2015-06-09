@@ -16,16 +16,33 @@
             </div>
             <div id="collapseOne-{{ el.id }}" class="panel-collapse collapse" role="tabpanel"
                  aria-labelledby="headingOne">
-                <div class="panel-body">
-                    <div class="navbar navbar-default">
-                        <div class="navbar-inner">
-
-                                <div>{{ el.forecast_question }}</div>
-                                <div id="peleus-forecast-{{ el.id }}">
-
-                                </div>
-
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="panel-body">
+                            <div id="peleus-forecast-{{ el.id }}">
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-sm-3">
+
+                        <div class="panel panel-default peleus-scrollable-block">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Related Media</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    {% for media in el.forecastmedia_set.all %}
+                                        <div class="col-sm-12">
+                                            <a href="{{ media.url }}" target="_blank" class="thumbnail">
+                                                <img src="{{ media.image.url }}" alt="{{ media.name }}">
+                                            </a>
+                                            <h4><a href="{{ media.url }}" target="_blank"> {{ media.name }}</a></h4>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
