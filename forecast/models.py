@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.db import models
 from django.db.models import Count, Avg
-# from django.db.models.signals import post_save
+from taggit.managers import TaggableManager
 
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
 
@@ -77,7 +77,7 @@ class ForecastPropose(models.Model):
     forecast_question_new = models.TextField(max_length=1000)
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Unpublished')
-
+    tags = TaggableManager()
 
     def __unicode__(self):
         return self.forecast_question_new

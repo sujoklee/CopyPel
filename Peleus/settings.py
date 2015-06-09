@@ -44,8 +44,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'captcha',
     'django_countries',
-    'forecast'
-    # 'bootstrapform'
+    'forecast',
+    'taggit'
 )
 
 AUTHENTICATION_BACKENDS = (

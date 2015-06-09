@@ -7,6 +7,7 @@ from django.forms import ModelForm, Form
 from django.forms.extras import SelectDateWidget
 from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
+from taggit.forms import TagWidget
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
     DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
@@ -43,7 +44,7 @@ class ForecastForm(ModelForm):
     class Meta:
         model = ForecastPropose
         fields = ('forecast_type_new', 'forecast_question_new',)
-
+        widgets = {'tags': TagWidget(attrs={'class': "form-control input-sm"})}
 
 class ForecastVoteForm(ModelForm):
     class Meta:
