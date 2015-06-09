@@ -11,10 +11,24 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
-from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, ForecastVoteForm
-from models import Forecast, ForecastPropose, ForecastVotes
-from Peleus.settings import APP_NAME,\
+from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm
+from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis
+from Peleus.settings import APP_NAME, FORECAST_FILTER,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
+
+
+class ForecastFilterMixin(object):
+    def _queryset_by_forecast_filter(self, request):
+        forecasts = Forecast.objects.filter(end_date__gte=date.today())
+        forecast_filter = request.GET.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
+
+        if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
+        elif forecast_filter == FORECAST_FILTER_NEWEST:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
+        elif forecasts == FORECAST_FILTER_CLOSING:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
+        return forecasts
 
 
 class LoginRequiredMixin(object):
@@ -24,11 +38,11 @@ class LoginRequiredMixin(object):
         return login_required(view)
 
 
-class ActiveForecastsView(View):
+class ActiveForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+        forecasts = self._queryset_by_forecast_filter(request)
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
@@ -40,11 +54,12 @@ class ActiveForecastVoteView(View):
         if not forecast_id and not vote:
             return HttpResponseRedirect(reverse('home'))
         forecast = Forecast.objects.get(pk=forecast_id)
-        todays_vote = forecast.votes.filter(date=date.today(), user_id=request.user)
-        if todays_vote.count() == 0:
-            forecast.votes.create(user_id=request.user, vote=vote, date=date.today())
-        else:
-            todays_vote.update(vote=vote)
+        if forecast.is_active():
+            todays_vote = forecast.votes.filter(date=date.today(), user_id=request.user)
+            if todays_vote.count() == 0:
+                forecast.votes.create(user_id=request.user, vote=vote, date=date.today())
+            else:
+                todays_vote.update(vote=vote)
 
         return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': forecast_id}))
 
@@ -53,8 +68,18 @@ class ArchivedForecastsView(View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+        forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
+
+
+class CommunityAnalysisPostView(View):
+    def post(self, request, id):
+
+        form = CommunityAnalysisForm(request.POST, id=id, user=request.user)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': id}))
 
 
 class EmailConfirmationView(View):
@@ -77,42 +102,30 @@ class EmailConfirmationView(View):
         return render(request, self.template_name, res_dict)
 
 
-class ForecastsJsonView(View):
+class ForecastsJsonView(ForecastFilterMixin, View):
 
     def get(self, request):
         qs = Forecast.objects.all()
 
         if 'id' in request.GET:
             qs = qs.filter(pk__in=request.GET.getlist('id'))
-            self._respond(qs)
-        # elif 'name' in request.GET:
-        #     query['forecast_question__in'] = request.GET.getlist('name')
-        #     qs = Forecast.objects.filter(**query)
         else:
-            qs = Forecast.objects.filter(end_date__gte=date.today())
-            forecast_filter = request.GET.get('filter', FORECAST_FILTER_MOST_ACTIVE)
-            qs = self._queryset_by_forecast_filter(qs, forecast_filter)
+            qs = self._queryset_by_forecast_filter(request)
         return self._respond(qs)
-
-    def _queryset_by_forecast_filter(self, forecasts, forecast_filter):
-        if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
-        elif forecast_filter == FORECAST_FILTER_NEWEST:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
-        elif forecasts == FORECAST_FILTER_CLOSING:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
-        return forecasts
 
     def _respond(self, forecasts):
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
 
 
-class IndexPageView(View):
+class IndexPageView(ForecastFilterMixin, View):
     template_name = 'index_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.all()
+
+        forecasts = self._queryset_by_forecast_filter(request).annotate(
+            forecasters=Count('votes__user_id', distinct=True))
+
         return render(request, self.template_name, {'data': forecasts})
 
 
@@ -120,12 +133,20 @@ class IndividualForecastView(View):
     template_name = 'individual_forecast_page.html'
 
     def get(self, request, id):
+        user = request.user
         forecast = Forecast.objects.get(pk=id)
         analysis_set = forecast.forecastanalysis_set.all()
-        # TODO check if user already made predictions for this forecast
-        # voted_before = forecast.votes.filter()
-        return render(request, self.template_name, {'forecast': forecast,
-                                                    'analysis_set': analysis_set})
+        media_set = forecast.forecastmedia_set.all()
+
+        try:
+            last_vote = forecast.votes.filter(user_id=user).order_by('-date')[0].vote
+        except:
+            last_vote = None
+        return render(request, self.template_name,
+                      {'forecast': forecast,
+                       'analysis_set': analysis_set,
+                       'media_set': media_set,
+                       'last_vote': last_vote,})
 
 
 class LoginView(View):

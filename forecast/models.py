@@ -44,6 +44,8 @@ class Forecast(models.Model):
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
+            'forecastersCount': self.votes.values('forecast_id')
+                .annotate(forecasters=Count('user_id', distinct=True)).get()['forecasters'],
             'votes': [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
                       for v in self.votes.values('date').annotate(avg_votes=Avg('vote'))]}
 

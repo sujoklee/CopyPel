@@ -1,7 +1,7 @@
 import ast
 
 from models import CustomUserProfile
-from Peleus.settings import REGIONS, AREAS
+from Peleus.settings import REGIONS, AREAS, FORECAST_FILTER, FORECAST_FILTERS
 
 FORECAST_REGIONS = dict(REGIONS)
 FORECAST_AREAS = dict(AREAS)
@@ -19,3 +19,6 @@ def forecast_user(request):
 
 def forecast_interests(request):
     return {'FORECAST_REGIONS': FORECAST_REGIONS, 'FORECAST_AREAS': FORECAST_AREAS}
+
+def forecast_filters(request):
+    return dict(FORECAST_FILTERS.items() + [('FORECAST_FILTER', FORECAST_FILTER)])

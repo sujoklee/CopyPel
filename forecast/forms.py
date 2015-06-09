@@ -3,15 +3,34 @@ from captcha.fields import ReCaptchaField
 from datetime import datetime, timedelta
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.forms.extras import SelectDateWidget
 from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
     DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
-from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose
+from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose, ForecastAnalysis
 from utils.different import generate_activation_key
+
+
+class CommunityAnalysisForm(Form):
+
+    title = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    body = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        self.id = kwargs.pop('id')
+        self.user = kwargs.pop('user')
+        super(CommunityAnalysisForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        data = self.cleaned_data
+        # data['forecast_id'] = self.id
+        # data['user'] = self.user
+
+        analysis = ForecastAnalysis(forecast_id=self.id, user=self.user, **data)
+        analysis.save()
 
 
 class ForecastForm(ModelForm):

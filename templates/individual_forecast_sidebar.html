@@ -1,35 +1,44 @@
 <div class="col-sm-2 peleus-sidebar">
 
-    <div id="peleus-toggle-wrap">
-        <div class="peleus-toggle collapse">
+    <div id="peleus-left-toggle-wrap">
+        <div class="peleus-left-toggle collapse">
             <form id="forecast-vote-form" action="{% url 'forecast_vote' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="forecast-id" value="{{ forecast.id }}">
+
                 <div class="form-group">
-                    {#                    <span>Input initial prediction</span>#}
-                    <input type="number" min="0" max="100" value="" class="form-control"
-                           placeholder="Initial prediction" name="forecast-vote" id="forecast-vote" required>
+                    <span>
+                        {% if last_vote == None %}Input initial prediction
+                        {% else %}Adjust your prediction{% endif %}</span>
+                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}"
+                           class="form-control"
+                           placeholder="{% if last_vote == None %}Initial
+                           {% else %}Adjust{% endif %} prediction" name="forecast-vote" id="forecast-vote" required>
                 </div>
                 <div class="form-group">
-                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">Initiate
-                        forecast</a>
+                    <a class="btn btn-danger btn-sm btn-block" data-toggle="collapse"
+                       data-target=".peleus-left-toggle" href="#"
+                       data-parent="#peleus-left-toggle-wrap">Cancel</a>
+                </div>
+                <div class="form-group">
+
+                    <a href="#" class="form-control btn btn-success" data-toggle="modal" id="vote">
+                        {% if last_vote == None %}Initiate
+                            forecast{% else %}Adjust prediction{% endif %}</a>
                 </div>
             </form>
         </div>
-        <div class="peleus-toggle collapse in">
-            <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-toggle"
-                    data-parent="#peleus-toggle-wrap">
-                Initiate forecast
+        <div class="peleus-left-toggle collapse in">
+            {% if last_vote != None %}<span>My Current Prediction: {{ last_vote }}</span>{% endif %}
+            <button class="form-control btn btn-primary" data-toggle="collapse" data-target=".peleus-left-toggle"
+                    data-parent="#peleus-left-toggle-wrap">
+                {% if last_vote == None %}Initiate forecast{% else %}Adjust prediction{% endif %}
             </button>
         </div>
     </div>
     <div id="modal-dialog" class="modal">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Are you sure?</h4>
-                </div>
                 <div class="modal-body">
                 </div>
                 <div class="modal-footer">
@@ -40,23 +49,32 @@
         </div>
     </div>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#vote').click(function() {
+        $(document).ready(function () {
+            var voteInput = $('#forecast-vote')[0];
+
+            function submitVote() {
                 var form = $('#forecast-vote-form');
                 var vote = $('#forecast-vote').val();
                 var name = $('#forecast-question').html();
-                if(vote) {
+                if (voteInput.checkValidity()) {
                     $('#modal-dialog .modal-body').html(
-                        '<p>Please confirm you wish to initiate your forecast on ' + name +
-                        ' at ' + vote + '</p>');
+                            '<p>Please confirm you wish to initiate your forecast on <i>' + name +
+                            '</i> at <i>' + vote + '</i></p>');
                     $('#modal-dialog').modal('show');
 
-                    $('#forecast-btn-submit').click(function () {
-                       form.submit();
+                    $('#forecast-btn-submit').click(function (e) {
+                        form.submit();
                     });
-                } else {
-                    // form.submit(function (event) {})
                 }
+            }
+
+            $('#vote').click(submitVote);
+            $(voteInput).keypress(function (e) {
+                if (e.keyCode === 13) {
+                    submitVote();
+                    return false;
+                }
+                return true;
             })
         })
     </script>
