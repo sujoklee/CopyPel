@@ -9,7 +9,7 @@ from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
 
 
 class CustomUserProfile(models.Model):
-    user = models.OneToOneField(User, related_name='customuserprofile')
+    user = models.OneToOneField(User)
     display_only_username = models.BooleanField(default=False)
     country = CountryField(blank=False)
     city = models.CharField(max_length=50, blank=True)
@@ -24,11 +24,6 @@ class CustomUserProfile(models.Model):
     expires_at = models.DateTimeField(blank=True, null=True)
     email_verified = models.BooleanField(default=False)
     conditions_accepted = models.BooleanField(default=False)
-
-#     def create_user_profile(sender, instance, created, **kwargs):
-#         if created:
-#             CustomUserProfile.objects.create(user=instance)
-# post_save.connect(create_user_profile, sender=User)
 
 
 class Forecast(models.Model):
@@ -81,6 +76,7 @@ class ForecastPropose(models.Model):
 
     def __unicode__(self):
         return self.forecast_question_new
+
 
 class ForecastVotes(models.Model):
     user_id = models.ForeignKey(User)

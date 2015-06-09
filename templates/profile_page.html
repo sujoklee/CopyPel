@@ -6,12 +6,14 @@
 {% block content %}
     <script src="{% static '1p/profile.js' %}"></script>
 
+
 <div class="row">
     <div class="panel col-md-8">
         <div class="row">
             <div class="col-md-6">
+                {% if owner %}
                 <h4>Hello, {{ user.username }}</h4>
-
+                {% endif %}
 
             </div>
         </div>
@@ -28,7 +30,7 @@
             {%if owner %}
                 My Active Forecasts <a href="#">(See Full Set)</a>
                 {% else %}
-                {{ profile.customuserprofile.username }}'s Active Forecasts <a href="#">(See Full Set)</a>
+                {{ profile.username }} Active Forecasts <a href="#">(See Full Set)</a>
 
             {%endif%}
             </strong></p>
@@ -60,8 +62,7 @@
             {%if owner %}
                 My Archived Forecasts <a href="#">(See Full Set)</a>
                 {% else %}
-                {{ user.username }}'s Archived Forecasts <a href="#">(See Full Set)</a>
-
+                {{ profile.username }}'s Archived Forecasts <a href="#">(See Full Set)</a>
             {%endif%}
             </strong></p>
             <div class="btn-group">
@@ -90,14 +91,14 @@
     <div id="rightuserblock" class=" col-md-offset-1 col-md-3 ">
         <div class="row">
             <div class="panel" id="performance">
-            <h4>
+            <h4><strong>
             {%if owner %}
                 My Performance
                 {% else %}
-                {{ user.username }}'s Performance </a>
+                {{ profile.username }}'s Performance </a>
 
             {%endif%}
-            </h4>
+            </strong></h4>
 
                 <p>{{app_name}} Score: XX.X</p>
                 <p>General Accuracy: XX.X%</p>
@@ -106,20 +107,20 @@
                 {%if owner %}
                 See My Archived Forecasts</p>
                 {% else %}
-                See {{ user.username }}'s Archived Forecasts
+                See {{ profile.username }}'s Archived Forecasts
                             {%endif%}
                 </p>
 
             </div>
             <div class="panel" id="analysis">
-            <h4>
+            <h4><strong>
             {%if owner %}
                 My Analysis
                 {% else %}
-                {{ user.username }}'s Analysis </a>
+                {{ profile.username }}'s Analysis </a>
 
             {%endif%}
-            </h4>
+            </strong></h4>
                 <p>Profession: {{user.profession}}</p>
                 <p>Organization: {{user.organization}}</p>
                 <p>Position: XXX</p>
@@ -127,7 +128,7 @@
                 <p>Published Analysis:</p>
             </div>
              <div class="panel">
-                <h4>Connection Center</h4>
+                <h4><strong>Connection Center</strong></h4>
                 <p id="messclick"><a href="#">Inbox <span class="badge">1</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#Fol">Followers <span class="badge">2</span></a></p>
                 <p><a href="#" data-toggle="modal" data-target="#FolUsers">My Followed Users <span class="badge">3</span></a></p>
@@ -139,11 +140,11 @@
 
             {%if owner %}
 
-                <h4>My Info</h4>
+                <h4><strong>My Info</strong></h4>
                 <div id="edit"><a href="#"><h5>Edit</h5></a></div>
                 <div style="clear: left"></div>
                 {% else %}
-                <h4>{{user.username}}'s Info</h4>
+                <h4><strong>{{profile.username}}'s Info</strong></h4>
 
             {%endif%}
                 <p>Profession: {{user.profession}}</p>
@@ -172,7 +173,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{user.username}}'s {%endif%}abel">My Followed Users</h4>
+                            <h4 class="modal-title" id="myModalLabel">My Followed Users</h4>
                           </div>
                           <div class="modal-body">
                             ...
@@ -189,7 +190,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{user.username}}'s {%endif%}abel">My Groups</h4>
+                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{profile.username}}'s {%endif%}abel">My Groups</h4>
                           </div>
                           <div class="modal-body">
                             ...
@@ -203,4 +204,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

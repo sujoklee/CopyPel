@@ -43,7 +43,7 @@ class ForecastForm(ModelForm):
 
     class Meta:
         model = ForecastPropose
-        fields = ('forecast_type_new', 'forecast_question_new',)
+        fields = ('forecast_type_new', 'forecast_question_new', 'tags')
         widgets = {'tags': TagWidget(attrs={'class': "form-control input-sm"})}
 
 class ForecastVoteForm(ModelForm):

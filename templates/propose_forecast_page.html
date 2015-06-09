@@ -18,16 +18,14 @@
             </div>
             {% endfor %}
         <div>
-{#            <label>Tags</label>#}
-{#            <select class="js-example-tags form-control input-sm" multiple="multiple">#}
-{##}
-{#        </select>#}
-{#        </div>#}
-{#        <script type="text/javascript">#}
-{#                $(".js-example-tags").select2({#}
-{#                 tags: true#}
-{#                 })#}
-{#        </script>#}
+
+        </select>
+        </div>
+        <script type="text/javascript">
+                $("#id_tags").select2({
+                 tags: true
+                 })
+        </script>
             <p></p>
             <button type="submit" class="btn btn-success">Propose!</button>
         </div>
