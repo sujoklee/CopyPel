@@ -14,7 +14,7 @@ from django.views.generic import View
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm
 from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis
 from Peleus.settings import APP_NAME, FORECAST_FILTER,\
-    FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING
+    FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING, FORECAST_FILTER_ARCHIVED
 
 
 class ForecastFilterMixin(object):
@@ -28,6 +28,8 @@ class ForecastFilterMixin(object):
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
         elif forecasts == FORECAST_FILTER_CLOSING:
             forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
+        elif forecast_filter == FORECAST_FILTER_ARCHIVED:
+            forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return forecasts
 
 

@@ -39,16 +39,22 @@ class Forecast(models.Model):
         return '%s - %s' % (self.id, self.forecast_question)
 
     def to_json(self):
-        return {
+        response = {
             'id': self.id,
             'forecastType': self.get_forecast_type_display(),
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
-            'forecastersCount': self.votes.values('forecast_id')
-                .annotate(forecasters=Count('user_id', distinct=True)).get()['forecasters'],
+            # 'forecastersCount': self.votes.values('forecast_id')
+            #     .annotate(forecasters=Count('user_id', distinct=True)).get()['forecasters'],
             'votes': [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
                       for v in self.votes.values('date').annotate(avg_votes=Avg('vote'))]}
+        try:
+            response['forecastersCount'] = self.votes.values('forecast_id') \
+                .annotate(forecasters=Count('user_id', distinct=True)).get()['forecasters']
+        except ForecastVotes.DoesNotExist:
+            response['forecastersCount'] = 0
+        return response
 
     def votes_count(self):
         votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
