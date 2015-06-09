@@ -14,7 +14,7 @@
             <p class="pull-right">by {{ analysis.user }}</p>
         </div>
         {% endfor %}
-        {% if forecast.is_active %}
+        {% if forecast.is_active and user.is_authenticated %}
             <div id="peleus-right-toggle-wrap">
                 <div class="peleus-right-toggle collapse">
                     <form action="{% url 'forecast_analysis' id=forecast.id %}" method="post">
