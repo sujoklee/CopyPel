@@ -16,12 +16,6 @@ class CustomUserProfileInline(StackedInline):
     verbose_name = 'forecast user'
     verbose_name_plural = 'forecast users'
 
-
-# class TagsInline(StackedInline):
-#     model = models.Tags
-#     verbose_name = 'tag'
-#     verbose_name_plural = 'tags'
-
 UserAdmin.inlines = (CustomUserProfileInline,)
 
 

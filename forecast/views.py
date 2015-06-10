@@ -18,16 +18,29 @@ from Peleus.settings import APP_NAME, FORECAST_FILTER,\
 
 
 class ForecastFilterMixin(object):
-    def _queryset_by_forecast_filter(self, request):
-        forecasts = Forecast.objects.filter(end_date__gte=date.today())
+
+    def _queryset_by_tag(self, request, qs=None):
+        forecasts = qs or Forecast.objects.all()
+        tags = request.GET.getlist('tag', [])
+        for tag in tags:
+            forecasts = forecasts.filter(tags__slug=tag)
+
+        return forecasts
+
+    def _queryset_by_forecast_filter(self, request, qs=None):
+        """
+        Allows to build queryset by filter in GET-request.
+        E.g. ?filter=mostactive will select the most active forecasts
+        """
+        forecasts = qs or Forecast.objects.filter(end_date__gte=date.today())
         forecast_filter = request.GET.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
 
         if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
         elif forecast_filter == FORECAST_FILTER_NEWEST:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-start_date')
-        elif forecasts == FORECAST_FILTER_CLOSING:
-            forecasts = forecasts.annotate(num_votes=Count('votes')).oreder_by('-end_date')
+        elif forecast_filter == FORECAST_FILTER_CLOSING:
+            forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('end_date')
         elif forecast_filter == FORECAST_FILTER_ARCHIVED:
             forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return forecasts
@@ -44,7 +57,10 @@ class ActiveForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = self._queryset_by_forecast_filter(request)
+        forecasts = None
+        if 'tag' in request.GET:
+            forecasts = self._queryset_by_tag(request)
+        forecasts = self._queryset_by_forecast_filter(request, forecasts)
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
@@ -111,6 +127,8 @@ class ForecastsJsonView(ForecastFilterMixin, View):
 
         if 'id' in request.GET:
             qs = qs.filter(pk__in=request.GET.getlist('id'))
+        elif 'tag' in request.GET:
+            qs = self._queryset_by_tag(request, qs)
         else:
             qs = self._queryset_by_forecast_filter(request)
         return self._respond(qs)

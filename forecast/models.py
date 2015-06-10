@@ -29,8 +29,9 @@ class CustomUserProfile(models.Model):
 class Forecast(models.Model):
     forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question = models.TextField(max_length=1000)
-    start_date = models.DateField(auto_now=True)
+    start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
+    tags = TaggableManager()
 
     def is_active(self):
         return self.end_date >= date.today()
@@ -65,11 +66,6 @@ class Forecast(models.Model):
         ordering = ['-end_date']
 
 
-class ForecastTags(models.Model):
-    forecast_id = models.ForeignKey('Forecast')
-    tag_id = models.ForeignKey('Tags')
-
-
 class ForecastPropose(models.Model):
     user_id = models.ForeignKey(User)
     forecast_type_new = models.CharField(max_length=2, choices=FORECAST_TYPE)
@@ -93,15 +89,14 @@ class ForecastVotes(models.Model):
         verbose_name_plural = 'forecast votes'
 
 
-class Tags(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-
 class ForecastAnalysis(models.Model):
     user = models.ForeignKey(User)
     forecast = models.ForeignKey('Forecast')
     title = models.CharField(max_length=100, blank=True, null=True)
     body = models.TextField(max_length=1000, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title
 
 
 class ForecastMedia(models.Model):
@@ -109,3 +104,6 @@ class ForecastMedia(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     url = models.URLField()
     image = models.ImageField()
+
+    def __unicode__(self):
+        return self.name if self.name else self.url
