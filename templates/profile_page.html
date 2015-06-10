@@ -13,10 +13,54 @@
             <div class="col-md-6">
                 {% if owner %}
                 <h4>Hello, {{ user.username }}</h4>
+                    {% else %}
+                <h4>{{ profile.username }}'s profile</h4>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#SendMessage">Send Message</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#Follow">Follow</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#Invite">Invite to Group</button>
+                </div>
+        <div class="row">
+            <div class="modal fade" id="SendMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Send Message</h4>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+            </div>
+            <div class="modal fade" id="Invite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Invite to Group</h4>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+            </div>
+        </div>
+
                 {% endif %}
 
             </div>
         </div>
+
+    <div class="col-md-6">
         <div class="row">
                  <div id="message">
                      <label>INBOX</label>
@@ -25,14 +69,13 @@
 
         </div>
         <div class="row">
-
+            <p></p>
             <p><strong>
-            {%if owner %}
-                My Active Forecasts <a href="#">(See Full Set)</a>
+                {%if owner %}
+                    My Active Forecasts <a href="#">(See Full Set)</a>
                 {% else %}
-                {{ profile.username }} Active Forecasts <a href="#">(See Full Set)</a>
-
-            {%endif%}
+                    {{ profile.username }}'s Active Forecasts <a href="#">(See Full Set)</a>
+                {%endif%}
             </strong></p>
 
         <div class="btn-group">
@@ -56,7 +99,7 @@
                     </ul>
             </div>
         </div>
-        </div>
+    </div>
         <div class="row">
             <p><strong>
             {%if owner %}
@@ -87,6 +130,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="rightuserblock" class=" col-md-offset-1 col-md-3 ">
         <div class="row">
@@ -129,30 +173,25 @@
             </div>
              <div class="panel">
                 <h4><strong>Connection Center</strong></h4>
+                 {% if owner %}
                 <p id="messclick"><a href="#">Inbox <span class="badge">1</span></a></p>
+                     {% else %}
+                <p><a href="#" data-toggle="modal" data-target="#SendMessage">Send Message</a></p>
+                 {% endif %}
                 <p><a href="#" data-toggle="modal" data-target="#Fol">Followers <span class="badge">2</span></a></p>
-                <p><a href="#" data-toggle="modal" data-target="#FolUsers">My Followed Users <span class="badge">3</span></a></p>
-                <p><a href="#" data-toggle="modal" data-target="#MyGroups">My Groups <span class="badge">4</span></a></p>
+                <p><a href="#" data-toggle="modal" data-target="#FolUsers">
+                    {% if owner %} My {% else %} {{ profile.username }}'s {% endif %} Followed Users
+                    <span class="badge">3</span>
+                  </a>
+                </p>
+                <p><a href="#" data-toggle="modal" data-target="#MyGroups">
+                    {% if owner %} My {% else %} {{ profile.username }}'s {% endif %} Groups
+                    <span class="badge">4</span>
+                   </a>
+                </p>
                 <p>Weekly Profile Views:</p>
 
-            </div>
-            <div class="panel" id="info">
-
-            {%if owner %}
-
-                <h4><strong>My Info</strong></h4>
-                <div id="edit"><a href="#"><h5>Edit</h5></a></div>
-                <div style="clear: left"></div>
-                {% else %}
-                <h4><strong>{{profile.username}}'s Info</strong></h4>
-
-            {%endif%}
-                <p>Profession: {{user.profession}}</p>
-                <p>Organization: {{user.organization}}</p>
-                <p>Position: XXX</p>
-                <p>Location: {{user.country}}</p>
-            </div>
-                    <div class="modal fade" id="Fol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal fade" id="Fol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -173,7 +212,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">My Followed Users</h4>
+                            <h4 class="modal-title" id="myModalLabel">Followed Users</h4>
                           </div>
                           <div class="modal-body">
                             ...
@@ -190,7 +229,7 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModa{%if owner %}My {%else%}{{profile.username}}'s {%endif%}abel">My Groups</h4>
+                            <h4 class="modal-title" id="myModaLabel">Groups</h4>
                           </div>
                           <div class="modal-body">
                             ...
@@ -200,6 +239,24 @@
                           </div>
                         </div>
                       </div>
+            </div>
+            <div class="panel" id="info">
+
+            {%if owner %}
+
+                <h4><strong>My Info</strong></h4>
+                <div id="edit"><a href="#"><h5>Edit</h5></a></div>
+                <div style="clear: left"></div>
+                {% else %}
+                <h4><strong>{{profile.username}}'s Info</strong></h4>
+
+            {%endif%}
+                <p>Profession: {{user.profession}}</p>
+                <p>Organization: {{user.organization}}</p>
+                <p>Position: XXX</p>
+                <p>Location: {{user.country}}</p>
+            </div>
+
             </div>
         </div>
     </div>

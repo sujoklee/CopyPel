@@ -206,6 +206,15 @@ class ProfileView(View):
         return render(request, self.template_name, {'owner': owner, 'profile': profile})
 
 
+class ProfileForecastView(View):
+    template_name = 'profile_page.html'
+
+    def get(self, request):
+        user = request.user
+        if Forecast.objects.get(pk=id):
+            forecasts = self._queryset_by_forecast_filter(request)
+        return render(request, self.template_name, {'data': forecasts, 'is_active': True})
+
 class ProposeForecastView(View):
     template_name = 'propose_forecast_page.html'
     form = ForecastForm
