@@ -205,18 +205,27 @@ class ProfileView(View):
         profile = get_object_or_404(User, pk=id)
         forecasts = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__gte=date.today())[:5]
         forecasts_archived = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__lt=date.today())[:5]
+
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
-                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived})
+                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived, })
 
 
-# class ProfileForecastView(View):
-#     template_name = 'profile_page.html'
-#
-#     def get(self, request):
-#         user = request.user
-#         if Forecast.objects.get(pk=id):
-#             forecasts = self._queryset_by_forecast_filter(request)
-#         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
+class ProfileForecastView(View):
+    template_name = 'forecasts.html'
+
+    def get(self, request, id):
+        profile = get_object_or_404(User, pk=id)
+        forecasts = Forecast.objects.filter(votes__user_id=profile)
+        if 'filter' in request.GET and request.GET.get('filter') == 'archived':
+            forecasts = forecasts.filter(end_date__lt=date.today())
+        else:
+            forecasts = forecasts.filter(end_date__gte=date.today())
+
+
+
+        return render(request, self.template_name, {'is_active': True,
+                                                    'data': forecasts,})
+
 
 
 class ProposeForecastView(View):

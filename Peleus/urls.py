@@ -23,6 +23,8 @@ urlpatterns = patterns(
     url(r'^active_forecasts/$', views.ActiveForecastsView.as_view(), name='active_forecasts'),
     url(r'^archived_forecasts/$', views.ArchivedForecastsView.as_view(), name='archived_forecasts'),
     url(r'^propose_forecast/$', views.ProposeForecastView.as_view(), name='propose_forecast'),
+    # ajax forecasts for profile
+    url(r'^profile_forecasts/(?P<id>\d+)/$', views.ProfileForecastView.as_view(), name='profile_forecasts_ajax'),
     url(r'^forecast/(?P<id>\d+)/$', views.IndividualForecastView.as_view(), name='individual_forecast'),
     url(r'^forecasts/$', views.ForecastsJsonView.as_view(), name='forecasts'),
     url(r'^forecast_vote/$', views.ActiveForecastVoteView.as_view(), name='forecast_vote'),
