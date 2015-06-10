@@ -36,11 +36,32 @@
                         </div>
                     </div>
                     <div class="panel-body">
+                    <div class="col-sm-9">
                         <div id="peleus-home-page-chart-{{ el.id }}">
                             {% if not el.votes %}
                                 <p>No current forecast's votes!</p>
                             {% endif %}
                         </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="panel panel-default peleus-scrollable-block">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Related Media</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    {% for media in el.forecastmedia_set.all %}
+                                        <div class="col-sm-12">
+                                            <a href="{{ media.url }}" target="_blank" class="thumbnail">
+                                                <img src="{{ media.image.url }}" alt="{{ media.name }}">
+                                            </a>
+                                            <h4><a href="{{ media.url }}" target="_blank"> {{ media.name }}</a></h4>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                     {% comment %}<div class="panel-footer">Panel footer</div>{% endcomment %}
                 </div>
