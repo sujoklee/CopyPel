@@ -2,10 +2,8 @@
 {% load staticfiles%}
 
 
-
 {% block content %}
     <script src="{% static '1p/profile.js' %}"></script>
-
 
 <div class="row">
     <div class="panel col-md-8">
@@ -82,20 +80,12 @@
             <div class="panel">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Recently participated <span class="caret"></span></button>
                     <ul class="dropdown-menu scrollable-menu" role="menu">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
+                      {% for forecast in forecasts %}
+
+                        <li><a href="{% url 'individual_forecast' id=forecast.id %}">{{ forecast.forecast_question }}</a></li>
+
+                      {% endfor %}
+
                     </ul>
             </div>
         </div>
@@ -112,20 +102,11 @@
                 <div class="panel">
                 <button type="button" class="btn btn-info pull right dropdown-toggle" data-toggle="dropdown">Recently closed <span class="caret"></span></button>
                     <ul class="dropdown-menu scrollable-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
+                        {% for forecast in forecasts_archived %}
+
+                        <li><a href="{% url 'individual_forecast' id=forecast.id %}">{{ forecast.forecast_question }}</a></li>
+
+                      {% endfor %}
                     </ul>
                 </div>
             </div>

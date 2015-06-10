@@ -203,17 +203,21 @@ class ProfileView(View):
     def get(self, request, id):
         owner = request.user.id == int(id)
         profile = get_object_or_404(User, pk=id)
-        return render(request, self.template_name, {'owner': owner, 'profile': profile})
+        forecasts = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__gte=date.today())[:5]
+        forecasts_archived = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__lt=date.today())[:5]
+        return render(request, self.template_name, {'owner': owner, 'profile': profile,
+                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived})
 
 
-class ProfileForecastView(View):
-    template_name = 'profile_page.html'
+# class ProfileForecastView(View):
+#     template_name = 'profile_page.html'
+#
+#     def get(self, request):
+#         user = request.user
+#         if Forecast.objects.get(pk=id):
+#             forecasts = self._queryset_by_forecast_filter(request)
+#         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
-    def get(self, request):
-        user = request.user
-        if Forecast.objects.get(pk=id):
-            forecasts = self._queryset_by_forecast_filter(request)
-        return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 class ProposeForecastView(View):
     template_name = 'propose_forecast_page.html'
