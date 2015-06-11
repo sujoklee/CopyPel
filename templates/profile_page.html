@@ -59,31 +59,99 @@
         </div>
 
         <div class="row">
+             <div class="col-md-6">
+
                  <div id="message">
+                     <div class="panel">
                      <label>INBOX</label>
                      <p>Some messages</p>
+                     </div>
                  </div>
 
+             </div>
         </div>
 
+        <div class="modal fade bs-example-modal-lg" id="active_forecasts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModaLabel">Active Forecasts</h4>
+                          </div>
+                          <div class="modal-body" id="active-set-modal">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+        </div>
+        <div class="modal fade" id="archived_forecasts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModaLabel">Archived Forecasts</h4>
+                              </div>
+                              <div class="modal-body" id="archived-set-modal">
+                                ...
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+            </div>
+    <script type="text/javascript">
+        $('#active_forecasts').on('shown.bs.modal', function() {
+        //$(this).find(".modal-body").load(function() {
+            $.ajax({
+                url: "/profile_forecasts/{{ profile.id }}/",
+                method: 'GET',
+                data: {
+                    filter: 'active'
+                }
+            }).done(function(data) {
+                $('#active-set-modal').html(data);
+            });
+           //});
+        }).on('hidden.bs.modal', function() {
+            $('#active-set-modal').empty()
+        });
 
-    <div class="col-md-6">
+        $('#archived_forecasts').on('shown.bs.modal', function() {
+        //$(this).find(".modal-body").load(function() {
+            $.ajax({
+                url: "/profile_forecasts/{{ profile.id }}/",
+                method: 'GET',
+                data: {
+                    filter: 'archived'
+                }
+            }).done(function(data) {
+                $('#archived-set-modal').html(data);
+            });
+           //});
+        }).on('hidden.bs.modal', function() {
+            $('#archived-set-modal').empty()
+        });
+    </script>
+
+        <div class="col-md-6">
 
         <div class="row">
             <p></p>
             <p><strong>
-                {%if owner %}
-                    My Active Forecasts <a href="#">(See Full Set)</a>
-                {% else %}
-                    {{ profile.username }}'s Active Forecasts <a href="#">(See Full Set)</a>
+                {%if owner %} My {% else %}
+                    {{ profile.username }}'s
                 {%endif%}
+             Active Forecasts
+                <a href="#" data-toggle="modal" data-target="#active_forecasts">(See Full Set)</a>
             </strong></p>
         </div>
 
         <div class="btn-group">
             <div class="panel">
-{#                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Recently participated <span class="caret"></span></button>#}
-{#                    <ul class="dropdown-menu scrollable-menu" role="menu">#}
                   <table class="table">
                       {% for forecast in forecasts %}
                        <tr>
@@ -92,7 +160,6 @@
 
                       {% endfor %}
                   </table>
-{#                    </ul>#}
             </div>
         </div>
     </div>
@@ -101,16 +168,15 @@
         <div class="row">
             <p></p>
             <p><strong>
-            {%if owner %}
-                My Archived Forecasts <a href="#">(See Full Set)</a>
-                {% else %}
-                {{ profile.username }}'s Archived Forecasts <a href="#">(See Full Set)</a>
-            {%endif%}
+            {%if owner %} My {% else %}
+                    {{ profile.username }}'s
+                {%endif%}
+             Archived Forecasts
+                <a href="#" data-toggle="modal" data-target="#archived_forecasts">(See Full Set)</a>
+
             </strong></p>
             <div class="btn-group">
                 <div class="panel">
-{#                <button type="button" class="btn btn-info pull right dropdown-toggle" data-toggle="dropdown">Recently closed <span class="caret"></span></button>#}
-{#                    <ul class="scrolldown-menu scrollable-menu" role="menu">#}
                 <table class="table">
                         {% for forecast in forecasts_archived %}
                        <tr>
@@ -118,7 +184,6 @@
                        </tr>
                       {% endfor %}
                 </table>
-{#                    </ul>#}
                 </div>
             </div>
         </div>
