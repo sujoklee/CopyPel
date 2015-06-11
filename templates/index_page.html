@@ -30,7 +30,7 @@
                         <div>
                             <span class="label label-default">Tags:</span>
                             {% for tag in el.tags.all %}
-                                <span class="label label-success">{{ tag }}</span>
+                                <a href="{{ request.path }}?tag={{ tag.slug }}"><span class="label label-success">{{ tag }}</span></a>
                             {% endfor %}
                             <div class="pull-right">{{ el.forecasters }} forecaster{{ el.forecasters|pluralize }}</div>
                         </div>

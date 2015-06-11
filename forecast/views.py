@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
@@ -19,21 +20,21 @@ from Peleus.settings import APP_NAME, FORECAST_FILTER,\
 
 class ForecastFilterMixin(object):
 
-    def _queryset_by_tag(self, request, qs=None):
+    def _queryset_by_tag(self, querydict, qs=None):
         forecasts = qs or Forecast.objects.all()
-        tags = request.GET.getlist('tag', [])
+        tags = querydict.getlist('tag', [])
         for tag in tags:
             forecasts = forecasts.filter(tags__slug=tag)
 
         return forecasts
 
-    def _queryset_by_forecast_filter(self, request, qs=None):
+    def _queryset_by_forecast_filter(self, querydict, qs=None):
         """
         Allows to build queryset by filter in GET-request.
         E.g. ?filter=mostactive will select the most active forecasts
         """
         forecasts = qs or Forecast.objects.filter(end_date__gte=date.today())
-        forecast_filter = request.GET.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
+        forecast_filter = querydict.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
 
         if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('-num_votes')
@@ -44,6 +45,12 @@ class ForecastFilterMixin(object):
         elif forecast_filter == FORECAST_FILTER_ARCHIVED:
             forecasts = Forecast.objects.filter(end_date__lt=date.today())
         return forecasts
+
+    def _get_url_without_tag(self, path, querydict):
+        params = QueryDict(querydict.urlencode(), mutable=True)
+        params.pop('tag')
+
+        return path + '?' + params.urlencode()
 
 
 class LoginRequiredMixin(object):
@@ -57,10 +64,10 @@ class ActiveForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = None
+        forecasts = Forecast.objects.filter(end_date__gte=date.today())
         if 'tag' in request.GET:
-            forecasts = self._queryset_by_tag(request)
-        forecasts = self._queryset_by_forecast_filter(request, forecasts)
+            forecasts = self._queryset_by_tag(request.GET, forecasts)
+        forecasts = self._queryset_by_forecast_filter(request.GET, forecasts)
         return render(request, self.template_name, {'data': forecasts, 'is_active': True})
 
 
@@ -82,11 +89,13 @@ class ActiveForecastVoteView(View):
         return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': forecast_id}))
 
 
-class ArchivedForecastsView(View):
+class ArchivedForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
         forecasts = Forecast.objects.filter(end_date__lt=date.today())
+        if 'tag' in request.GET:
+            forecasts = self._queryset_by_tag(request.GET, forecasts)
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})
 
 
@@ -128,9 +137,9 @@ class ForecastsJsonView(ForecastFilterMixin, View):
         if 'id' in request.GET:
             qs = qs.filter(pk__in=request.GET.getlist('id'))
         elif 'tag' in request.GET:
-            qs = self._queryset_by_tag(request, qs)
+            qs = self._queryset_by_tag(request.GET, qs)
         else:
-            qs = self._queryset_by_forecast_filter(request)
+            qs = self._queryset_by_forecast_filter(request.GET)
         return self._respond(qs)
 
     def _respond(self, forecasts):
@@ -142,9 +151,10 @@ class IndexPageView(ForecastFilterMixin, View):
     template_name = 'index_page.html'
 
     def get(self, request):
-
-        forecasts = self._queryset_by_forecast_filter(request).annotate(
+        forecasts = self._queryset_by_forecast_filter(request.GET).annotate(
             forecasters=Count('votes__user_id', distinct=True))
+        if 'tag' in request.GET:
+            forecasts = self._queryset_by_tag(request.GET, forecasts)
 
         return render(request, self.template_name, {'data': forecasts})
 
