@@ -91,6 +91,8 @@ class ForecastProposeAdmin(DjangoObjectActions, ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'end_date', 'status')
     list_filter = (PublishedProposeFilter,)
 
+    objectactions = ['publish_propose']
+
     exclude = ('status',)
 
     def publish_propose(self, request, obj):
