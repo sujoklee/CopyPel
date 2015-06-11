@@ -5,6 +5,8 @@ from django.contrib.admin import ModelAdmin, StackedInline
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count
 
+from django_object_actions import DjangoObjectActions
+
 import models
 
 admin.site.site_header = 'Peleus administration'
@@ -51,27 +53,37 @@ class ForecastAdmin(ModelAdmin):
 
 
 @admin.register(models.ForecastPropose)
-class ForecastProposeAdmin(ModelAdmin):
-    list_display = ('forecast_question_new', 'forecast_type_new', 'date', 'status')
-    actions = ['make_published']
+class ForecastProposeAdmin(DjangoObjectActions, ModelAdmin):
+    list_display = ('forecast_question', 'forecast_type', 'end_date', 'status')
+    # actions = ['make_published']
+    exclude = ('status',)
+    objectactions = ['publish_propose']
 
-    def make_published(self, request, queryset):
-        rows_updated = queryset.update(status='p')
+    def publish_propose(self, request, obj):
+        pass
+    publish_propose.label = 'Publish'
+    publish_propose.attrs = {'class': 'btn btn-primary'}
 
-        for fPropose in queryset:
-            f = models.Forecast.objects.create(forecast_type = fPropose.forecast_type_new,
-                                               forecast_question = fPropose.forecast_question_new,
-                                               end_date = fPropose.date)
-            f.save()
-
-        if rows_updated == 1:
-            message_bit = "1 forecast was"
-        else:
-            message_bit = "%s forecasts were" % rows_updated
-        self.message_user(request, "%s successfully marked as published." % message_bit)
-
-        published = models.ForecastPropose.objects.filter(status='p')
-        published.delete()
+    # def make_published(self, request, queryset):
+    #     rows_updated = queryset.update(status='p')
+    #
+    #     for propose in queryset:
+    #         f = models.Forecast(forecast_type=propose.forecast_type,
+    #                             forecast_question=propose.forecast_question,
+    #                             end_date=propose.end_date)
+    #         f.save()
+    #
+    #         for tag in propose.tags.all():
+    #             f.tags.add(tag)
+    #
+    #     if rows_updated == 1:
+    #         message_bit = "1 forecast was"
+    #     else:
+    #         message_bit = "%s forecasts were" % rows_updated
+    #     self.message_user(request, "%s successfully marked as published." % message_bit)
+    #
+    #     published = models.ForecastPropose.objects.filter(status='p')
+    #     published.delete()
 
 @admin.register(models.ForecastVotes)
 class ForecastVotesAdmin(ModelAdmin):

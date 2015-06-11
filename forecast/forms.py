@@ -36,14 +36,14 @@ class CommunityAnalysisForm(Form):
 
 class ForecastForm(ModelForm):
 
-    forecast_type_new = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
+    forecast_type = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
                                       widget=forms.Select(attrs={'class': 'form-control input-sm'}))
-    forecast_question_new = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
+    forecast_question = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
 
 
     class Meta:
         model = ForecastPropose
-        fields = ('forecast_type_new', 'forecast_question_new', 'tags')
+        fields = ('forecast_type', 'forecast_question', 'tags')
         widgets = {'tags': TagWidget(attrs={'class': "form-control input-sm"})}
 
 class ForecastVoteForm(ModelForm):

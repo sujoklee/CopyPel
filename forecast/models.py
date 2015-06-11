@@ -86,15 +86,15 @@ class Forecast(models.Model):
 
 
 class ForecastPropose(models.Model):
-    user_id = models.ForeignKey(User)
-    forecast_type_new = models.CharField(max_length=2, choices=FORECAST_TYPE)
-    forecast_question_new = models.TextField(max_length=1000)
-    date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='Unpublished')
+    user = models.ForeignKey(User)
+    forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
+    forecast_question = models.TextField(max_length=1000)
+    end_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='u')
     tags = TaggableManager()
 
     def __unicode__(self):
-        return self.forecast_question_new
+        return self.forecast_question
 
 
 class ForecastVotes(models.Model):

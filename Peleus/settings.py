@@ -45,7 +45,8 @@ INSTALLED_APPS = (
     'captcha',
     'django_countries',
     'forecast',
-    'taggit'
+    'taggit',
+    'django_object_actions'
 )
 
 AUTHENTICATION_BACKENDS = (
