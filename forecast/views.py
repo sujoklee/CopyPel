@@ -247,7 +247,7 @@ class ProfileForecastView(View):
 
     def get(self, request, id):
         profile = get_object_or_404(User, pk=id)
-        forecasts = Forecast.objects.filter(votes__user_id=profile)
+        forecasts = Forecast.objects.filter(votes__user_id=profile).distinct()
         if 'filter' in request.GET and request.GET.get('filter') == 'archived':
             forecasts = forecasts.filter(end_date__lt=date.today())
         else:
