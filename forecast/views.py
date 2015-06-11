@@ -33,7 +33,7 @@ class ForecastFilterMixin(object):
         Allows to build queryset by filter in GET-request.
         E.g. ?filter=mostactive will select the most active forecasts
         """
-        forecasts = qs or Forecast.objects.filter(end_date__gte=date.today())
+        forecasts = qs or Forecast.active.all()
         forecast_filter = querydict.get(FORECAST_FILTER, FORECAST_FILTER_MOST_ACTIVE)
 
         if forecast_filter == FORECAST_FILTER_MOST_ACTIVE:
@@ -43,7 +43,7 @@ class ForecastFilterMixin(object):
         elif forecast_filter == FORECAST_FILTER_CLOSING:
             forecasts = forecasts.annotate(num_votes=Count('votes')).order_by('end_date')
         elif forecast_filter == FORECAST_FILTER_ARCHIVED:
-            forecasts = Forecast.objects.filter(end_date__lt=date.today())
+            forecasts = Forecast.archived.all()
         return forecasts
 
     def _get_url_without_tag(self, path, querydict):
@@ -64,7 +64,7 @@ class ActiveForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.filter(end_date__gte=date.today())
+        forecasts = Forecast.active.all()
         if 'tag' in request.GET:
             forecasts = self._queryset_by_tag(request.GET, forecasts)
         forecasts = self._queryset_by_forecast_filter(request.GET, forecasts)
@@ -93,7 +93,7 @@ class ArchivedForecastsView(ForecastFilterMixin, View):
     template_name = 'forecasts_page.html'
 
     def get(self, request):
-        forecasts = Forecast.objects.filter(end_date__lt=date.today())
+        forecasts = Forecast.archived.all()
         if 'tag' in request.GET:
             forecasts = self._queryset_by_tag(request.GET, forecasts)
         return render(request, self.template_name, {'data': forecasts, 'is_active': False})

@@ -45,7 +45,7 @@ class Forecast(models.Model):
     forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question = models.TextField(max_length=1000)
     start_date = models.DateField(auto_now_add=True)
-    end_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField()
     tags = TaggableManager()
 
     active = ForecastsManager(forecasts_type=ForecastsManager.TYPE_ACTIVE)
@@ -90,6 +90,7 @@ class ForecastPropose(models.Model):
     forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question = models.TextField(max_length=1000)
     end_date = models.DateField(auto_now_add=True)
+    end_date.editable = True
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='u')
     tags = TaggableManager()
 
