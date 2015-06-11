@@ -8,6 +8,21 @@ from taggit.managers import TaggableManager
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
 
 
+class ForecastsManager(models.Manager):
+    TYPE_ACTIVE = 1
+    TYPE_ARCHIVED = 2
+
+    def __init__(self, *args, **kwargs):
+        self.forecasts_type = kwargs.pop('forecasts_type', self.TYPE_ACTIVE)
+        super(ForecastsManager, self).__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = super(ForecastsManager, self).get_queryset()
+        if self.forecasts_type == self.TYPE_ACTIVE:
+            return qs.filter(end_date__gte=date.today())
+        else:
+            return qs.filter(end_date__lt=date.today())
+
 class CustomUserProfile(models.Model):
     user = models.OneToOneField(User)
     display_only_username = models.BooleanField(default=False)
@@ -32,6 +47,10 @@ class Forecast(models.Model):
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
     tags = TaggableManager()
+
+    active = ForecastsManager(forecasts_type=ForecastsManager.TYPE_ACTIVE)
+    archived = ForecastsManager(forecasts_type=ForecastsManager.TYPE_ARCHIVED)
+    objects = models.Manager()
 
     def is_active(self):
         return self.end_date >= date.today()
