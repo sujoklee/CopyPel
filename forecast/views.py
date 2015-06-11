@@ -256,7 +256,7 @@ class ProfileForecastView(View):
 
 
         return render(request, self.template_name, {'is_active': True,
-                                                    'data': forecasts,})
+                                                    'data': forecasts})
 
 
 

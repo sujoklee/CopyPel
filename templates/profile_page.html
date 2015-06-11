@@ -105,7 +105,6 @@
             </div>
     <script type="text/javascript">
         $('#active_forecasts').on('shown.bs.modal', function() {
-        //$(this).find(".modal-body").load(function() {
             $.ajax({
                 url: "/profile_forecasts/{{ profile.id }}/",
                 method: 'GET',
@@ -115,13 +114,12 @@
             }).done(function(data) {
                 $('#active-set-modal').html(data);
             });
-           //});
         }).on('hidden.bs.modal', function() {
             $('#active-set-modal').empty()
         });
 
         $('#archived_forecasts').on('shown.bs.modal', function() {
-        //$(this).find(".modal-body").load(function() {
+
             $.ajax({
                 url: "/profile_forecasts/{{ profile.id }}/",
                 method: 'GET',
@@ -131,7 +129,7 @@
             }).done(function(data) {
                 $('#archived-set-modal').html(data);
             });
-           //});
+
         }).on('hidden.bs.modal', function() {
             $('#archived-set-modal').empty()
         });
@@ -215,13 +213,10 @@
             </div>
             <div class="panel" id="analysis">
             <h4><strong>
-            {%if owner %}
-                My Analysis
-                {% else %}
-                {{ profile.username }}'s Analysis </a>
-
-            {%endif%}
-            </strong></h4>
+            {%if owner %} My {% else %}
+                    {{ profile.username }}'s
+                {%endif%} Analysis
+             </strong></h4>
                 <p>Profession: {{user.profession}}</p>
                 <p>Organization: {{user.organization}}</p>
                 <p>Position: XXX</p>
