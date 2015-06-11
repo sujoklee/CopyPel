@@ -45,6 +45,40 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
             return qs
 
 
+class PublishedProposeFilter(admin.SimpleListFilter):
+    title = 'status'
+    parameter_name = 'publication_status'
+    YES = 'no'
+    ALL = 'all'
+
+    def lookups(self, request, model_admin):
+        return (
+            (None, 'Unpublished'),
+            (self.YES, 'Published'),
+            (self.ALL, 'All')
+        )
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        v = self.value()
+
+        if v == None:
+            return queryset.filter(status='u')
+        elif v == self.YES:
+            return queryset.filter(status='p')
+        else:
+            return queryset
+
+
 @admin.register(models.Forecast)
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
@@ -55,35 +89,29 @@ class ForecastAdmin(ModelAdmin):
 @admin.register(models.ForecastPropose)
 class ForecastProposeAdmin(DjangoObjectActions, ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'end_date', 'status')
-    # actions = ['make_published']
+    list_filter = (PublishedProposeFilter,)
+
     exclude = ('status',)
-    objectactions = ['publish_propose']
 
     def publish_propose(self, request, obj):
-        pass
+        obj.status = 'p'
+        obj.save()
+
+        f = models.Forecast(forecast_type=obj.forecast_type,
+                            forecast_question=obj.forecast_question,
+                            end_date=obj.end_date)
+        f.save()
+
+        for tag in obj.tags.all():
+            f.tags.add(tag)
     publish_propose.label = 'Publish'
     publish_propose.attrs = {'class': 'btn btn-primary'}
 
-    # def make_published(self, request, queryset):
-    #     rows_updated = queryset.update(status='p')
-    #
-    #     for propose in queryset:
-    #         f = models.Forecast(forecast_type=propose.forecast_type,
-    #                             forecast_question=propose.forecast_question,
-    #                             end_date=propose.end_date)
-    #         f.save()
-    #
-    #         for tag in propose.tags.all():
-    #             f.tags.add(tag)
-    #
-    #     if rows_updated == 1:
-    #         message_bit = "1 forecast was"
-    #     else:
-    #         message_bit = "%s forecasts were" % rows_updated
-    #     self.message_user(request, "%s successfully marked as published." % message_bit)
-    #
-    #     published = models.ForecastPropose.objects.filter(status='p')
-    #     published.delete()
+    def get_object_actions(self, request, context, **kwargs):
+        if 'original' in context and context['original'] and context['original'].status != 'p':
+            return ['publish_propose']
+        return []
+
 
 @admin.register(models.ForecastVotes)
 class ForecastVotesAdmin(ModelAdmin):
