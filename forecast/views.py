@@ -253,8 +253,6 @@ class ProfileForecastView(View):
         else:
             forecasts = forecasts.filter(end_date__gte=date.today())
 
-
-
         return render(request, self.template_name,
                       {'is_active': True, 'data': forecasts})
 
@@ -262,6 +260,8 @@ class ProfileForecastView(View):
 
 class ProposeForecastView(View):
     template_name = 'propose_forecast_page.html'
+    template_name_access = 'propose_access.html'
+
     form = ForecastForm
 
     def get(self, request):
@@ -274,7 +274,7 @@ class ProposeForecastView(View):
             propose.user = request.user
             propose.save()
             form.save_m2m()
-            return HttpResponse('Thank you for your forecast.')
+            return render(request, self.template_name_access, {})
         else:
             return render(request, self.template_name, {'form': form})
 
