@@ -28,5 +28,6 @@ urlpatterns = patterns(
     url(r'^forecast/(?P<id>\d+)/$', views.IndividualForecastView.as_view(), name='individual_forecast'),
     url(r'^forecasts/$', views.ForecastsJsonView.as_view(), name='forecasts'),
     url(r'^forecast_vote/$', views.ActiveForecastVoteView.as_view(), name='forecast_vote'),
-    url(r'^forecast_analysis/(?P<id>\d+)/$', views.CommunityAnalysisPostView.as_view(), name='forecast_analysis')
+    url(r'^forecast_analysis/(?P<id>\d+)/$', views.CommunityAnalysisPostView.as_view(), name='forecast_analysis'),
+    url(r'^messages/', include('postman.urls'))
 ) + static.static(settings.MEDIA_URL, document_root=MEDIA_ROOT)
