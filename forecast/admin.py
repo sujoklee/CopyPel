@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin, StackedInline
+from django.contrib.admin import ModelAdmin, StackedInline, TabularInline
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count
 
@@ -45,6 +45,16 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
             return qs
 
 
+class ForecastAdminInline(TabularInline):
+    model = models.ForecastMedia
+    verbose_name = "media"
+    extra = 1
+
+class ForecastAnalysis(StackedInline):
+    model = models.ForecastAnalysis
+    verbose_name = "post"
+    extra = 1
+
 class PublishedProposeFilter(admin.SimpleListFilter):
     title = 'status'
     parameter_name = 'publication_status'
@@ -83,7 +93,7 @@ class PublishedProposeFilter(admin.SimpleListFilter):
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
-    # inlines = (TagsInline,)
+    inlines = (ForecastAdminInline, ForecastAnalysis)
 
 
 @admin.register(models.ForecastPropose)
@@ -129,12 +139,12 @@ class ForecastVotesAdmin(ModelAdmin):
     forecast_question_display.short_description = 'Question'
 
 
-@admin.register(models.ForecastMedia)
-class ForecastMediaAdmin(ModelAdmin):
-    list_display = ('forecast', 'name', 'url', 'image')
+# @admin.register(models.ForecastMedia)
+# class ForecastMediaAdmin(ModelAdmin):
+#     list_display = ('forecast', 'name', 'url', 'image')
 
 
-@admin.register(models.ForecastAnalysis)
-class ForecastAnalysis(ModelAdmin):
-    list_display = ('title', 'body', 'forecast', 'user',)
-    list_display_links = ('title', 'body',)
+# @admin.register(models.ForecastAnalysis)
+# class ForecastAnalysis(ModelAdmin):
+#     list_display = ('title', 'body', 'forecast', 'user',)
+#     list_display_links = ('title', 'body',)
