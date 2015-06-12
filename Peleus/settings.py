@@ -112,6 +112,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'OPTIONS': {'context_processors': ("django.contrib.auth.context_processors.auth",
+                                           "django.core.context_processors.request",
                                            "forecast.context_processors.forecast_user",
                                            "forecast.context_processors.forecast_interests",
                                            "forecast.context_processors.forecast_filters",

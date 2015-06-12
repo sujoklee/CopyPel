@@ -1,5 +1,16 @@
+{% load qstring %}
 <div class="col-sm-2 peleus-sidebar">
     <ul id="sidebar" class="nav nav-stacked">
+        {% qstring as qstr %}
+    <li>
+        {% with has_tag=qstr|qstring_has:'tag' %}
+            {% if has_tag %}
+                <a href="{{ request.path }}{{ qstr|qstring_del:'tag' }}">remove tag <span class="pull-right">&times;</span></a>
+                <li class="nav-divider"></li>
+            {% endif %}
+        {% endwith %}
+    </li>
+
         <li><a href="{{ request.path }}?{{ FORECAST_FILTER }}={{ FORECAST_FILTER_MOST_ACTIVE }}">Most Active</a></li>
         <li><a href="{{ request.path }}?{{ FORECAST_FILTER }}={{ FORECAST_FILTER_NEWEST }}">Newest</a></li>
         <li><a href="{{ request.path }}?{{ FORECAST_FILTER }}={{ FORECAST_FILTER_CLOSING }}">Imminently Closing</a></li>
