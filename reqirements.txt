@@ -9,3 +9,4 @@ Pillow==2.8.1
 PyYAML==3.11
 django-taggit==0.14.0
 django-object-actions==0.5.1
+django-postman==3.2.2

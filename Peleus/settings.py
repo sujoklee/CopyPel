@@ -46,7 +46,8 @@ INSTALLED_APPS = (
     'django_countries',
     'forecast',
     'taggit',
-    'django_object_actions'
+    'django_object_actions',
+    'postman'
 )
 
 AUTHENTICATION_BACKENDS = (
