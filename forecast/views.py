@@ -16,7 +16,7 @@ from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, F
 from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis
 from Peleus.settings import APP_NAME, FORECAST_FILTER,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING, FORECAST_FILTER_ARCHIVED
-
+# from postman.models import Message
 
 class ForecastFilterMixin(object):
 
@@ -233,13 +233,14 @@ class ProfileView(View):
     template_name = 'profile_page.html'
 
     def get(self, request, id):
+        # messages_inbox = Message.objects.filter()
         owner = request.user.id == int(id)
         profile = get_object_or_404(User, pk=id)
         forecasts = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__gte=date.today())[:5]
         forecasts_archived = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__lt=date.today())[:5]
 
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
-                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived, })
+                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived})
 
 
 class ProfileForecastView(View):

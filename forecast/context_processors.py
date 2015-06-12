@@ -13,8 +13,9 @@ def forecast_user(request):
 
         custom_user.forecast_areas = [str(i) for i in ast.literal_eval(custom_user.forecast_areas)]
         custom_user.forecast_regions = [str(i) for i in ast.literal_eval(custom_user.forecast_regions)]
-    except CustomUserProfile.DoesNotExist:
+    except (CustomUserProfile.DoesNotExist, ValueError, SyntaxError):
         custom_user = None
+
     return {'forecast_user': custom_user}
 
 def forecast_interests(request):

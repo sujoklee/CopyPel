@@ -73,6 +73,25 @@
                      </div>
                  </div>
 
+                 <script type="text/javascript">
+
+                     $('#edit_foo').on('click', function () {
+    $.ajax({
+        type: 'POST',
+        url: '/echo/html/',
+        data: {
+            html: '<form id="form_foo"><textarea></textarea><input type="submit"></input></form>',
+            delay: 1,
+        },
+        success: function (data, textStatus, jqXHR) {
+            $('#foo_modal').find('.modal-body').html(data);
+            $('#foo_modal').modal('show');
+        },
+    });
+});
+
+                 </script>
+
              </div>
         </div>
 

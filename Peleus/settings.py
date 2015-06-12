@@ -137,6 +137,10 @@ RECAPTCHA_USE_SSL = True
 TOKEN_EXPIRATION_PERIOD = 5  # set in hours
 TOKEN_LENGTH = 64
 
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
 DEFAULT_EMAIL = 'no-reply@peleus.com'
 EMAIL_SERVER = 'smtp.gmail.com:587'
 EMAIL_USER = 'Peleus.key@gmail.com'
