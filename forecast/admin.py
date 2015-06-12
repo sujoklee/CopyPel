@@ -50,10 +50,12 @@ class ForecastAdminInline(TabularInline):
     verbose_name = "media"
     extra = 1
 
+
 class ForecastAnalysis(StackedInline):
     model = models.ForecastAnalysis
     verbose_name = "post"
     extra = 1
+
 
 class PublishedProposeFilter(admin.SimpleListFilter):
     title = 'status'
@@ -81,7 +83,7 @@ class PublishedProposeFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         v = self.value()
 
-        if v == None:
+        if v is None:
             return queryset.filter(status='u')
         elif v == self.YES:
             return queryset.filter(status='p')
@@ -104,6 +106,9 @@ class ForecastProposeAdmin(DjangoObjectActions, ModelAdmin):
     objectactions = ['publish_propose']
 
     exclude = ('status',)
+
+    def has_add_permission(self, request):
+        return False
 
     def publish_propose(self, request, obj):
         obj.status = 'p'
