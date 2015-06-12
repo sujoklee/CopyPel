@@ -89,8 +89,7 @@ class ForecastPropose(models.Model):
     user = models.ForeignKey(User)
     forecast_type = models.CharField(max_length=2, choices=FORECAST_TYPE)
     forecast_question = models.TextField(max_length=1000)
-    end_date = models.DateField(auto_now_add=True)
-    end_date.editable = True
+    end_date = models.DateField(default=date.today)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='u')
     tags = TaggableManager()
 

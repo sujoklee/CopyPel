@@ -255,8 +255,8 @@ class ProfileForecastView(View):
 
 
 
-        return render(request, self.template_name, {'is_active': True,
-                                                    'data': forecasts})
+        return render(request, self.template_name,
+                      {'is_active': True, 'data': forecasts})
 
 
 
@@ -271,7 +271,7 @@ class ProposeForecastView(View):
         form = self.form(request.POST)
         if form.is_valid():
             propose = form.save(commit=False)
-            propose.user_id = request.user
+            propose.user = request.user
             propose.save()
             form.save_m2m()
             return HttpResponse('Thank you for your forecast.')

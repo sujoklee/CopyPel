@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import datetime
 import django_countries.fields
 from django.conf import settings
 import taggit.managers
@@ -41,8 +42,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('forecast_type', models.CharField(max_length=2, choices=[('1', b'Binary'), ('2', b'Probability'), ('3', b'Magnitude'), ('4', b'Temporal')])),
                 ('forecast_question', models.TextField(max_length=1000)),
-                ('start_date', models.DateField(auto_now=True)),
-                ('end_date', models.DateField(null=True, blank=True)),
+                ('start_date', models.DateField(auto_now_add=True)),
+                ('end_date', models.DateField()),
+                ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', help_text='A comma-separated list of tags.', verbose_name='Tags')),
             ],
             options={
                 'ordering': ['-end_date'],
@@ -74,19 +76,12 @@ class Migration(migrations.Migration):
             name='ForecastPropose',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('forecast_type_new', models.CharField(max_length=2, choices=[('1', b'Binary'), ('2', b'Probability'), ('3', b'Magnitude'), ('4', b'Temporal')])),
-                ('forecast_question_new', models.TextField(max_length=1000)),
-                ('date', models.DateField(auto_now_add=True)),
-                ('status', models.CharField(default=b'Unpublished', max_length=1, choices=[(b'u', b'Unpublished'), (b'p', b'Published')])),
+                ('forecast_type', models.CharField(max_length=2, choices=[('1', b'Binary'), ('2', b'Probability'), ('3', b'Magnitude'), ('4', b'Temporal')])),
+                ('forecast_question', models.TextField(max_length=1000)),
+                ('end_date', models.DateField(default=datetime.date.today)),
+                ('status', models.CharField(default=b'u', max_length=1, choices=[(b'u', b'Unpublished'), (b'p', b'Published')])),
                 ('tags', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', help_text='A comma-separated list of tags.', verbose_name='Tags')),
-                ('user_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ForecastTags',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('forecast_id', models.ForeignKey(to='forecast.Forecast')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -102,17 +97,5 @@ class Migration(migrations.Migration):
                 'verbose_name': 'forecast vote',
                 'verbose_name_plural': 'forecast votes',
             },
-        ),
-        migrations.CreateModel(
-            name='Tags',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(unique=True, max_length=100)),
-            ],
-        ),
-        migrations.AddField(
-            model_name='forecasttags',
-            name='tag_id',
-            field=models.ForeignKey(to='forecast.Tags'),
         ),
     ]
