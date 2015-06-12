@@ -10,10 +10,10 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View
+from django.views.generic import View, DetailView
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm
-from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis
+from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis, Group
 from Peleus.settings import APP_NAME, FORECAST_FILTER,\
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING, FORECAST_FILTER_ARCHIVED
 # from postman.models import Message
@@ -149,6 +149,16 @@ class ForecastsJsonView(ForecastFilterMixin, View):
     def _respond(self, forecasts):
         return HttpResponse(json.dumps([f.to_json() for f in forecasts]),
                             content_type='application/json')
+
+
+class GroupView(DetailView):
+    template_name = 'group_page.html'
+    model = Group
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupView, self).get_context_data(**kwargs)
+        return context
 
 
 class IndexPageView(ForecastFilterMixin, View):

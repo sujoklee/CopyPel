@@ -18,8 +18,10 @@ def forecast_user(request):
 
     return {'forecast_user': custom_user}
 
-def forecast_interests(request):
+
+def forecast_interests(_):
     return {'FORECAST_REGIONS': FORECAST_REGIONS, 'FORECAST_AREAS': FORECAST_AREAS}
 
-def forecast_filters(request):
+
+def forecast_filters(_):
     return dict(FORECAST_FILTERS.items() + [('FORECAST_FILTER', FORECAST_FILTER)])

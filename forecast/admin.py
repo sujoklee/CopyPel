@@ -139,12 +139,11 @@ class ForecastVotesAdmin(ModelAdmin):
     forecast_question_display.short_description = 'Question'
 
 
-# @admin.register(models.ForecastMedia)
-# class ForecastMediaAdmin(ModelAdmin):
-#     list_display = ('forecast', 'name', 'url', 'image')
+@admin.register(models.Group)
+class GroupAdmin(ModelAdmin):
+    list_display = ('name', 'type')
 
 
-# @admin.register(models.ForecastAnalysis)
-# class ForecastAnalysis(ModelAdmin):
-#     list_display = ('title', 'body', 'forecast', 'user',)
-#     list_display_links = ('title', 'body',)
+@admin.register(models.Membership)
+class MembershipAdmin(ModelAdmin):
+    list_display = ('user', 'group')

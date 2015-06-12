@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Count, Avg
 from taggit.managers import TaggableManager
 
-from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES
+from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, GROUP_TYPES, REGIONS
 
 
 class ForecastsManager(models.Manager):
@@ -22,6 +22,7 @@ class ForecastsManager(models.Manager):
             return qs.filter(end_date__gte=date.today())
         else:
             return qs.filter(end_date__lt=date.today())
+
 
 class CustomUserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -126,3 +127,25 @@ class ForecastMedia(models.Model):
 
     def __unicode__(self):
         return self.name if self.name else self.url
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=300, blank=True, null=True)
+    type = models.CharField(max_length=1, choices=GROUP_TYPES)
+    organization_type = models.CharField(max_length=1, choices=ORGANIZATION_TYPE, blank=True, null=True)
+    region = models.CharField(max_length=1, choices=REGIONS, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Membership(models.Model):
+    user = models.ForeignKey(User)
+    group = models.ForeignKey('Group')
+    date_joined = models.DateTimeField(auto_now_add=True)
+    admin_rights = models.BooleanField()
+    track_forecasts = models.BooleanField()
+
+    def __unicode__(self):
+        return self.user.username + '<->' + self.group.name
