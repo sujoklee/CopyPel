@@ -25,7 +25,11 @@
                             </div>
                             <span class="label label-default">Tags:</span>
                             {% for tag in el.tags.all %}
+                                {% if not disable_tags %}
                                 <a href="{{ request.path }}?tag={{ tag.slug }}"><span class="label label-success">{{ tag }}</span></a>
+                                {% else %}
+                                    <span class="label label-success">{{ tag }}</span>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>

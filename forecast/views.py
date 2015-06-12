@@ -265,7 +265,7 @@ class ProfileForecastView(View):
             forecasts = forecasts.filter(end_date__gte=date.today())
 
         return render(request, self.template_name,
-                      {'is_active': True, 'data': forecasts})
+                      {'is_active': True, 'data': forecasts, 'disable_tags': True})
 
 
 
