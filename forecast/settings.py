@@ -3,10 +3,10 @@ ORGANIZATION_TYPE = (('1', 'School'),
                      ('3', 'Company'),
                      ('4', 'Government Agency'))
 
-FORECAST_TYPE = (('1', 'Binary'),
+FORECAST_TYPE = (('1', 'Finite Event'),
                  ('2', 'Probability'),
                  ('3', 'Magnitude'),
-                 ('4', 'Temporal'))
+                 ('4', 'Time Horizon Event'))
 
 AREAS = (('1', "Elections"),
          ('2', "Conflicts/Wars"),

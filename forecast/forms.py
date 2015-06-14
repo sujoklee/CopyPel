@@ -27,7 +27,7 @@ class CommunityAnalysisForm(Form):
 
     def save(self, commit=True):
         data = self.cleaned_data
-        # data['forecast_id'] = self.id
+        # data['forecast'] = self.id
         # data['user'] = self.user
 
         analysis = ForecastAnalysis(forecast_id=self.id, user=self.user, **data)

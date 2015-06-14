@@ -45,16 +45,23 @@ class IsActiveDisplayFilter(admin.SimpleListFilter):
             return qs
 
 
-class ForecastAdminInline(TabularInline):
+class ForecastMediaInline(TabularInline):
     model = models.ForecastMedia
     verbose_name = "media"
     extra = 1
 
 
-class ForecastAnalysis(StackedInline):
+class ForecastAnalysisInline(StackedInline):
     model = models.ForecastAnalysis
     verbose_name = "post"
     extra = 1
+
+
+class ForecastVoteVariantsInline(TabularInline):
+    model = models.ForecastVoteVariant
+    verbose_name = 'vote variant'
+    verbose_name_plural = 'vote variants (for finite events only)'
+    extra = 2
 
 
 class PublishedProposeFilter(admin.SimpleListFilter):
@@ -95,7 +102,10 @@ class PublishedProposeFilter(admin.SimpleListFilter):
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
-    inlines = (ForecastAdminInline, ForecastAnalysis)
+    inlines = (ForecastVoteVariantsInline, ForecastMediaInline, ForecastAnalysisInline,)
+
+    def save_model(self, request, obj, form, change):
+        obj.save()
 
 
 @admin.register(models.ForecastPropose)
@@ -135,12 +145,12 @@ class ForecastVotesAdmin(ModelAdmin):
     list_display = ('user_display', 'forecast_question_display', 'vote', 'date',)
 
     def user_display(self, obj):
-        return obj.user_id
+        return obj.user
     user_display.short_description = 'User'
-    user_display.admin_order_field = 'user_id'
+    user_display.admin_order_field = 'user'
 
     def forecast_question_display(self, obj):
-        return obj.forecast_id.forecast_question
+        return obj.forecast.forecast_question
     forecast_question_display.short_description = 'Question'
 
 

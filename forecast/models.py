@@ -53,11 +53,21 @@ class Forecast(models.Model):
     archived = ForecastsManager(forecasts_type=ForecastsManager.TYPE_ARCHIVED)
     objects = models.Manager()
 
+    class Meta:
+        db_table = 'forecasts'
+        get_latest_by = 'start_date'
+        ordering = ['-end_date']
+
     def is_active(self):
         return self.end_date >= date.today()
 
     def __unicode__(self):
-        return '%s - %s' % (self.id, self.forecast_question)
+        return '%s' % (self.forecast_question)
+
+    def votes_count(self):
+        votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
+        return votes
+    votes_count.admin_order_field = 'votes_count'
 
     def to_json(self):
         response = {
@@ -69,21 +79,11 @@ class Forecast(models.Model):
             'votes': [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
                       for v in self.votes.values('date').annotate(avg_votes=Avg('vote'))]}
         try:
-            response['forecastersCount'] = self.votes.values('forecast_id') \
-                .annotate(forecasters=Count('user_id', distinct=True)).get()['forecasters']
+            response['forecastersCount'] = self.votes.values('forecast') \
+                .annotate(forecasters=Count('user', distinct=True)).get()['forecasters']
         except ForecastVotes.DoesNotExist:
             response['forecastersCount'] = 0
         return response
-
-    def votes_count(self):
-        votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
-        return votes
-    votes_count.admin_order_field = 'votes_count'
-
-    class Meta:
-        db_table = 'forecasts'
-        get_latest_by = 'start_date'
-        ordering = ['-end_date']
 
 
 class ForecastPropose(models.Model):
@@ -99,10 +99,12 @@ class ForecastPropose(models.Model):
 
 
 class ForecastVotes(models.Model):
-    user_id = models.ForeignKey(User)
-    forecast_id = models.ForeignKey('Forecast', related_name='votes')
-    vote = models.IntegerField()
+    user = models.ForeignKey(User)
+    forecast = models.ForeignKey('Forecast', related_name='votes')
+    vote = models.IntegerField(blank=True, null=True)
+    vote2 = models.IntegerField(blank=True, null=True)
     date = models.DateField(auto_now_add=True)
+    variant = models.ForeignKey('ForecastVoteVariant', blank=True, null=True)
 
     class Meta:
         verbose_name = 'forecast vote'
@@ -149,3 +151,12 @@ class Membership(models.Model):
 
     def __unicode__(self):
         return self.user.username + '<->' + self.group.name
+
+
+class ForecastVoteVariant(models.Model):
+    forecast = models.ForeignKey('Forecast', related_name='variants')
+    num = models.IntegerField()
+    value = models.CharField(max_length=150)
+
+    def __unicode__(self):
+        return self.value

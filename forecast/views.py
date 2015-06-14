@@ -80,9 +80,9 @@ class ActiveForecastVoteView(View):
             return HttpResponseRedirect(reverse('home'))
         forecast = Forecast.objects.get(pk=forecast_id)
         if forecast.is_active():
-            todays_vote = forecast.votes.filter(date=date.today(), user_id=request.user)
+            todays_vote = forecast.votes.filter(date=date.today(), user=request.user)
             if todays_vote.count() == 0:
-                forecast.votes.create(user_id=request.user, vote=vote, date=date.today())
+                forecast.votes.create(user=request.user, vote=vote, date=date.today())
             else:
                 todays_vote.update(vote=vote)
 
@@ -141,7 +141,7 @@ class ForecastsJsonView(ForecastFilterMixin, View):
         elif 'uid' in request.GET:
             type = request.GET.get('type', 'archived')
             qs = Forecast.active.distinct().all() if type == 'active' else Forecast.archived.distinct().all()
-            qs = qs.filter(votes__user_id_id=request.GET.get('uid'))
+            qs = qs.filter(votes__user_id=request.GET.get('uid'))
         else:
             qs = self._queryset_by_forecast_filter(request.GET)
         return self._respond(qs)
@@ -166,7 +166,7 @@ class IndexPageView(ForecastFilterMixin, View):
 
     def get(self, request):
         forecasts = self._queryset_by_forecast_filter(request.GET).annotate(
-            forecasters=Count('votes__user_id', distinct=True))
+            forecasters=Count('votes__user', distinct=True))
         if 'tag' in request.GET:
             forecasts = self._queryset_by_tag(request.GET, forecasts)
 
@@ -183,7 +183,7 @@ class IndividualForecastView(View):
         media_set = forecast.forecastmedia_set.all()
 
         try:
-            last_vote = forecast.votes.filter(user_id=user).order_by('-date')[0].vote
+            last_vote = forecast.votes.filter(user=user).order_by('-date')[0].vote
         except:
             last_vote = None
         return render(request, self.template_name,
@@ -229,12 +229,12 @@ class PlaceVoteView(View):
         if not form.is_valid():
             return HttpResponse(_('Invalid input data!'), status=400)
         forecast = get_object_or_404(Forecast, pk=data.get('fid'))
-        f_vote = ForecastVotes.objects.filter(user_id__eq=user.id, forecast_id__eq=forecast.id)
+        f_vote = ForecastVotes.objects.filter(user__eq=user.id, forecast__eq=forecast.id)
         if f_vote:
             f_vote.update(vote=data.get('vote'))
             f_vote.save()
         else:
-            new_f_vote = ForecastVotes(user_id=request.user, forecast_id=forecast, vote=data.get('vote'))
+            new_f_vote = ForecastVotes(user=request.user, forecast=forecast, vote=data.get('vote'))
             new_f_vote.save()
         return HttpResponse('ok')
 
@@ -246,8 +246,8 @@ class ProfileView(View):
         # messages_inbox = Message.objects.filter()
         owner = request.user.id == int(id)
         profile = get_object_or_404(User, pk=id)
-        forecasts = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__gte=date.today())[:5]
-        forecasts_archived = Forecast.objects.distinct().filter(votes__user_id=profile, end_date__lt=date.today())[:5]
+        forecasts = Forecast.objects.distinct().filter(votes__user=profile, end_date__gte=date.today())[:5]
+        forecasts_archived = Forecast.objects.distinct().filter(votes__user=profile, end_date__lt=date.today())[:5]
 
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
                                                     'forecasts': forecasts, 'forecasts_archived': forecasts_archived})
@@ -258,7 +258,7 @@ class ProfileForecastView(View):
 
     def get(self, request, id):
         profile = get_object_or_404(User, pk=id)
-        forecasts = Forecast.objects.filter(votes__user_id=profile).distinct()
+        forecasts = Forecast.objects.filter(votes__user=profile).distinct()
         if 'filter' in request.GET and request.GET.get('filter') == 'archived':
             forecasts = forecasts.filter(end_date__lt=date.today())
         else:
