@@ -57,10 +57,10 @@ class ForecastAnalysisInline(StackedInline):
     extra = 1
 
 
-class ForecastVoteVariantsInline(TabularInline):
-    model = models.ForecastVoteVariant
-    verbose_name = 'vote variant'
-    verbose_name_plural = 'vote variants (for finite events only)'
+class ForecastVoteChoicesInline(TabularInline):
+    model = models.ForecastVoteChoice
+    verbose_name = 'vote choice'
+    verbose_name_plural = 'vote choices (for finite events only)'
     extra = 2
 
 
@@ -102,7 +102,7 @@ class PublishedProposeFilter(admin.SimpleListFilter):
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
-    inlines = (ForecastVoteVariantsInline, ForecastMediaInline, ForecastAnalysisInline,)
+    inlines = (ForecastVoteChoicesInline, ForecastMediaInline, ForecastAnalysisInline,)
 
     def save_model(self, request, obj, form, change):
         obj.save()

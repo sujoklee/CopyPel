@@ -1,4 +1,12 @@
-function draw_timeseries_chart(selector, data) {
+function drawChart(selector, data) {
+    if(data.forecastType === 'Finite Event') {
+        drawFiniteEventChart(selector, data.votes);
+    } else {
+        drawProbabilityChart(selector, data.votes);
+    }
+}
+
+function drawProbabilityChart(selector, data) {
     var chart = c3.generate({
         bindto: selector,
         data: {
@@ -28,5 +36,25 @@ function draw_timeseries_chart(selector, data) {
             }
         }
     });
+}
+
+function drawFiniteEventChart(selector, data) {
+    var chart = c3.generate({
+        bindto: selector,
+        data: {
+            json: data,
+            keys: {
+                x: 'choice',
+                value: ['votesCount']
+            },
+            type: 'bar'
+        },
+
+        axis: {
+            x: {
+                type: 'category'
+            }
+        }
+    })
 }
 

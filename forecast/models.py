@@ -8,6 +8,18 @@ from taggit.managers import TaggableManager
 from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, GROUP_TYPES, REGIONS
 
 
+def _votes_by_forecast_type(forecast):
+    votes = None
+    if forecast.forecast_type == '1':
+        votes = [{'choice': v['choice__choice'], 'votesCount': v['votes_count']}
+                 for v in forecast.votes.all().values('choice__choice').annotate(votes_count=Count('choice__choice'))]
+    else:
+        votes = [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
+                      for v in forecast.votes.values('date').annotate(avg_votes=Avg('vote'))]
+    return votes
+
+
+
 class ForecastsManager(models.Manager):
     TYPE_ACTIVE = 1
     TYPE_ARCHIVED = 2
@@ -76,8 +88,7 @@ class Forecast(models.Model):
             'forecastQuestion': self.forecast_question,
             'startDate': self.start_date.strftime('%Y-%m-%d'),
             'endDate': self.end_date.strftime('%Y-%m-%d'),
-            'votes': [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
-                      for v in self.votes.values('date').annotate(avg_votes=Avg('vote'))]}
+            'votes': _votes_by_forecast_type(self)}
         try:
             response['forecastersCount'] = self.votes.values('forecast') \
                 .annotate(forecasters=Count('user', distinct=True)).get()['forecasters']
@@ -104,7 +115,7 @@ class ForecastVotes(models.Model):
     vote = models.IntegerField(blank=True, null=True)
     vote2 = models.IntegerField(blank=True, null=True)
     date = models.DateField(auto_now_add=True)
-    variant = models.ForeignKey('ForecastVoteVariant', blank=True, null=True)
+    choice = models.ForeignKey('ForecastVoteChoice', blank=True, null=True)
 
     class Meta:
         verbose_name = 'forecast vote'
@@ -153,10 +164,10 @@ class Membership(models.Model):
         return self.user.username + '<->' + self.group.name
 
 
-class ForecastVoteVariant(models.Model):
-    forecast = models.ForeignKey('Forecast', related_name='variants')
-    num = models.IntegerField()
-    value = models.CharField(max_length=150)
+class ForecastVoteChoice(models.Model):
+    forecast = models.ForeignKey('Forecast', related_name='choices')
+    num = models.IntegerField(unique=True)
+    choice = models.CharField(max_length=150)
 
     def __unicode__(self):
-        return self.value
+        return self.choice
