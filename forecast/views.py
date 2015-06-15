@@ -12,14 +12,15 @@ from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, DetailView
 
-from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm
+from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm, \
+    ForecastVoteForm
 from models import Forecast, ForecastPropose, ForecastVotes, ForecastAnalysis, Group
-from Peleus.settings import APP_NAME, FORECAST_FILTER,\
+from Peleus.settings import APP_NAME, FORECAST_FILTER, \
     FORECAST_FILTER_MOST_ACTIVE, FORECAST_FILTER_NEWEST, FORECAST_FILTER_CLOSING, FORECAST_FILTER_ARCHIVED
 # from postman.models import Message
 
-class ForecastFilterMixin(object):
 
+class ForecastFilterMixin(object):
     def _queryset_by_tag(self, querydict, qs=None):
         forecasts = qs or Forecast.objects.all()
         tags = querydict.getlist('tag', [])
@@ -72,19 +73,26 @@ class ActiveForecastsView(ForecastFilterMixin, View):
 
 
 class ActiveForecastVoteView(View):
+    Form = ForecastVoteForm
     def post(self, request):
         data = request.POST
         forecast_id = data.get('forecast-id', None)
-        vote = data.get('forecast-vote', None)
-        if not forecast_id and not vote:
-            return HttpResponseRedirect(reverse('home'))
+
+        # vote = data.get('forecast-vote', None)
+        if not forecast_id:
+            return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': forecast_id}))
         forecast = Forecast.objects.get(pk=forecast_id)
-        if forecast.is_active():
-            todays_vote = forecast.votes.filter(date=date.today(), user=request.user)
-            if todays_vote.count() == 0:
-                forecast.votes.create(user=request.user, vote=vote, date=date.today())
-            else:
-                todays_vote.update(vote=vote)
+        if forecast.is_active() and request.user.is_authenticated():
+            form = self.Form(data, forecast=forecast, user=request.user)
+
+            if form.is_valid():
+                form.save()
+
+            # todays_vote = forecast.votes.filter(date=date.today(), user=request.user)
+            # if todays_vote.count() == 0:
+            #     forecast.votes.create(user=request.user, vote=vote, date=date.today())
+            # else:
+            #     todays_vote.update(vote=vote)
 
         return HttpResponseRedirect(reverse('individual_forecast', kwargs={'id': forecast_id}))
 
@@ -101,7 +109,6 @@ class ArchivedForecastsView(ForecastFilterMixin, View):
 
 class CommunityAnalysisPostView(View):
     def post(self, request, id):
-
         form = CommunityAnalysisForm(request.POST, id=id, user=request.user)
         if form.is_valid():
             form.save()
@@ -130,7 +137,6 @@ class EmailConfirmationView(View):
 
 
 class ForecastsJsonView(ForecastFilterMixin, View):
-
     def get(self, request):
         qs = Forecast.objects.all()
 
@@ -181,6 +187,7 @@ class IndividualForecastView(View):
         forecast = Forecast.objects.get(pk=id)
         analysis_set = forecast.forecastanalysis_set.all()
         media_set = forecast.forecastmedia_set.all()
+        vote_form = ForecastVoteForm(forecast=forecast, user=request.user)
 
         try:
             last_vote = forecast.votes.filter(user=user).order_by('-date')[0].vote
@@ -188,6 +195,7 @@ class IndividualForecastView(View):
             last_vote = None
         return render(request, self.template_name,
                       {'forecast': forecast,
+                       'vote_form': vote_form,
                        'analysis_set': analysis_set,
                        'media_set': media_set,
                        'last_vote': last_vote,})
@@ -250,7 +258,8 @@ class ProfileView(View):
         forecasts_archived = Forecast.objects.distinct().filter(votes__user=profile, end_date__lt=date.today())[:5]
 
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
-                                                    'forecasts': forecasts, 'forecasts_archived': forecasts_archived})
+                                                    'forecasts': forecasts,
+                                                    'forecasts_archived': forecasts_archived})
 
 
 class ProfileForecastView(View):

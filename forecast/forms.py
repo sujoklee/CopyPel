@@ -1,6 +1,6 @@
 import django.forms as forms
 from captcha.fields import ReCaptchaField
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Form
@@ -9,9 +9,11 @@ from django_countries.widgets import CountrySelectWidget
 from django.utils.translation import ugettext, ugettext_lazy as _
 from taggit.forms import TagWidget
 
-from Peleus.settings import ORGANIZATION_TYPE, AREAS, REGIONS, APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH,\
-    DEFAULT_EMAIL, DOMAIN_NAME, FORECAST_TYPE
-from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose, ForecastAnalysis
+from Peleus.settings import APP_NAME, TOKEN_EXPIRATION_PERIOD, TOKEN_LENGTH, DEFAULT_EMAIL, DOMAIN_NAME
+
+from forecast.models import CustomUserProfile, ForecastVotes, ForecastPropose, ForecastAnalysis, Forecast
+from forecast.settings import ORGANIZATION_TYPE, AREAS, REGIONS, FORECAST_TYPE, FORECAST_TYPE_FINITE, \
+    FORECAST_TYPE_MAGNITUDE, FORECAST_TYPE_PROBABILITY, FORECAST_TYPE_TIME_HORIZON
 from utils.different import generate_activation_key
 
 
@@ -27,29 +29,63 @@ class CommunityAnalysisForm(Form):
 
     def save(self, commit=True):
         data = self.cleaned_data
-        # data['forecast'] = self.id
-        # data['user'] = self.user
 
         analysis = ForecastAnalysis(forecast_id=self.id, user=self.user, **data)
         analysis.save()
 
 
 class ForecastForm(ModelForm):
-
     forecast_type = forms.ChoiceField(required=True, choices=FORECAST_TYPE,
                                       widget=forms.Select(attrs={'class': 'form-control input-sm'}))
     forecast_question = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control input-sm'}))
-
 
     class Meta:
         model = ForecastPropose
         fields = ('forecast_type', 'forecast_question', 'tags')
         widgets = {'tags': TagWidget(attrs={'class': "form-control input-sm"})}
 
-class ForecastVoteForm(ModelForm):
-    class Meta:
-        model = ForecastVotes
-        fields = '__all__'
+
+class ForecastVoteForm(forms.Form):
+
+    class InitException(Exception):
+        def __init__(self, forecast, user, *args, **kwargs):
+            msg = "forecast" if forecast is None else "user"
+            msg += " must be passed as an argument"
+            super(ForecastVoteForm.InitException, self).__init__(msg, *args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        self.forecast = kwargs.pop('forecast', None)
+        self.user = kwargs.pop('user', None)
+        if self.forecast is None or self.user is None:
+            raise self.InitException(self.forecast, self.user)
+
+        super(ForecastVoteForm, self).__init__(*args, **kwargs)
+
+        if self.forecast.forecast_type == FORECAST_TYPE_FINITE:
+            self.fields['vote'] = forms.ChoiceField(
+                required=True, choices=[(str(choice.num), choice.choice) for choice in self.forecast.choices.all()],
+                widget=forms.Select(attrs={'class': 'form-control', 'required': 'true'}))
+        else:
+            self.fields['vote'] = forms.IntegerField(
+                required=True, widget=forms.NumberInput(
+                    attrs={'class': 'form-control', 'required': 'required', 'min': '0', 'max': '100'}))
+
+    def save(self):
+        if self.forecast.forecast_type == FORECAST_TYPE_FINITE:
+            choice = self.forecast.choices.get(num=self.cleaned_data['vote'])
+            last_vote = self.forecast.votes.filter(user=self.user)
+            if last_vote.count() == 0:
+                self.forecast.votes.create(user=self.user, choice=choice, date=date.today())
+            else:
+                last_vote.update(choice=choice, date=date.today())
+        else:
+            vote = self.cleaned_data['vote']
+            todays_vote = self.forecast.votes.filter(date=date.today(), user=self.user)
+            if todays_vote.count() == 0:
+                self.forecast.votes.create(user=self.user, vote=vote, date=date.today())
+            else:
+                todays_vote.update(vote=vote)
+
 
 
 class SignupCompleteForm(forms.Form):

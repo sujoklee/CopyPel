@@ -6,15 +6,20 @@
                 {% csrf_token %}
                 <input type="hidden" name="forecast-id" value="{{ forecast.id }}">
 
-                <div class="form-group">
+{#                <div class="form-group">#}
                     <span>
                         {% if last_vote == None %}Input initial prediction
                         {% else %}Adjust your prediction{% endif %}</span>
-                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}"
-                           class="form-control"
-                           placeholder="{% if last_vote == None %}Initial
-                           {% else %}Adjust{% endif %} prediction" name="forecast-vote" id="forecast-vote" required>
-                </div>
+{#                    <input type="number" min="0" max="100" value="{{ last_vote|default_if_none:"" }}"#}
+{#                           class="form-control"#}
+{#                           placeholder="{% if last_vote == None %}Initial#}
+{#                           {% else %}Adjust{% endif %} prediction" name="forecast-vote" id="forecast-vote" required>#}
+                {% for field in vote_form %}
+                    <div class="form-group">
+                    {{ field }}
+                    </div>
+                {% endfor %}
+{#                </div>#}
                 <div class="form-group">
                     <a class="btn btn-danger btn-sm btn-block" data-toggle="collapse"
                        data-target=".peleus-left-toggle" href="#"
@@ -50,14 +55,14 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
-            var voteInput = $('#forecast-vote').get(0);
+            var voteInput = $('#id_vote').get(0);
+            var form = $('#forecast-vote-form');
+            var name = $('#forecast-question').html();
 
             function submitVote() {
-                var form = $('#forecast-vote-form');
-                var vote = $('#forecast-vote').val();
-                var name = $('#forecast-question').html();
+                var vote = $(voteInput).val();
                 if (voteInput.checkValidity()) {
-                    $('#modal-dialog .modal-body').html(
+                    $('#modal-dialog').find('.modal-body').html(
                             '<p>Please confirm you wish to initiate your forecast on <i>' + name +
                             '</i> at <i>' + vote + '</i></p>');
                     $('#modal-dialog').modal('show');
