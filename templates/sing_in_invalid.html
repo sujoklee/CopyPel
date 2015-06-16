@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+        <div class="panel-heading">
+            <h1>
+                Invalid login or password.
+            </h1>
+            <p>
+                Please check that you have entered your login and password correctly.
+            </p>
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+
+                <div class="input-group input-group-lg" style="display: inline-block">
+                    <p><label for="id_username"/>
+                        <input type="text" id="id_username" name="username" placeholder="Username"
+                               class="form-control"/>
+                    </p>
+                        <label for="id_password"/>
+                        <div><input id="id_password" type="password" name="password" placeholder="Password" class="form-control"/></div>
+                    <div><span class="pull-left">
+                          <button type="submit" class="btn btn-large btn-primary">Submit</button>
+                        </span>
+                    <span class="pull-right">
+                      <a class="btn btn-default" href="{% url 'signup' %}">Sign Up</a>
+                        </span>
+                        <span class="clearfix"></span></div>
+                </div>
+            </form>
+        </div>
+{% endblock %}

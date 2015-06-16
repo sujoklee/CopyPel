@@ -202,6 +202,7 @@ class IndividualForecastView(View):
 
 
 class LoginView(View):
+
     def post(self, request):
         request.session.set_test_cookie()
         if not request.session.test_cookie_worked():
@@ -219,7 +220,8 @@ class LoginView(View):
                 pass
             return HttpResponseRedirect(reverse('home'))
         else:
-            return HttpResponse(_('Invalid login or password'), status=400)
+            # return HttpResponse(_('Invalid login or password'), status=400)
+            return render(request, "sing_in_invalid.html", {})
 
 
 class LogoutView(View):
@@ -294,7 +296,8 @@ class ProposeForecastView(View):
             propose.user = request.user
             propose.save()
             form.save_m2m()
-            return render(request, self.template_name_access, {})
+            username = request.user.username
+            return render(request, self.template_name_access, {'username': username})
         else:
             return render(request, self.template_name, {'form': form})
 
