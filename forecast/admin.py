@@ -101,11 +101,31 @@ class PublishedProposeFilter(admin.SimpleListFilter):
 @admin.register(models.Forecast)
 class ForecastAdmin(ModelAdmin):
     list_display = ('forecast_question', 'forecast_type', 'start_date', 'end_date', 'votes_count')
+    change_form_template = 'admin/_change_form.html'
     list_filter = ('forecast_type', IsActiveDisplayFilter,)
     inlines = (ForecastVoteChoicesInline, ForecastMediaInline, ForecastAnalysisInline,)
 
     def save_model(self, request, obj, form, change):
         obj.save()
+
+    # def render_change_form(self, request, context, *args, **kwargs):
+    #     """
+    #     Refrain from prolonged exposure.
+    #     https://gist.github.com/yuchant/839996
+    #     """
+    #     def get_queryset(original_func):
+    #         import inspect, itertools
+    #         def wrapped_func():
+    #             if inspect.stack()[1][3] == '__iter__':
+    #                 return itertools.repeat(None)
+    #             return original_func()
+    #         return wrapped_func
+    #
+    #     for formset in context['inline_admin_formsets']:
+    #         formset.formset.get_queryset = get_queryset(formset.formset.get_queryset)
+    #
+    #     return super(ForecastAdmin, self).render_change_form(request, context, *args, **kwargs)
+
 
 
 @admin.register(models.ForecastPropose)

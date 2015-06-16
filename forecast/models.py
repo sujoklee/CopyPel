@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.db import models
@@ -10,15 +10,13 @@ from forecast.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, 
 
 
 def _votes_by_forecast_type(forecast):
-    votes = None
     if forecast.forecast_type == '1':
         votes = [{'choice': v['choice__choice'], 'votesCount': v['votes_count']}
                  for v in forecast.votes.all().values('choice__choice').annotate(votes_count=Count('choice__choice'))]
     else:
         votes = [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
-                      for v in forecast.votes.values('date').annotate(avg_votes=Avg('vote'))]
+                 for v in forecast.votes.values('date').annotate(avg_votes=Avg('vote'))]
     return votes
-
 
 
 class ForecastsManager(models.Manager):
@@ -75,7 +73,7 @@ class Forecast(models.Model):
         return self.end_date >= date.today()
 
     def __unicode__(self):
-        return '%s' % (self.forecast_question)
+        return '%s' % self.forecast_question
 
     def votes_count(self):
         votes = Forecast.objects.filter(pk=self.id).annotate(votes_count=Count('votes')).get().votes_count
@@ -167,7 +165,7 @@ class Membership(models.Model):
     track_forecasts = models.BooleanField()
 
     def __unicode__(self):
-        return self.user.username + '<->' + self.group.name
+        return self.user.username + ' in ' + self.group.name
 
 
 class ForecastVoteChoice(models.Model):
