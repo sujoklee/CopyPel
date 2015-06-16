@@ -60,7 +60,11 @@
             var name = $('#forecast-question').html();
 
             function submitVote() {
+                {% if forecast.forecast_type == FORECAST_TYPE_FINITE %}
+                var vote = $(voteInput).find(':selected').text();
+                {% else %}
                 var vote = $(voteInput).val();
+                {% endif %}
                 if (voteInput.checkValidity()) {
                     $('#modal-dialog').find('.modal-body').html(
                             '<p>Please confirm you wish to initiate your forecast on <i>' + name +

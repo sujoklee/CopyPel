@@ -199,7 +199,7 @@ class IndividualForecastView(View):
         vote_form = ForecastVoteForm(forecast=forecast, user=request.user)
 
         try:
-            last_vote = forecast.votes.filter(user=user).order_by('-date')[0].vote
+            last_vote = forecast.votes.filter(user=user).order_by('-date')[0].get_vote()
         except:
             last_vote = None
         return render(request, self.template_name,

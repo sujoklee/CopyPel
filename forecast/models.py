@@ -5,7 +5,8 @@ from django.db import models
 from django.db.models import Count, Avg
 from taggit.managers import TaggableManager
 
-from Peleus.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, GROUP_TYPES, REGIONS
+import forecast.settings as settings
+from forecast.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, GROUP_TYPES, REGIONS
 
 
 def _votes_by_forecast_type(forecast):
@@ -120,6 +121,11 @@ class ForecastVotes(models.Model):
     class Meta:
         verbose_name = 'forecast vote'
         verbose_name_plural = 'forecast votes'
+
+    def get_vote(self):
+        if self.forecast.forecast_type == settings.FORECAST_TYPE_FINITE:
+            return self.choice.choice
+        return self.vote
 
 
 class ForecastAnalysis(models.Model):
