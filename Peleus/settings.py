@@ -100,7 +100,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -140,8 +140,8 @@ TOKEN_EXPIRATION_PERIOD = 5  # set in hours
 TOKEN_LENGTH = 64
 
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 1025
 
 DEFAULT_EMAIL = 'no-reply@peleus.com'
 EMAIL_SERVER = 'smtp.gmail.com:587'
