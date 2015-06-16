@@ -1,8 +1,16 @@
 $().ready(function() {
-    $("#messclick").click(function() {
-        $("#message").toggle(300);
+    $('#messclick').on('click', function() {
+
+            $.ajax({
+                url: "/messages/inbox/",
+                method: 'GET'
+
+            }).done(function(data) {
+                $('#message').toggle('300').html(data);
+                console.log(data);
+            });
+
+
+    });
     });
 
-
-
-});
