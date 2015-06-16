@@ -6,6 +6,19 @@ function drawChart(selector, data) {
     }
 }
 
+function transformJsonToColumns(json) {
+    var columns = [];
+
+    json.forEach(function(item) {
+       var column = [];
+        column.push(item.choice);
+        column.push(item.votesCount);
+        columns.push(column);
+    });
+
+    return columns;
+}
+
 function drawProbabilityChart(selector, data) {
     var chart = c3.generate({
         bindto: selector,
@@ -42,19 +55,20 @@ function drawFiniteEventChart(selector, data) {
     var chart = c3.generate({
         bindto: selector,
         data: {
-            json: data,
-            keys: {
-                x: 'choice',
-                value: ['votesCount']
-            },
+            columns: transformJsonToColumns(data),
+            //keys: {
+            //    x: 'choice',
+            //    value: ['votesCount']
+            //},
             type: 'bar'
         },
 
         axis: {
             x: {
-                type: 'category'
+                show: false
+        //        type: 'category'
             }
         }
-    })
+    });
 }
 
