@@ -10,7 +10,7 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, DetailView
+from django.views.generic import View, DetailView, ListView
 
 from forms import UserRegistrationForm, SignupCompleteForm, CustomUserProfile, ForecastForm, CommunityAnalysisForm, \
     ForecastVoteForm
@@ -165,6 +165,15 @@ class GroupView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(GroupView, self).get_context_data(**kwargs)
         return context
+
+class MyGroupsView(ListView):
+    template_name = "groups_view.html"
+    model = Group
+
+    def get_queryset(self):
+        queryset = Group.objects.filter(membership__user=self.request.user)
+        return queryset
+
 
 
 class IndexPageView(ForecastFilterMixin, View):

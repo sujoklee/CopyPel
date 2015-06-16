@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+    {% if object_list %}
+        <h4>
+            You are follow on {{ object_list|length }} groups
+        </h4>
+    {% endif %}
+    </div>
+    <div class="container">
+    {% for group in object_list %}
+        <ul class="list-group">
+        <li class="list-group-item" >
+            <a href="{% url 'group' id=group.id %}"/>
+            <span>{{ group.name }}</span>
+            <span>{{ group.description }}</span>
+        </li>
+        </ul>
+        {% empty %}
+        <h2>
+            You are not follow on groups yet
+        </h2>
+    {% endfor %}
+    </div>
+{% endblock %}
