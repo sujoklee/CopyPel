@@ -4,22 +4,21 @@
             {{ profile.username }}'s
         {% endif %} Analysis
     </strong></h4>
-
     <p><strong>Published Analysis:</strong></p>
     {% for element in analysis %}
         <div>
-        <a href="#" data-toggle="modal" data-target="#{{ element.id }}">{{ element.title }}</a>
+        <a href="#" data-toggle="modal" data-target="#id{{ element.id }}">{{ element.title }}</a>
         <a id="a_right" href="#">Expand</a>
         </div>
 
-        <div class="modal fade" id="{{ element.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        <div class="modal fade" id="id{{ element.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">{{ element.title }}</h4>
+                    <h4 class="modal-title" id="myModalLabel"><strong>{{ element.title }}</strong></h4>
                 </div>
                 <div class="modal-body">
                     {{ element.body }}
@@ -30,8 +29,6 @@
             </div>
         </div>
     {% endfor %}
-
-
 </div>
 
 
