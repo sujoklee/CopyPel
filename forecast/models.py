@@ -10,9 +10,12 @@ from forecast.settings import ORGANIZATION_TYPE, FORECAST_TYPE, STATUS_CHOICES, 
 
 
 def _votes_by_forecast_type(forecast):
-    if forecast.forecast_type == '1':
+    if forecast.forecast_type == settings.FORECAST_TYPE_FINITE:
         votes = [{'choice': v['choice__choice'], 'votesCount': v['votes_count']}
                  for v in forecast.votes.all().values('choice__choice').annotate(votes_count=Count('choice__choice'))]
+    elif forecast.forecast_type == settings.FORECAST_TYPE_MAGNITUDE:
+        votes = [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': (v['avg_votes'] + v['avg_votes2']) / 2}
+                 for v in forecast.votes.values('date').annotate(avg_votes=Avg('vote'), avg_votes2=Avg('vote2'))]
     else:
         votes = [{'date': v['date'].strftime('%Y-%m-%d'), 'avgVotes': v['avg_votes']}
                  for v in forecast.votes.values('date').annotate(avg_votes=Avg('vote'))]
@@ -123,6 +126,8 @@ class ForecastVotes(models.Model):
     def get_vote(self):
         if self.forecast.forecast_type == settings.FORECAST_TYPE_FINITE:
             return self.choice.choice
+        elif self.forecast.forecast_type == settings.FORECAST_TYPE_MAGNITUDE:
+            return u"%s \u2014 %s" % (self.vote, self.vote2)
         return self.vote
 
 

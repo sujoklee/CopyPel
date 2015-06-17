@@ -65,6 +65,11 @@ class ForecastVoteForm(forms.Form):
             self.fields['vote'] = forms.ChoiceField(
                 required=True, choices=[(str(choice.num), choice.choice) for choice in self.forecast.choices.all()],
                 widget=forms.Select(attrs={'class': 'form-control', 'required': 'true'}))
+        elif self.forecast.forecast_type == FORECAST_TYPE_MAGNITUDE:
+            self.fields['vote'] = forms.IntegerField(
+                required=True, label='from', widget=forms.NumberInput(attrs={'class': 'form-control', 'required': 'required'}))
+            self.fields['vote2'] = forms.IntegerField(
+                required=True, label='to', widget=forms.NumberInput(attrs={'class': 'form-control', 'required': 'required'}))
         else:
             self.fields['vote'] = forms.IntegerField(
                 required=True, widget=forms.NumberInput(
@@ -78,13 +83,13 @@ class ForecastVoteForm(forms.Form):
                 self.forecast.votes.create(user=self.user, choice=choice, date=date.today())
             else:
                 last_vote.update(choice=choice, date=date.today())
+            return
         else:
-            vote = self.cleaned_data['vote']
             todays_vote = self.forecast.votes.filter(date=date.today(), user=self.user)
             if todays_vote.count() == 0:
-                self.forecast.votes.create(user=self.user, vote=vote, date=date.today())
+                self.forecast.votes.create(user=self.user, date=date.today(), **self.cleaned_data)
             else:
-                todays_vote.update(vote=vote)
+                todays_vote.update(**self.cleaned_data)
 
 
 
