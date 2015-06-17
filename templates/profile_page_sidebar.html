@@ -12,9 +12,9 @@
             {%endif%}
             </strong></h4>
 
-                <p>{{app_name}} Score: XX.X</p>
-                <p>General Accuracy: XX.X%</p>
-                <p>Number of Forecasts: {{len_predictions}}</p>
+                <p><span class="label label-info">{{app_name}} Score:</span></p>
+                <p><span class="label label-info">General Accuracy:</span> XX.X%</p>
+                <p><span class="label label-info">Number of Forecasts:</span> {{len_predictions}}</p>
                 <p>
                 {%if owner %}
                 See My Archived Forecasts</p>
@@ -109,10 +109,12 @@
                 <h4><strong>{{profile.username}}'s Info</strong></h4>
 
             {%endif%}
-                <p>Profession: {{user.profession}}</p>
-                <p>Organization: {{user.organization}}</p>
-                <p>Position: XXX</p>
-                <p>Location: {{user.country}}</p>
+            {% for i in info %}
+                <p><span class="label label-info">Profession:</span> {{i.profession}}</p>
+                <p><span class="label label-info">Organization:</span> {{i.organization_name}}</p>
+                <p><span class="label label-info">Position:</span> {{ i.position }}</p>
+                <p><span class="label label-info">Location:</span> {{i.country}}</p>
+            {% endfor %}
             </div>
 
             </div>

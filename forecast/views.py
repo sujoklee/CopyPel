@@ -267,10 +267,12 @@ class ProfileView(View):
         forecasts = Forecast.objects.distinct().filter(votes__user=profile, end_date__gte=date.today())[:5]
         forecasts_archived = Forecast.objects.distinct().filter(votes__user=profile, end_date__lt=date.today())[:5]
         analysis = ForecastAnalysis.objects.filter(user=profile)
+        info = CustomUserProfile.objects.filter(user=profile)
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
                                                     'forecasts': forecasts,
                                                     'forecasts_archived': forecasts_archived,
-                                                    'analysis': analysis})
+                                                    'analysis': analysis,
+                                                    'info': info})
 
 
 class ProfileForecastView(View):
