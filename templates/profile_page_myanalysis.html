@@ -5,10 +5,32 @@
         {% endif %} Analysis
     </strong></h4>
 
-    <p><strong>Posts:</strong></p>
+    <p><strong>Published Analysis:</strong></p>
     {% for element in analysis %}
-        <p><a href="">{{ element.title }}</a></p>
+        <div>
+        <a href="#" data-toggle="modal" data-target="#element" onclick="$('#element').find('.modal-body').html('{{ element.body }}')">{{ element.title }}</a>
+        <a id="a_right" href="#">Expand</a>
+        </div>
     {% endfor %}
 
-    <p>Published Analysis:</p>
+<div class="modal fade" id="element" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModaLabel">{{ element.title }}</h4>
+            </div>
+            <div class="modal-body">
+                {{ element.body }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+

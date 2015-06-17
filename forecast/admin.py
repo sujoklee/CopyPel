@@ -127,6 +127,10 @@ class ForecastAdmin(ModelAdmin):
     #     return super(ForecastAdmin, self).render_change_form(request, context, *args, **kwargs)
 
 
+@admin.register(models.ForecastAnalysis)
+class ForecastAnalysisAdmin(ModelAdmin):
+    list_display = ('user', 'title')
+
 
 @admin.register(models.ForecastPropose)
 class ForecastProposeAdmin(DjangoObjectActions, ModelAdmin):
