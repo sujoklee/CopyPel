@@ -1,0 +1,14 @@
+<div class="panel" id="analysis">
+    <h4><strong>
+        {% if owner %} My {% else %}
+            {{ profile.username }}'s
+        {% endif %} Analysis
+    </strong></h4>
+
+    <p><strong>Posts:</strong></p>
+    {% for element in analysis %}
+        <p><a href="">{{ element.title }}</a></p>
+    {% endfor %}
+
+    <p>Published Analysis:</p>
+</div>

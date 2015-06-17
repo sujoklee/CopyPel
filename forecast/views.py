@@ -262,15 +262,15 @@ class ProfileView(View):
     template_name = 'profile_page.html'
 
     def get(self, request, id):
-        # messages_inbox = Message.objects.filter()
         owner = request.user.id == int(id)
         profile = get_object_or_404(User, pk=id)
         forecasts = Forecast.objects.distinct().filter(votes__user=profile, end_date__gte=date.today())[:5]
         forecasts_archived = Forecast.objects.distinct().filter(votes__user=profile, end_date__lt=date.today())[:5]
-
+        analysis = ForecastAnalysis.objects.filter(user=profile)
         return render(request, self.template_name, {'owner': owner, 'profile': profile,
                                                     'forecasts': forecasts,
-                                                    'forecasts_archived': forecasts_archived})
+                                                    'forecasts_archived': forecasts_archived,
+                                                    'analysis': analysis})
 
 
 class ProfileForecastView(View):
