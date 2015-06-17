@@ -3,14 +3,14 @@
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne-{{ el.id }}">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#peleus-active-forecast-accordion"
+                    <a href="{% url 'individual_forecast' id=el.id %}">
+                        {{ el.forecast_question }}
+                    </a>
+                    <a data-toggle="collapse"  class="pull-right collapse-btn" data-parent="#peleus-active-forecast-accordion"
                        href="#collapseOne-{{ el.id }}"
                        aria-expanded="true"
                        aria-controls="collapseOne">
-                        {{ el.forecast_question }}
-                    </a>
-                    <a href="{% url 'individual_forecast' id=el.id %}" class="pull-right">
-                        More info <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        Expand <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                     </a>
                 </h4>
             </div>
@@ -58,4 +58,22 @@
             </div>
         </div>
     {% endfor %}
+
+    <script type="text/javascript">
+        $('.collapse-btn').each(function (i, el) {
+            $(el).click(function () {
+                var clickedLink = $(el);
+                console.log('clicked', clickedLink);
+                window.clickedLink = clickedLink;
+                if ($(clickedLink).find('span').hasClass('glyphicon-chevron-down')) {
+                    console.log('collapse');
+                    $(clickedLink).html('Collapse <span class="glyphicon glyphicon-chevron-up"></span>');
+                }
+                else {
+                    console.log('expand');
+                    $(clickedLink).html('Expand <span class="glyphicon glyphicon-chevron-down"></span>');
+                }
+            });
+        });
+    </script>
 </div>
